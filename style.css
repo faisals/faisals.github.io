@@ -179,18 +179,6 @@ em {
   font-style: italic;
 }
 
-code {
-  font-family: "Lucida Console", "Courier New", monospace;
-  font-weight: normal;
-  text-indent: 0;
-  letter-spacing: 0;
-  font-size: 0.9em;
-  margin: 0 0.25em;
-  padding: 0.25em 0.5em;
-  background-color: rgba(144, 144, 144, 0.25);
-  border-radius: 0.25em;
-}
-
 mark {
   background-color: rgba(144, 144, 144, 0.25);
 }
@@ -233,7 +221,7 @@ body:before {
 }
 
 html {
-  font-size: 18pt;
+  font-size: 30pt;
 }
 
 #wrapper {
@@ -370,16 +358,6 @@ p .li {
   margin-top: 1.05rem;
 }
 
-#text03 {
-  color: #ff8282;
-  font-family: "Gothic A1", sans-serif;
-  letter-spacing: 0.075rem;
-  width: calc(100% + 0.075rem);
-  font-size: 0.75em;
-  line-height: 1.75;
-  font-weight: 600;
-}
-
 #text02 {
   color: #ff8282;
   font-family: "Gothic A1", sans-serif;
@@ -393,20 +371,6 @@ p .li {
 #text02 mark {
   color: #342a2d;
   background-color: transparent;
-}
-
-#text03 br + br {
-  margin-top: 1.05rem;
-}
-
-#text03 {
-  color: #ff8282;
-  font-family: "Gothic A1", sans-serif;
-  letter-spacing: 0.075rem;
-  width: calc(100% + 0.075rem);
-  font-size: 0.75em;
-  line-height: 1.75;
-  font-weight: 600;
 }
 
 #credits br + br {
@@ -850,4 +814,25 @@ body {
   -webkit-filter: none !important;
   -ms-filter: none !important;
   filter: none !important;
+}
+
+#text03 {
+  color: #ff8282;
+  font-family: "Gothic A1", sans-serif;
+  font-size: 1em;
+  font-weight: 600;
+  letter-spacing: 0.075rem;
+  line-height: 1.75;
+  margin-top: 1.05rem;
+  width: calc(100% + 0.075rem);
+}
+#text04 {
+  color: #ff8282;
+  font-family: "Gothic A1", sans-serif;
+  font-size: 0.6em;
+  font-weight: 600;
+  letter-spacing: 0.075rem;
+  line-height: 1.75;
+  margin-top: 1.05rem;
+  width: calc(100% + 0.075rem);
 }
