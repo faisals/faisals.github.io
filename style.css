@@ -831,3 +831,23 @@ p .li {
 .particle.purple {
   background-color: #cc66ff;
 }
+
+body {
+  overflow: auto !important;
+}
+
+#main {
+  opacity: 1 !important;
+  -moz-transform: none !important;
+  -webkit-transform: none !important;
+  -ms-transform: none !important;
+  transform: none !important;
+  -moz-transition: none !important;
+  -webkit-transition: none !important;
+  -ms-transition: none !important;
+  transition: none !important;
+  -moz-filter: none !important;
+  -webkit-filter: none !important;
+  -ms-filter: none !important;
+  filter: none !important;
+}
