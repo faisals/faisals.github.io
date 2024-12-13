@@ -1,15 +1,86 @@
-html, body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Inter', sans-serif;
-  color: #333;
-  background: #f9f9f9;
+/* 
+   Combined Tufte-inspired styling with the previously recommended structure.
+   Incorporates the reset and base styles, plus typography, color, and layout hints.
+*/
+
+/* Reset and Base Styles (from snippet) */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, figure,
+figcaption, footer, header, hgroup, menu, nav,
+output, ruby, section, summary, time, mark,
+audio, video {
+  margin: 0; 
+  padding: 0; 
+  border: 0; 
+  font-size: 100%; 
+  font: inherit; 
+  vertical-align: baseline;
 }
+
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section { display: block; }
 
 body {
-  line-height: 1.5;
+  line-height: 1.6;
+  -webkit-text-size-adjust: none;
+  min-width: 320px;
+  min-height: 100vh;
+  word-wrap: break-word;
+  overflow-x: hidden;
+  overflow: auto !important;
+  background: #fdfdf8; /* Off-white paper-like background */
+  font-family: "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  font-size: 18px;
+  color: #111;
 }
 
+/* Typography and Elements */
+a {
+  color: #222;
+  text-decoration: underline;
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+a:hover {
+  color: #000;
+  border-color: #000;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: normal;
+  margin-bottom: 1em;
+  line-height: 1.3;
+  color: #111;
+}
+
+h1 {
+  font-size: 2em;
+  margin-top: 0;
+}
+
+p {
+  margin-bottom: 1em;
+}
+
+ul, ol {
+  list-style: none;
+  margin-bottom: 1em;
+}
+
+/* Mark highlight */
+mark {
+  background-color: #fbf1a9;
+  padding: 0 0.1em;
+}
+
+/* Layout Classes */
 .container {
   width: 90%;
   max-width: 1100px;
@@ -18,8 +89,8 @@ body {
 
 /* Header & Navigation */
 .header {
-  background: #fff;
-  border-bottom: 1px solid #ddd;
+  background: #fdfdf8;
+  border-bottom: 1px solid #eee;
   padding: 1rem 0;
 }
 .nav {
@@ -28,10 +99,10 @@ body {
   align-items: center;
 }
 .logo {
-  font-weight: 600;
-  font-size: 1.2rem;
   text-decoration: none;
-  color: #333;
+  color: #111;
+  font-size: 1.5em;
+  font-weight: normal;
 }
 .nav-links {
   list-style: none;
@@ -39,43 +110,40 @@ body {
   gap: 1.5rem;
 }
 .nav-links a {
-  text-decoration: none;
-  color: #333;
-  font-weight: 400;
-  font-size: 0.95rem;
+  text-decoration: underline;
+  color: #222;
+  font-size: 1em;
 }
 .nav-links .btn-primary {
-  background: #003366;
-  color: #fff !important;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  font-weight: 600;
+  background: #fbf1a9;
+  color: #111 !important;
+  padding: 0.3rem 0.6rem;
+  border-radius: 3px;
+  font-weight: normal;
+  text-decoration: none;
+}
+.nav-links .btn-primary:hover {
+  background: #f2e892;
 }
 
-.btn {
-  text-decoration: none;
-  font-size: 0.95rem;
-  border: none;
-  cursor: pointer;
-}
-.btn-primary:hover {
-  background: #002244;
-}
+/* Buttons (secondary) */
 .btn-secondary {
-  background: #fff;
-  color: #003366;
-  border: 1px solid #003366;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  font-weight: 600;
+  background: transparent;
+  color: #222;
+  border: 1px solid #222;
+  padding: 0.3rem 0.6rem;
+  border-radius: 3px;
+  text-decoration: none;
 }
 .btn-secondary:hover {
-  background: #f0f4f8;
+  background: #eee;
+  border-color: #000;
+  color: #000;
 }
 
 /* Hero Section */
 .hero {
-  background: #e6ecf0;
+  background: #fdfdf8;
   padding: 4rem 0;
   text-align: center;
 }
@@ -92,17 +160,16 @@ body {
   object-fit: cover;
 }
 .hero h1 {
-  font-size: 1.8rem;
-  line-height: 1.3;
+  font-size: 1.8em;
   max-width: 600px;
 }
 .highlight {
-  color: #003366;
+  background: #fbf1a9;
 }
 .subtitle {
   max-width: 600px;
-  font-size: 1rem;
-  color: #555;
+  font-size: 1em;
+  color: #111;
 }
 .cta-group {
   display: flex;
@@ -116,37 +183,29 @@ body {
   padding: 3rem 0;
 }
 .section h2 {
-  font-size: 1.5rem;
+  font-size: 1.5em;
   margin-bottom: 1rem;
-  font-weight: 600;
 }
 .section h3 {
-  font-size: 1.2rem;
+  font-size: 1.2em;
   margin-top: 2rem;
   margin-bottom: 0.5rem;
-  font-weight: 600;
 }
 .section p {
-  font-size: 1rem;
+  font-size: 1em;
   line-height: 1.6;
-  color: #444;
-}
-.section ul {
-  list-style: disc;
-  margin-left: 1.5rem;
-  margin-top: 1rem;
+  color: #111;
 }
 .section a {
-  color: #003366;
-  text-decoration: none;
-}
-.section a:hover {
+  color: #222;
   text-decoration: underline;
 }
+.section a:hover {
+  text-decoration: none;
+}
 
-/* Projects & Publications List */
+/* Project & Publications Lists */
 .project-list, .publication-list {
-  list-style: none;
   padding: 0;
   margin: 2rem 0;
 }
@@ -154,26 +213,57 @@ body {
   margin-bottom: 2rem;
 }
 .project-list h4, .publication-list h4 {
-  font-size: 1.1rem;
+  font-size: 1.1em;
   margin-bottom: 0.5rem;
 }
 .project-list p, .publication-list p {
   margin-bottom: 0.5rem;
 }
 
+/* Icons and Social Links */
+.icons {
+  list-style: none;
+  padding: 0;
+  margin: 2em 0;
+  display: flex;
+  gap: 1.5em;
+  justify-content: center;
+}
+.icons li {
+  display: inline-block;
+  position: relative;
+}
+.icons svg {
+  width: 24px;
+  height: 24px;
+  fill: #333;
+  transition: fill 0.2s;
+  vertical-align: middle;
+  margin-right: 0.3em;
+}
+.icons li a {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.95em;
+  color: #222;
+}
+.icons li a:hover svg {
+  fill: #000;
+}
+
 /* Testimonials */
 .testimonials blockquote {
-  font-size: 1.1rem;
+  font-size: 1.1em;
   font-style: italic;
-  color: #333;
-  border-left: 4px solid #003366;
-  padding-left: 1rem;
-  margin: 2rem 0;
+  color: #111;
+  border-left: 4px solid #fbf1a9;
+  padding-left: 1em;
+  margin: 2em 0;
 }
 .testimonials cite {
   display: block;
-  font-size: 0.9rem;
-  margin-top: 0.5rem;
+  font-size: 0.9em;
+  margin-top: 0.5em;
   color: #555;
 }
 
@@ -186,17 +276,17 @@ body {
   gap: 1rem;
 }
 .social-links li {
-  font-size: 0.95rem;
+  font-size: 1em;
 }
 
 /* Footer */
 .footer {
-  background: #fff;
-  border-top: 1px solid #ddd;
+  background: #fdfdf8;
+  border-top: 1px solid #eee;
   text-align: center;
   padding: 1rem 0;
-  font-size: 0.9rem;
-  color: #555;
+  font-size: 0.9em;
+  color: #444;
 }
 
 /* Responsive */
@@ -205,9 +295,43 @@ body {
     gap: 1rem;
   }
   .hero h1 {
-    font-size: 1.4rem;
+    font-size: 1.4em;
   }
   .hero-content {
     padding: 0 1rem;
   }
+  .section, .hero, .footer {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* State classes */
+body.is-loading #main {
+  opacity: 0;
+  transform: translateY(1.5rem);
+  transition: opacity 2s ease, transform 2s ease;
+}
+body.is-ready #main {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+/* Particles (if needed) */
+.particle {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  z-index: -1;
+}
+.particle.red { background-color: #cc3333; }
+.particle.green { background-color: #339933; }
+.particle.blue { background-color: #333399; }
+.particle.orange { background-color: #cc6633; }
+.particle.purple { background-color: #663399; }
+
+#canvas {
+  display: none;
 }
