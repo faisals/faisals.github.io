@@ -3,14 +3,7 @@ class CareerTimeline {
     constructor() {
         this.canvas = document.createElement('canvas');
         this.ctx = this.canvas.getContext('2d');
-        this.points = [
-            { year: 2025, label: 'Do Little Lab', value: 100, type: 'founder' },
-            { year: 2023, label: 'Namaazi Launch', value: 85, type: 'founder' },
-            { year: 2020, label: 'Engineering Manager', value: 99.95, type: 'leadership' },
-            { year: 2017, label: 'ETL Optimization', value: 66, type: 'achievement' },
-            { year: 2013, label: 'RSI Start', value: 45, type: 'career' },
-            { year: 2010, label: 'Flood Relief', value: 10.5, type: 'humanitarian' }
-        ];
+        this.points = []; // Will be populated from resume.json
         this.drawn = false;
         this.init();
     }
@@ -41,8 +34,34 @@ class CareerTimeline {
     }
 
     animateTimeline() {
-        const startYear = 2007;
-        const endYear = 2025;
+        // Guard clause: don't animate if no points available
+        if (!this.points || this.points.length === 0) {
+            console.warn('CareerTimeline: No data points available for animation');
+            return;
+        }
+        
+        // Calculate dynamic year range from actual data points
+        const years = this.points.map(p => p.year);
+        const minYear = Math.min(...years);
+        const maxYear = Math.max(...years);
+        
+        // Add some padding to the year range for visual breathing room
+        const yearPadding = Math.max(1, Math.round((maxYear - minYear) * 0.1));
+        const startYear = minYear - yearPadding;
+        const endYear = maxYear + yearPadding;
+        
+        // Normalize values for consistent visual scaling
+        const values = this.points.map(p => p.value);
+        const minValue = Math.min(...values);
+        const maxValue = Math.max(...values);
+        const valueRange = maxValue - minValue;
+        
+        // Normalize all values to 0-100 scale for consistent visualization
+        const normalizedPoints = this.points.map(point => ({
+            ...point,
+            normalizedValue: valueRange > 0 ? ((point.value - minValue) / valueRange) * 100 : 50
+        }));
+        
         const width = this.canvas.width;
         const height = this.canvas.height;
         const padding = 40;
@@ -62,25 +81,41 @@ class CareerTimeline {
             this.ctx.lineTo(padding + (width - 2 * padding) * progress, height / 2);
             this.ctx.stroke();
             
-            // Draw points
-            this.points.forEach((point, i) => {
+            // Draw points using normalized data
+            normalizedPoints.forEach((point, i) => {
                 const x = padding + ((point.year - startYear) / (endYear - startYear)) * (width - 2 * padding);
-                const y = height / 2;
+                // Vary Y position slightly based on normalized value for visual interest
+                const baseY = height / 2;
+                const valueOffset = (point.normalizedValue - 50) * 0.3; // Subtle vertical variation
+                const y = baseY - valueOffset;
                 
                 if (x <= padding + (width - 2 * padding) * progress) {
                     const pointProgress = Math.min(1, Math.max(0, (progress - i * 0.1) * 3));
-                    const radius = Math.max(0, 4 * pointProgress);
+                    // Vary radius based on normalized value (3-7px range)
+                    const baseRadius = 3 + (point.normalizedValue / 100) * 4;
+                    const radius = Math.max(0, baseRadius * pointProgress);
                     
                     if (radius > 0) {
                         this.ctx.fillStyle = this.getColorForType(point.type);
                         this.ctx.beginPath();
                         this.ctx.arc(x, y, radius, 0, Math.PI * 2);
                         this.ctx.fill();
+                        
+                        // Add subtle glow for high-value points
+                        if (point.normalizedValue > 75) {
+                            this.ctx.shadowColor = this.getColorForType(point.type);
+                            this.ctx.shadowBlur = 4;
+                            this.ctx.beginPath();
+                            this.ctx.arc(x, y, radius * 0.7, 0, Math.PI * 2);
+                            this.ctx.fill();
+                            this.ctx.shadowBlur = 0;
+                        }
                     }
                     
-                    // Store position for hover
-                    point.x = x;
-                    point.y = y;
+                    // Store position for hover (use original point object for data access)
+                    this.points[i].x = x;
+                    this.points[i].y = y;
+                    this.points[i].normalizedValue = point.normalizedValue;
                 }
             });
             
