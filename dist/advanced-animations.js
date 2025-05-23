@@ -360,7 +360,8 @@ class CareerMap {
             this.locations = resumeData.meta?.locations || [
                 { name: 'Pakistan', lon: 73.0479, lat: 33.6844, projects: ['New Horizon Flood Relief', 'Early Education'] },
                 { name: 'Provo, Utah', lon: -111.6587, lat: 40.2338, projects: ['BYU Systems Admin', 'BSc Actuarial Science'] },
-                { name: 'San Francisco', lon: -122.4194, lat: 37.7749, projects: ['RSI', 'Do Little Lab', 'Namaazi'] }
+                { name: 'Pembroke, MA', lon: -70.7717, lat: 42.0667, projects: ['RSI'] },
+                { name: 'San Francisco', lon: -122.4194, lat: 37.7749, projects: ['Do Little Lab', 'Namaazi'] }
             ];
 
             this.createMap();
