@@ -186,8 +186,8 @@ class SiteBuilder {
             const files = [
                 'index.html',
                 'resume.json',
-                'styles.css',
-                'animations.css',
+                'styles.min.css',        // Copy minified version
+                'animations.min.css',    // Copy minified version
                 'animations.js',
                 'advanced-animations.js',
                 'baseline-grid.js',
