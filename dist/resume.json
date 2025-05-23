@@ -1,0 +1,223 @@
+{
+  "basics": {
+    "name": "Faisal Sajjad",
+    "label": "builder, tinkerer",
+    "email": "faisal@example.com",
+    "phone": "",
+    "url": "http://www.faisals.net",
+    "summary": "Engineeringx leader with over a decade of experience optimizing team output and building innovative solutions. Currently founding Do Little Lab, an AI-driven platform helping consumers contest healthcare insurance claim denials, while leading a 15-engineer team delivering state-tax software used by five U.S. states. Passionate about leveraging technology for social impact—from healthcare accessibility to disaster relief.",
+    "location": {
+      "address": "",
+      "postalCode": "",
+      "city": "San Francisco Bay Area",
+      "countryCode": "US",
+      "region": "California"
+    },
+    "profiles": [
+      {
+        "network": "LinkedIn",
+        "username": "faisalsajjad",
+        "url": "https://linkedin.com/in/faisalsajjad"
+      },
+      {
+        "network": "GitHub",
+        "username": "faisalsajjad",
+        "url": "https://github.com/faisalsajjad"
+      }
+    ]
+  },
+  "work": [
+    {
+      "name": "Do Little Lab",
+      "position": "Founder",
+      "url": "http://dolittlelab.com",
+      "startDate": "2025-01",
+      "summary": "Conceived and launched AI-driven platform helping patients overturn insurance denials.",
+      "highlights": [
+        "Built MVP end-to-end (Next.js, Python, LLMs) in 8 weeks on sub-$5k budget",
+        "Early adopters collectively recovered thousands in previously denied benefits",
+        "Recruiting and mentoring founding engineering team"
+      ],
+      "metrics": {
+        "mvpTime": { "value": 8, "unit": "weeks", "label": "Time to MVP" },
+        "budget": { "value": 5000, "unit": "$", "label": "Bootstrap Budget" },
+        "recovered": { "value": 1000, "unit": "$", "label": "Dollars Recovered", "suffix": "s" },
+        "successRate": { "value": 100, "unit": "%", "label": "Success Rate" }
+      },
+      "technologies": ["Next.js", "Python", "LLMs", "Vercel", "PostgreSQL"]
+    },
+    {
+      "name": "RSI",
+      "position": "Engineering Manager",
+      "startDate": "2020-01",
+      "summary": "Lead 15-engineer team delivering state-tax software used by five U.S. states.",
+      "highlights": [
+        "Introduced Kanban and CI/CD, cutting release time by 40% and defects by 25%",
+        "Achieved >99.95% uptime through SRE practices",
+        "Spearheaded migration of 17TB Oracle warehouse to SQL Server 2019",
+        "Previously optimized ETL jobs from 9h to 3h runtime"
+      ],
+      "metrics": {
+        "teamSize": { "value": 15, "label": "Team Size" },
+        "releaseImprovement": { "value": 40, "unit": "%", "label": "Release Time Reduction" },
+        "defectReduction": { "value": 25, "unit": "%", "label": "Defect Reduction" },
+        "uptime": { "value": 99.95, "unit": "%", "label": "Uptime" },
+        "statesServed": { "value": 5, "label": "States Served" }
+      },
+      "technologies": ["C#", "SQL Server", "Azure", "Kubernetes", "Jenkins"],
+      "previousRoles": [
+        {
+          "title": "Senior Software Engineer",
+          "startDate": "2017-06",
+          "endDate": "2020-06",
+          "highlights": ["Led performance-tuning of core ETL jobs, reducing nightly run-time from 9h to 3h"]
+        },
+        {
+          "title": "Software Engineer",
+          "startDate": "2015-01",
+          "endDate": "2017-05",
+          "highlights": ["Delivered tax-calculation micro-services in C# and T-SQL"]
+        }
+      ]
+    },
+    {
+      "name": "Namaazi",
+      "position": "Founder & Core Developer",
+      "startDate": "2023-03",
+      "summary": "Solo-developed prayer-timing iOS app serving hundreds of active users.",
+      "highlights": [
+        "Built with Swift and SwiftUI with precise location-aware calculations",
+        "Grew through App Store Optimization and targeted social outreach",
+        "Manage full lifecycle: UX design, coding, analytics, marketing"
+      ],
+      "metrics": {
+        "users": { "value": 500, "label": "Active Users", "suffix": "+" },
+        "rating": { "value": 4.8, "label": "App Store Rating" },
+        "accuracy": { "value": 99.9, "unit": "%", "label": "Accuracy" }
+      },
+      "technologies": ["Swift", "SwiftUI", "CoreLocation", "CloudKit"]
+    },
+    {
+      "name": "New Horizon Flood Relief",
+      "position": "Founder",
+      "startDate": "2010-08",
+      "endDate": "2010-08",
+      "summary": "Organized humanitarian relief effort for Pakistan flood victims.",
+      "highlights": [
+        "Organized 30-volunteer team delivering aid to 50 families",
+        "Raised ~$10.5k through grassroots fundraising in one month"
+      ],
+      "metrics": {
+        "volunteers": { "value": 30, "label": "Volunteers" },
+        "familiesHelped": { "value": 50, "label": "Families Helped" },
+        "fundsRaised": { "value": 10500, "unit": "$", "label": "Funds Raised" }
+      },
+      "technologies": ["Community Organizing", "Fundraising", "Logistics", "Distribution"]
+    }
+  ],
+  "education": [
+    {
+      "institution": "Brigham Young University",
+      "area": "Actuarial Science",
+      "studyType": "BSc",
+      "startDate": "2007",
+      "endDate": "2012",
+      "courses": ["Minor in Business Management"]
+    }
+  ],
+  "skills": [
+    {
+      "name": "Programming Languages",
+      "keywords": ["Swift", "Python", "JavaScript", "TypeScript", "C#", "SQL"]
+    },
+    {
+      "name": "Frameworks & Tools",
+      "keywords": ["Next.js", "React", "SwiftUI", "Node.js", ".NET", "Docker"]
+    },
+    {
+      "name": "Data & ML",
+      "keywords": ["Machine Learning", "LLMs", "PostgreSQL", "SQL Server", "ETL"]
+    },
+    {
+      "name": "Leadership",
+      "keywords": ["Engineering Management", "Agile", "CI/CD", "SRE", "Mentoring"]
+    }
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "fluency": "Native speaker"
+    },
+    {
+      "language": "Arabic",
+      "fluency": "Limited working proficiency"
+    },
+    {
+      "language": "Urdu",
+      "fluency": "Native speaker"
+    }
+  ],
+  "interests": [
+    {
+      "name": "Causes",
+      "keywords": ["Civil Rights", "Economic Empowerment", "Education", "Human Rights", "Science & Technology"]
+    },
+    {
+      "name": "Technology",
+      "keywords": ["AI/ML", "Healthcare Tech", "Mobile Development", "Open Source"]
+    }
+  ],
+  "publications": [
+    {
+      "name": "AI-Driven Healthcare Claims Advocacy",
+      "releaseDate": "2024"
+    },
+    {
+      "name": "Reflections on Builder Day 2024",
+      "releaseDate": "2024"
+    },
+    {
+      "name": "Perspectives on AI-Generated Art",
+      "releaseDate": "2024"
+    },
+    {
+      "name": "Software Industry Opportunity Mindsets",
+      "releaseDate": "2023"
+    }
+  ],
+  "meta": {
+    "theme": "tufte",
+    "animations": {
+      "sparklineTimeline": true,
+      "impactMetrics": true,
+      "networkGraph": true,
+      "marginNotes": true,
+      "readingProgress": true,
+      "projectDeepDives": true,
+      "skillConstellation": true,
+      "careerMap": true,
+      "dataInkReveals": true,
+      "breathingWhitespace": true,
+      "tufteAnnotations": true
+    },
+    "careerTimeline": [
+      { "year": 2010, "label": "Flood Relief", "value": 10.5, "type": "humanitarian" },
+      { "year": 2013, "label": "RSI Start", "value": 45, "type": "career" },
+      { "year": 2017, "label": "ETL Optimization", "value": 66, "type": "achievement" },
+      { "year": 2020, "label": "Engineering Manager", "value": 99.95, "type": "leadership" },
+      { "year": 2023, "label": "Namaazi Launch", "value": 85, "type": "founder" },
+      { "year": 2025, "label": "Do Little Lab", "value": 100, "type": "founder" }
+    ],
+    "locations": [
+      { "name": "Pakistan", "x": 70, "y": 40, "projects": ["Flood Relief", "Early Education"] },
+      { "name": "BYU, Utah", "x": 20, "y": 35, "projects": ["Systems Admin", "BSc Actuarial Science"] },
+      { "name": "San Francisco", "x": 10, "y": 25, "projects": ["RSI", "Do Little Lab", "Namaazi"] }
+    ],
+    "annotations": [
+      { "selector": "[data-metric=\"40\"]", "text": "Agile transformation!", "delay": 2000 },
+      { "selector": "[data-metric=\"99.95\"]", "text": "Five 9s reliability", "delay": 2500 },
+      { "selector": "[data-metric=\"8\"]", "text": "Speed matters", "delay": 1500 },
+      { "selector": "[data-metric=\"10.5\"]", "text": "Community impact", "delay": 3000 }
+    ]
+  }
+}

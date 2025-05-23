@@ -1,0 +1,23 @@
+{
+  "name": "tufte-personal-site",
+  "version": "1.0.0",
+  "description": "A beautiful, configurable personal landing page inspired by Edward Tufte's design principles",
+  "main": "site-generator.js",
+  "scripts": {
+    "build": "node build.js",
+    "serve": "npx http-server -p 8080",
+    "dev": "npx http-server -p 8080 -c-1"
+  },
+  "keywords": [
+    "personal-site",
+    "tufte",
+    "portfolio",
+    "resume",
+    "landing-page"
+  ],
+  "author": "Faisal Sajjad",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}

@@ -1,0 +1,329 @@
+/* Animation Styles */
+
+/* Timeline Container */
+.timeline-container {
+    margin: 2rem 0;
+    height: 80px;
+    position: relative;
+}
+
+.timeline-container canvas {
+    width: 100%;
+    height: 100%;
+}
+
+.timeline-tooltip {
+    position: fixed;
+    background: #fffff8;
+    border: 1px solid #ddd;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    pointer-events: none;
+    display: none;
+    z-index: 1000;
+}
+
+/* Network Container */
+.network-container {
+    margin: 3rem 0;
+    height: 400px;
+    position: relative;
+}
+
+.network-container canvas {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #eee;
+}
+
+/* Animated Metrics */
+[data-metric] {
+    font-weight: 500;
+    color: #e74c3c;
+    transition: color 0.3s ease;
+}
+
+[data-metric]:hover {
+    color: #c0392b;
+}
+
+/* Reading Progress */
+.reading-progress {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    z-index: 100;
+    pointer-events: none;
+}
+
+/* Data Ink Effects */
+.data-ink-link {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.data-ink-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 0;
+    height: 1px;
+    background: #333;
+    transition: width 0.3s ease;
+}
+
+.data-ink-link:hover::after {
+    width: 100%;
+}
+
+.data-ink-metric {
+    position: relative;
+}
+
+.data-ink-metric::before {
+    content: '';
+    position: absolute;
+    left: -5px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 2px;
+    background: #e74c3c;
+    transition: width 0.3s ease;
+}
+
+.data-ink-metric:hover::before {
+    width: calc(100% + 10px);
+}
+
+/* Breathing Whitespace */
+article {
+    transition: padding 0.5s ease;
+}
+
+article.reading {
+    padding-left: 12.5%;
+    padding-right: 12.5%;
+}
+
+article.resting {
+    padding-left: 15%;
+    padding-right: 15%;
+}
+
+/* Margin Note Choreography */
+.sidenote,
+.marginnote {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+/* Project Deep Dives */
+.project {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.project:hover {
+    transform: translateX(5px);
+}
+
+.project-expanded {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #fffff8;
+    z-index: 2000;
+    padding: 4rem;
+    overflow-y: auto;
+}
+
+.project-expanded .close-btn {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    font-size: 2rem;
+    cursor: pointer;
+    color: #666;
+    transition: color 0.3s ease;
+}
+
+.project-expanded .close-btn:hover {
+    color: #333;
+}
+
+/* Skill Constellation */
+.skill-constellation {
+    position: relative;
+    height: 300px;
+    margin: 2rem 0;
+}
+
+.skill-node {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    background: rgba(255, 255, 248, 0.9);
+    border: 2px solid #333;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.skill-node:hover {
+    transform: scale(1.1);
+    background: #333;
+    color: #fffff8;
+}
+
+.skill-connection {
+    position: absolute;
+    height: 1px;
+    background: #ddd;
+    transform-origin: left center;
+    transition: background 0.3s ease;
+}
+
+.skill-connection.active {
+    background: #e74c3c;
+    height: 2px;
+}
+
+/* Career Map */
+.career-map {
+    position: relative;
+    height: 500px;
+    margin: 3rem 0;
+    background: #f8f8f0;
+    border: 1px solid #ddd;
+}
+
+.map-marker {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: #e74c3c;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.map-marker:hover {
+    transform: scale(1.5);
+}
+
+.map-label {
+    position: absolute;
+    font-size: 0.8rem;
+    background: #fffff8;
+    padding: 4px 8px;
+    border: 1px solid #ddd;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.map-marker:hover + .map-label {
+    opacity: 1;
+}
+
+/* Handwritten Annotations */
+.annotation {
+    position: absolute;
+    font-family: 'Caveat', cursive;
+    font-size: 1.2rem;
+    color: #e74c3c;
+    opacity: 0;
+    transform: rotate(-5deg);
+    transition: opacity 0.5s ease;
+}
+
+.annotation.visible {
+    opacity: 1;
+}
+
+/* SVG Path Animation */
+.annotation-path {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: draw 2s ease forwards;
+}
+
+@keyframes draw {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+/* Project Deep Dive Styles */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.metric-card {
+    text-align: center;
+    padding: 1.5rem;
+    background: #f8f8f0;
+    border: 1px solid #ddd;
+}
+
+.metric-card h3 {
+    font-size: 2rem;
+    color: #e74c3c;
+    margin-bottom: 0.5rem;
+}
+
+.metric-card p {
+    font-size: 0.9rem;
+    color: #666;
+    margin: 0;
+}
+
+.tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.tech-tag {
+    background: #333;
+    color: #fffff8;
+    padding: 0.3rem 0.8rem;
+    font-size: 0.9rem;
+    border-radius: 3px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 760px) {
+    .timeline-container,
+    .network-container {
+        margin-left: -8%;
+        margin-right: -8%;
+        width: calc(100% + 16%);
+    }
+    
+    .reading-progress {
+        display: none;
+    }
+    
+    article.reading,
+    article.resting {
+        padding-left: 8%;
+        padding-right: 8%;
+    }
+}
