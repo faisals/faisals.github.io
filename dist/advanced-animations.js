@@ -95,6 +95,13 @@ class ProjectDeepDive {
     }
 
     getProjectData(title) {
+        // Handle aliases for mismatched keys
+        const aliases = {
+            'RSI': 'Engineering Leadership at RSI'
+        };
+        
+        const lookupKey = aliases[title] || title;
+        
         const data = {
             'Do Little Lab': {
                 metrics: [
@@ -161,7 +168,7 @@ class ProjectDeepDive {
             }
         };
         
-        return data[title] || data['Do Little Lab'];
+        return data[lookupKey] || data['Do Little Lab'];
     }
 
     drawImpactChart(timeline) {
@@ -463,10 +470,22 @@ class CareerMap {
             marker.setAttribute('tabindex', '0');
             
             // Add interaction events
-            marker.addEventListener('mouseenter', (e) => this.showTooltip(e, location));
-            marker.addEventListener('mouseleave', () => this.hideTooltip());
-            marker.addEventListener('focus', (e) => this.showTooltip(e, location));
-            marker.addEventListener('blur', () => this.hideTooltip());
+            marker.addEventListener('mouseenter', (e) => {
+                halo.classList.add('active');
+                this.showTooltip(e, location);
+            });
+            marker.addEventListener('mouseleave', () => {
+                halo.classList.remove('active');
+                this.hideTooltip();
+            });
+            marker.addEventListener('focus', (e) => {
+                halo.classList.add('active');
+                this.showTooltip(e, location);
+            });
+            marker.addEventListener('blur', () => {
+                halo.classList.remove('active');
+                this.hideTooltip();
+            });
             
             svg.appendChild(marker);
 

@@ -281,8 +281,12 @@ article.resting {
     transition: opacity 0.2s ease;
 }
 
-.map-marker:hover + .map-marker-halo,
-.map-marker:focus + .map-marker-halo {
+.map-marker:hover,
+.map-marker:focus {
+    /* Show halo via JS event */
+}
+
+.map-marker-halo.active {
     opacity: 1;
 }
 

@@ -84,7 +84,11 @@ class SiteBuilder {
                 }
             }
 
-            console.log('✅ resume.json is valid\n');
+            if (this.errors.length === 0) {
+                console.log('✅ resume.json is valid\n');
+            } else {
+                console.log('❌ resume.json has validation errors\n');
+            }
             return this.errors.length === 0;
 
         } catch (error) {

@@ -68,12 +68,15 @@ class CareerTimeline {
                 const y = height / 2;
                 
                 if (x <= padding + (width - 2 * padding) * progress) {
-                    const pointProgress = Math.min(1, (progress - i * 0.1) * 3);
+                    const pointProgress = Math.min(1, Math.max(0, (progress - i * 0.1) * 3));
+                    const radius = Math.max(0, 4 * pointProgress);
                     
-                    this.ctx.fillStyle = this.getColorForType(point.type);
-                    this.ctx.beginPath();
-                    this.ctx.arc(x, y, 4 * pointProgress, 0, Math.PI * 2);
-                    this.ctx.fill();
+                    if (radius > 0) {
+                        this.ctx.fillStyle = this.getColorForType(point.type);
+                        this.ctx.beginPath();
+                        this.ctx.arc(x, y, radius, 0, Math.PI * 2);
+                        this.ctx.fill();
+                    }
                     
                     // Store position for hover
                     point.x = x;
@@ -170,7 +173,9 @@ class ImpactMetrics {
             const currentValue = current.toFixed(end % 1 === 0 ? 0 : 2);
             
             // Replace the numeric part while preserving the rest of the text
-            const newText = originalText.replace(/\b0\b/, prefix + currentValue + suffix);
+            // Store original placeholder and replace it directly
+            const placeholder = element.getAttribute('data-placeholder') || originalText.match(/\b0+(?:[%$]|\b)/)?.[0] || '0';
+            const newText = originalText.replace(placeholder, prefix + currentValue + suffix);
             element.textContent = newText;
             
             if (progress < 1) {
@@ -494,7 +499,18 @@ class ReadingProgress {
 class DynamicLineLength {
     constructor() {
         this.paragraphs = document.querySelectorAll('article p');
+        this.characterWidth = this.measureCharacterWidth();
         this.init();
+    }
+
+    measureCharacterWidth() {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        ctx.font = '1.4rem et-book, serif';
+        
+        // Measure a representative character set
+        const measurement = ctx.measureText('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 .,;');
+        return measurement.width / 66; // 26*2 letters + 10 digits + 4 punctuation = 66 chars
     }
 
     init() {
@@ -507,15 +523,15 @@ class DynamicLineLength {
 
     adjustLineLength() {
         const idealCharactersPerLine = 65;
-        const fontSize = 1.4; // rem
-        const characterWidth = fontSize * 0.5; // Approximate
+        const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
         
         this.paragraphs.forEach(p => {
             const currentWidth = p.offsetWidth;
-            const charactersPerLine = currentWidth / (characterWidth * 16);
+            const charactersPerLine = currentWidth / this.characterWidth;
             
             if (charactersPerLine > 75) {
-                p.style.maxWidth = `${idealCharactersPerLine * characterWidth}rem`;
+                const maxWidth = idealCharactersPerLine * this.characterWidth;
+                p.style.maxWidth = `${maxWidth / rootFontSize}rem`;
                 p.style.transition = 'max-width 0.3s ease-out';
             } else {
                 p.style.maxWidth = '';
@@ -578,14 +594,5 @@ class BreathingWhitespace {
     }
 }
 
-// Initialize all animations
-document.addEventListener('DOMContentLoaded', () => {
-    new CareerTimeline();
-    new ImpactMetrics();
-    new NetworkGraph();
-    new MarginNoteChoreographer();
-    new ReadingProgress();
-    new DynamicLineLength();
-    new DataInkReveals();
-    new BreathingWhitespace();
-});
+// Animations are initialized by SiteGenerator.initializeAnimations()
+// after content is loaded to avoid duplicate instances

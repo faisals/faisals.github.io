@@ -2,6 +2,7 @@
 class SiteGenerator {
     constructor() {
         this.resume = null;
+        this.sidenoteCounter = 0;
         this.init();
     }
 
@@ -157,7 +158,7 @@ class SiteGenerator {
         // Calculate duration
         const startYear = new Date(job.startDate).getFullYear();
         const endYear = job.endDate ? new Date(job.endDate).getFullYear() : 'Present';
-        const duration = endYear === 'Present' ? `${startYear}–Present` : startYear;
+        const duration = endYear === 'Present' ? `${startYear}–Present` : `${startYear}–${endYear}`;
         
         // Build summary with metrics
         let summary = job.summary;
@@ -204,8 +205,9 @@ class SiteGenerator {
             patterns.forEach(pattern => {
                 result = result.replace(pattern, (match) => {
                     // For patterns like "15-engineer", preserve the full match but animate the number
-                    const displayText = match.replace(value.toString(), `${prefix}0${suffix}${unit}`);
-                    return `<span data-metric="${value}" data-prefix="${prefix}" data-suffix="${suffix}${unit}">${displayText}</span>`;
+                    const animatedValue = `${prefix}0${suffix}${unit}`;
+                    const displayText = match.replace(value.toString(), animatedValue);
+                    return `<span data-metric="${value}" data-prefix="${prefix}" data-suffix="${suffix}">${displayText}</span>`;
                 });
             });
         });
@@ -300,7 +302,7 @@ class SiteGenerator {
     }
 
     addSidenote(text, note) {
-        const id = `sn-${Math.random().toString(36).substr(2, 9)}`;
+        const id = `sn-${++this.sidenoteCounter}`;
         const noteIndex = text.indexOf('.');
         if (noteIndex === -1 || !note) return text;
         
@@ -350,6 +352,8 @@ class SiteGenerator {
         }
         
         if (animations.careerMap) {
+            // Make resume data available to CareerMap
+            window.resume = this.resume;
             const map = new CareerMap();
             // Update locations from meta
             map.locations = this.resume.meta.locations;
