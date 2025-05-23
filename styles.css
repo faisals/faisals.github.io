@@ -4,12 +4,12 @@
 /* Fonts */
 @font-face {
     font-family: et-book;
-    src: url('https://github.com/edwardtufte/et-book/raw/gh-pages/et-book/et-book-roman-line-figures/et-book-roman-line-figures.eot');
-    src: url('https://github.com/edwardtufte/et-book/raw/gh-pages/et-book/et-book-roman-line-figures/et-book-roman-line-figures.eot?#iefix') format('embedded-opentype'),
-         url('https://github.com/edwardtufte/et-book/raw/gh-pages/et-book/et-book-roman-line-figures/et-book-roman-line-figures.woff') format('woff'),
-         url('https://github.com/edwardtufte/et-book/raw/gh-pages/et-book/et-book-roman-line-figures/et-book-roman-line-figures.ttf') format('truetype');
+    src: url('https://cdn.jsdelivr.net/gh/edwardtufte/et-book@gh-pages/et-book/et-book-roman-line-figures/et-book-roman-line-figures.woff2') format('woff2'),
+         url('https://cdn.jsdelivr.net/gh/edwardtufte/et-book@gh-pages/et-book/et-book-roman-line-figures/et-book-roman-line-figures.woff') format('woff'),
+         url('https://cdn.jsdelivr.net/gh/edwardtufte/et-book@gh-pages/et-book/et-book-roman-line-figures/et-book-roman-line-figures.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
+    font-display: swap;
 }
 
 /* Reset and base styles */
