@@ -157,6 +157,8 @@ class ImpactMetrics {
 
     animateValue(element, start, end, duration, prefix, suffix) {
         const startTime = performance.now();
+        const originalText = element.textContent;
+        const targetValue = end.toString();
         
         const animate = (currentTime) => {
             const elapsed = currentTime - startTime;
@@ -165,8 +167,11 @@ class ImpactMetrics {
             // Easing function for beautiful curve
             const easeOutQuart = 1 - Math.pow(1 - progress, 4);
             const current = start + (end - start) * easeOutQuart;
+            const currentValue = current.toFixed(end % 1 === 0 ? 0 : 2);
             
-            element.textContent = prefix + current.toFixed(end % 1 === 0 ? 0 : 2) + suffix;
+            // Replace the numeric part while preserving the rest of the text
+            const newText = originalText.replace(/\b0\b/, prefix + currentValue + suffix);
+            element.textContent = newText;
             
             if (progress < 1) {
                 requestAnimationFrame(animate);

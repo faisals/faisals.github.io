@@ -15,7 +15,7 @@
 .timeline-tooltip {
     position: fixed;
     background: #fffff8;
-    border: 1px solid #ddd;
+    border: 1px solid #ccc;
     padding: 8px 12px;
     font-size: 0.9rem;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -34,18 +34,18 @@
 .network-container canvas {
     width: 100%;
     height: 100%;
-    border: 1px solid #eee;
+    border: 1px solid #ddd;
 }
 
 /* Animated Metrics */
 [data-metric] {
     font-weight: 500;
-    color: #e74c3c;
-    transition: color 0.3s ease;
+    color: #b20808;
+    transition: color 0.6s ease;
 }
 
 [data-metric]:hover {
-    color: #c0392b;
+    color: #b20808;
 }
 
 /* Reading Progress */
@@ -62,7 +62,7 @@
 /* Data Ink Effects */
 .data-ink-link {
     position: relative;
-    transition: all 0.3s ease;
+    transition: all 0.6s ease;
 }
 
 .data-ink-link::after {
@@ -72,8 +72,8 @@
     bottom: -2px;
     width: 0;
     height: 1px;
-    background: #333;
-    transition: width 0.3s ease;
+    background: #666;
+    transition: width 0.6s ease;
 }
 
 .data-ink-link:hover::after {
@@ -92,8 +92,8 @@
     transform: translateY(-50%);
     width: 0;
     height: 2px;
-    background: #e74c3c;
-    transition: width 0.3s ease;
+    background: #b20808;
+    transition: width 0.6s ease;
 }
 
 .data-ink-metric:hover::before {
@@ -102,7 +102,7 @@
 
 /* Breathing Whitespace */
 article {
-    transition: padding 0.5s ease;
+    transition: padding 0.6s ease;
 }
 
 article.reading {
@@ -125,7 +125,7 @@ article.resting {
 /* Project Deep Dives */
 .project {
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.6s ease;
     position: relative;
 }
 
@@ -152,11 +152,60 @@ article.resting {
     font-size: 2rem;
     cursor: pointer;
     color: #666;
-    transition: color 0.3s ease;
+    transition: color 0.6s ease;
 }
 
 .project-expanded .close-btn:hover {
     color: #333;
+}
+
+/* Print-style footer for project deep dives */
+.project-footer {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid #ccc;
+    text-align: right;
+}
+
+.back-to-top {
+    font-family: et-book;
+    font-style: italic;
+    font-size: 1.01rem;
+    color: #666;
+    text-decoration: none;
+    transition: color 0.6s ease;
+}
+
+.back-to-top:hover {
+    color: #b20808;
+}
+
+.back-to-top::after {
+    content: " ↑";
+    font-style: normal;
+}
+
+/* Mobile sticky footer */
+@media (max-width: 760px) {
+    .project-footer {
+        position: sticky;
+        bottom: 0;
+        background: #fffff8;
+        border-top: 1px solid #ccc;
+        border-bottom: none;
+        padding: 1rem;
+        margin-top: 2rem;
+        text-align: center;
+        z-index: 100;
+    }
+    
+    .back-to-top {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background: #f8f8f8;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
 }
 
 /* Skill Constellation */
@@ -175,28 +224,28 @@ article.resting {
     justify-content: center;
     font-size: 0.9rem;
     background: rgba(255, 255, 248, 0.9);
-    border: 2px solid #333;
+    border: 2px solid #666;
     border-radius: 50%;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.6s ease;
 }
 
 .skill-node:hover {
     transform: scale(1.1);
-    background: #333;
+    background: #666;
     color: #fffff8;
 }
 
 .skill-connection {
     position: absolute;
     height: 1px;
-    background: #ddd;
+    background: #ccc;
     transform-origin: left center;
-    transition: background 0.3s ease;
+    transition: background 0.6s ease;
 }
 
 .skill-connection.active {
-    background: #e74c3c;
+    background: #b20808;
     height: 2px;
 }
 
@@ -205,18 +254,18 @@ article.resting {
     position: relative;
     height: 500px;
     margin: 3rem 0;
-    background: #f8f8f0;
-    border: 1px solid #ddd;
+    background: #f8f8f8;
+    border: 1px solid #ccc;
 }
 
 .map-marker {
     position: absolute;
     width: 12px;
     height: 12px;
-    background: #e74c3c;
+    background: #b20808;
     border-radius: 50%;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.6s ease;
 }
 
 .map-marker:hover {
@@ -228,10 +277,10 @@ article.resting {
     font-size: 0.8rem;
     background: #fffff8;
     padding: 4px 8px;
-    border: 1px solid #ddd;
+    border: 1px solid #ccc;
     white-space: nowrap;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.6s ease;
 }
 
 .map-marker:hover + .map-label {
@@ -243,10 +292,10 @@ article.resting {
     position: absolute;
     font-family: 'Caveat', cursive;
     font-size: 1.2rem;
-    color: #e74c3c;
+    color: #b20808;
     opacity: 0;
     transform: rotate(-5deg);
-    transition: opacity 0.5s ease;
+    transition: opacity 0.6s ease;
 }
 
 .annotation.visible {
@@ -257,7 +306,7 @@ article.resting {
 .annotation-path {
     stroke-dasharray: 1000;
     stroke-dashoffset: 1000;
-    animation: draw 2s ease forwards;
+    animation: draw 0.8s ease forwards;
 }
 
 @keyframes draw {
@@ -277,13 +326,13 @@ article.resting {
 .metric-card {
     text-align: center;
     padding: 1.5rem;
-    background: #f8f8f0;
-    border: 1px solid #ddd;
+    background: #f8f8f8;
+    border: 1px solid #ccc;
 }
 
 .metric-card h3 {
     font-size: 2rem;
-    color: #e74c3c;
+    color: #b20808;
     margin-bottom: 0.5rem;
 }
 
@@ -301,7 +350,7 @@ article.resting {
 }
 
 .tech-tag {
-    background: #333;
+    background: #666;
     color: #fffff8;
     padding: 0.3rem 0.8rem;
     font-size: 0.9rem;

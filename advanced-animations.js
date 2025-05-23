@@ -54,6 +54,10 @@ class ProjectDeepDive {
             <div class="tech-stack">
                 ${projectData.technologies.map(t => `<span class="tech-tag">${t}</span>`).join('')}
             </div>
+            
+            <div class="project-footer">
+                <a href="#" class="back-to-top">Back to top</a>
+            </div>
         `;
         
         document.body.appendChild(expanded);
@@ -81,6 +85,12 @@ class ProjectDeepDive {
             setTimeout(() => {
                 expanded.remove();
             }, 300);
+        });
+        
+        // Back to top handler
+        expanded.querySelector('.back-to-top').addEventListener('click', (e) => {
+            e.preventDefault();
+            expanded.scrollTo({ top: 0, behavior: 'smooth' });
         });
     }
 

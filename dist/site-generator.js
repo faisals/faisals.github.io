@@ -196,13 +196,16 @@ class SiteGenerator {
             const patterns = [
                 new RegExp(`\\b${value}${unit}\\b`, 'g'),
                 new RegExp(`\\b${value}\\s*${unit}\\b`, 'g'),
+                new RegExp(`\\b${value}-\\w+`, 'g'), // Handle "15-engineer", "40%" etc.
                 new RegExp(`\\$${value}k?\\b`, 'g'),
                 new RegExp(`\\b${value}%\\b`, 'g')
             ];
             
             patterns.forEach(pattern => {
                 result = result.replace(pattern, (match) => {
-                    return `<span data-metric="${value}" data-prefix="${prefix}" data-suffix="${suffix}${unit}">${prefix}0${suffix}${unit}</span>`;
+                    // For patterns like "15-engineer", preserve the full match but animate the number
+                    const displayText = match.replace(value.toString(), `${prefix}0${suffix}${unit}`);
+                    return `<span data-metric="${value}" data-prefix="${prefix}" data-suffix="${suffix}${unit}">${displayText}</span>`;
                 });
             });
         });
