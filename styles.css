@@ -4,8 +4,7 @@
 /* Fonts */
 @font-face {
     font-family: et-book;
-    src: url('https://cdn.jsdelivr.net/gh/edwardtufte/et-book@gh-pages/et-book/et-book-roman-line-figures/et-book-roman-line-figures.woff2') format('woff2'),
-         url('https://cdn.jsdelivr.net/gh/edwardtufte/et-book@gh-pages/et-book/et-book-roman-line-figures/et-book-roman-line-figures.woff') format('woff'),
+    src: url('https://cdn.jsdelivr.net/gh/edwardtufte/et-book@gh-pages/et-book/et-book-roman-line-figures/et-book-roman-line-figures.woff') format('woff'),
          url('https://cdn.jsdelivr.net/gh/edwardtufte/et-book@gh-pages/et-book/et-book-roman-line-figures/et-book-roman-line-figures.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
