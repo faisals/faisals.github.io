@@ -289,6 +289,11 @@ class SiteGenerator {
             <p>${contacts.join('<br>')}</p>
         `;
         
+        // Make external links open in new tabs
+        section.querySelectorAll('a[href^="http"]').forEach(a => {
+            a.target = "_blank"; a.rel = "noopener noreferrer";
+        });
+        
         return section;
     }
 
