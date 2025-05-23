@@ -1,5 +1,39 @@
 /* Animation Styles */
 
+/* Entrance animations for content */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Apply to main sections */
+section {
+    animation: fadeInUp 0.6s ease-out;
+    animation-fill-mode: both;
+}
+
+/* Stagger animation for work items */
+.project {
+    animation: fadeInUp 0.6s ease-out;
+    animation-fill-mode: both;
+}
+
+.project:nth-child(1) { animation-delay: 0.1s; }
+.project:nth-child(2) { animation-delay: 0.2s; }
+.project:nth-child(3) { animation-delay: 0.3s; }
+.project:nth-child(4) { animation-delay: 0.4s; }
+
+/* Smooth transitions for interactive elements */
+* {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
 /* Timeline Container */
 .timeline-container {
     margin: 2rem 0;
@@ -41,11 +75,30 @@
 [data-metric] {
     font-weight: 500;
     color: #b20808;
-    transition: color 0.6s ease;
+    transition: all 0.3s ease;
+    cursor: default;
+    position: relative;
+    display: inline-block;
+}
+
+[data-metric]::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #b20808;
+    transition: width 0.3s ease;
 }
 
 [data-metric]:hover {
-    color: #b20808;
+    color: #8b0606;
+    transform: translateY(-1px);
+}
+
+[data-metric]:hover::after {
+    width: 100%;
 }
 
 /* Reading Progress */

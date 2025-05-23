@@ -99,6 +99,7 @@ class SiteGenerator {
         // Initialize animations after DOM is ready
         setTimeout(() => {
             this.initializeAnimations();
+            this.createNavigationTOC();
         }, 100);
     }
 
@@ -113,6 +114,7 @@ class SiteGenerator {
 
     createAboutSection() {
         const section = document.createElement('section');
+        section.id = 'about';
         
         // Split summary into paragraphs
         const summaryParts = this.resume.basics.summary.split('. ');
@@ -132,6 +134,7 @@ class SiteGenerator {
 
     createWorkSection() {
         const section = document.createElement('section');
+        section.id = 'experience';
         section.innerHTML = '<h2>Work</h2>';
         
         // Add description
@@ -309,31 +312,45 @@ class SiteGenerator {
 
     createSkillsSection() {
         const section = document.createElement('section');
+        section.id = 'skills';
         
-        // Build skills string
-        const allSkills = this.resume.skills
+        // Get top skills
+        const topSkills = this.resume.skills
             .flatMap(category => category.keywords)
-            .slice(0, 6)
-            .join(', ');
+            .slice(0, 12);
         
         // Build languages string
         const languages = this.resume.languages
             .map(lang => `${lang.language} (${lang.fluency})`)
             .join(', ');
         
-        // Build interests string
-        const interests = this.resume.interests
+        // Build interests as tags
+        const interestTags = this.resume.interests
             .flatMap(interest => interest.keywords)
             .slice(0, 5)
-            .join(', ');
+            .map(interest => `<span class="skill-tag">${interest}</span>`)
+            .join('');
+        
+        // Build skill tags
+        const skillTags = topSkills
+            .map(skill => `<span class="skill-tag">${skill}</span>`)
+            .join('');
         
         section.innerHTML = `
             <h2>Skills & Interests</h2>
-            <p>
-                <strong>Technical:</strong> ${this.addSidenote(allSkills, 'Full-stack expertise from system design to implementation.')}<br>
-                <strong>Languages:</strong> ${languages}<br>
-                <strong>Causes:</strong> ${interests}
-            </p>
+            <div class="skills-section">
+                <div class="skill-category">
+                    <strong>Technical Skills:</strong>
+                    <div style="margin-top: 0.5rem">${skillTags}</div>
+                </div>
+                <div class="skill-category" style="margin-top: 1.5rem">
+                    <strong>Languages:</strong> ${languages}
+                </div>
+                <div class="skill-category" style="margin-top: 1.5rem">
+                    <strong>Causes & Interests:</strong>
+                    <div style="margin-top: 0.5rem">${interestTags}</div>
+                </div>
+            </div>
         `;
         
         return section;
@@ -341,6 +358,7 @@ class SiteGenerator {
 
     createWritingSection() {
         const section = document.createElement('section');
+        section.id = 'writing';
         section.innerHTML = '<h2>Writing</h2>';
         
         const list = document.createElement('ul');
@@ -362,6 +380,7 @@ class SiteGenerator {
 
     createContactSection() {
         const section = document.createElement('section');
+        section.id = 'contact';
         const contacts = [];
         
         if (this.resume.basics.url) {
@@ -541,6 +560,62 @@ class SiteGenerator {
         
         graph.nodes = nodes;
         graph.edges = edges;
+    }
+    
+    createNavigationTOC() {
+        const container = document.createElement('nav');
+        container.className = 'toc-container';
+        
+        const sections = [
+            { id: 'about', label: 'About' },
+            { id: 'experience', label: 'Experience' },
+            { id: 'skills', label: 'Skills' },
+            { id: 'writing', label: 'Writing' },
+            { id: 'contact', label: 'Contact' }
+        ];
+        
+        sections.forEach(section => {
+            const dot = document.createElement('a');
+            dot.className = 'toc-item';
+            dot.href = `#${section.id}`;
+            dot.setAttribute('data-label', section.label);
+            dot.onclick = (e) => {
+                e.preventDefault();
+                const target = document.getElementById(section.id);
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            };
+            container.appendChild(dot);
+        });
+        
+        document.body.appendChild(container);
+        
+        // Show after a delay
+        setTimeout(() => container.classList.add('visible'), 500);
+        
+        // Update active state on scroll
+        const updateActiveSection = () => {
+            const scrollPos = window.scrollY + window.innerHeight / 2;
+            sections.forEach((section, index) => {
+                const element = document.getElementById(section.id);
+                if (element) {
+                    const rect = element.getBoundingClientRect();
+                    const top = rect.top + window.scrollY;
+                    const bottom = top + rect.height;
+                    
+                    const dot = container.children[index];
+                    if (scrollPos >= top && scrollPos <= bottom) {
+                        dot.classList.add('active');
+                    } else {
+                        dot.classList.remove('active');
+                    }
+                }
+            });
+        };
+        
+        window.addEventListener('scroll', updateActiveSection);
+        updateActiveSection(); // Initial call
     }
 }
 

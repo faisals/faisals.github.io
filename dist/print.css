@@ -1,0 +1,137 @@
+/* ATS-Friendly Print Styles */
+
+@media print {
+  /* Hide all animations and interactive elements */
+  .sparkline,
+  .metric-value,
+  .network-visualization,
+  .timeline-visualization,
+  .animated,
+  [class*="animate"],
+  .baseline-grid {
+    display: none !important;
+  }
+
+  /* Hide margin notes and sidenotes for clean layout */
+  .marginnote,
+  .sidenote,
+  .marginnote-ind,
+  .sidenote-number {
+    display: none !important;
+  }
+
+  /* Widen article to full width for maximum content */
+  article {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0.5in !important;
+  }
+
+  /* Ensure proper page breaks */
+  section {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  h1, h2, h3 {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  /* Show full URLs for links */
+  a[href]:after {
+    content: " (" attr(href) ")";
+    font-size: 0.9em;
+    color: #666;
+  }
+
+  /* Hide email/phone links URLs to avoid redundancy */
+  a[href^="mailto:"]:after,
+  a[href^="tel:"]:after {
+    display: none;
+  }
+
+  /* Optimize typography for readability */
+  body {
+    font-size: 11pt !important;
+    line-height: 1.4 !important;
+    color: #000 !important;
+    background: white !important;
+  }
+
+  h1 {
+    font-size: 16pt !important;
+    margin-bottom: 0.3in !important;
+  }
+
+  h2 {
+    font-size: 14pt !important;
+    margin-top: 0.2in !important;
+    margin-bottom: 0.1in !important;
+  }
+
+  h3 {
+    font-size: 12pt !important;
+    margin-top: 0.15in !important;
+    margin-bottom: 0.05in !important;
+  }
+
+  /* Ensure proper spacing for work experience */
+  .work-entry {
+    margin-bottom: 0.15in !important;
+  }
+
+  /* Remove unnecessary decorative elements */
+  .epigraph,
+  .baseline-grid-toggle,
+  [data-animate] {
+    display: none !important;
+  }
+
+  /* Optimize lists for ATS parsing */
+  ul, ol {
+    margin: 0.1in 0 !important;
+    padding-left: 0.2in !important;
+  }
+
+  li {
+    margin-bottom: 0.05in !important;
+  }
+
+  /* Ensure contact info is prominent */
+  .contact-info {
+    font-weight: bold !important;
+    margin-bottom: 0.2in !important;
+  }
+
+  /* Hide any JavaScript-generated content that might interfere */
+  .js-only,
+  .no-print {
+    display: none !important;
+  }
+
+  /* Force black text for all elements */
+  * {
+    color: #000 !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Remove borders and backgrounds that might not print well */
+  * {
+    border: none !important;
+    background: transparent !important;
+  }
+
+  /* Ensure tables format properly */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+
+  td, th {
+    padding: 0.05in 0.1in !important;
+    text-align: left !important;
+  }
+}

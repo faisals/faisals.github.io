@@ -99,6 +99,7 @@ class SiteGenerator {
         // Initialize animations after DOM is ready
         setTimeout(() => {
             this.initializeAnimations();
+            this.createNavigationTOC();
         }, 100);
     }
 
@@ -113,6 +114,7 @@ class SiteGenerator {
 
     createAboutSection() {
         const section = document.createElement('section');
+        section.id = 'about';
         
         // Split summary into paragraphs
         const summaryParts = this.resume.basics.summary.split('. ');
@@ -132,6 +134,7 @@ class SiteGenerator {
 
     createWorkSection() {
         const section = document.createElement('section');
+        section.id = 'experience';
         section.innerHTML = '<h2>Work</h2>';
         
         // Add description
@@ -185,80 +188,6 @@ class SiteGenerator {
         return div;
     }
 
-    injectMetrics(text, metrics) {
-        // Replace numbers in text with animated metrics
-        let result = text;
-        
-        // Skip if text already has metric spans (prevent double-processing)
-        if (result.includes('data-metric=') || result.includes('metric-injected')) {
-            return result;
-        }
-        
-        // Sort metrics by value descending to handle larger numbers first (prevents conflicts)
-        const sortedMetrics = Object.entries(metrics).sort(([,a], [,b]) => b.value - a.value);
-        
-        sortedMetrics.forEach(([key, metric]) => {
-            const value = metric.value;
-            const unit = metric.unit || '';
-            const prefix = metric.prefix || '';
-            const suffix = metric.suffix || '';
-            
-            // Skip if value is not a valid number
-            if (typeof value !== 'number' || isNaN(value)) {
-                console.warn(`Invalid metric value for ${key}:`, value, typeof value);
-                return;
-            }
-            
-            // Helper: strip any char that isn't a digit or decimal point
-            const clean = v => String(v).replace(/[^\d.]/g, '');
-            
-            // Create specific patterns to avoid conflicts
-            let patterns = [];
-            
-            // Handle different unit types with specific patterns
-            if (unit === '%') {
-                patterns.push(new RegExp(`\\b${value}%`, 'g'));
-                patterns.push(new RegExp(`\\b${value}\\s*%`, 'g'));
-            } else if (unit === 'x') {
-                patterns.push(new RegExp(`\\b${value}×`, 'g'));
-                patterns.push(new RegExp(`\\b${value}\\s*×`, 'g'));
-            } else if (unit === 'min') {
-                patterns.push(new RegExp(`\\b${value}\\s*min`, 'g'));
-            } else if (suffix === '+') {
-                // Handle "10,000+" or "10 000+"
-                const formattedValue = value.toLocaleString().replace(/,/g, ' ');
-                patterns.push(new RegExp(`\\b${formattedValue}\\+`, 'g'));
-                patterns.push(new RegExp(`\\b${value}\\+`, 'g'));
-            } else {
-                // Default patterns for numbers like "15-engineer"
-                patterns.push(new RegExp(`\\b${value}-\\w+`, 'g'));
-                patterns.push(new RegExp(`\\b${value}\\b`, 'g'));
-            }
-            
-            patterns.forEach(pattern => {
-                // Create a unique marker to track what we've processed
-                const processedMarker = `__PROCESSED_${key}__`;
-                
-                // Only replace if not already processed
-                result = result.replace(pattern, (match, offset, string) => {
-                    // Skip if this specific metric was already processed
-                    if (string.includes(processedMarker)) {
-                        return match;
-                    }
-                    
-                    // For patterns like "15-engineer", preserve the full match but animate the number
-                    const animatedValue = `${prefix}0${suffix}${unit}`;
-                    const displayText = match.replace(value.toString(), animatedValue);
-                    return `<span data-metric="${clean(value)}" data-prefix="${prefix}" data-suffix="${suffix}" data-placeholder="${animatedValue}" metric-injected="true">${displayText}</span>${processedMarker}`;
-                });
-                
-                // Remove the marker after processing
-                result = result.replace(new RegExp(processedMarker, 'g'), '');
-            });
-        });
-        
-        return result;
-    }
 
     injectMetricsDOM(element, metrics) {
         // Safer DOM-based metric injection that can't create nested spans
@@ -297,8 +226,10 @@ class SiteGenerator {
             } else if (unit === 'min') {
                 patterns.push(new RegExp(`\\b${value}\\s*min`, 'g'));
             } else if (suffix === '+') {
+                // Handle both comma and space formatted numbers
                 const formattedValue = value.toLocaleString().replace(/,/g, ' ');
-                patterns.push(new RegExp(`\\b${formattedValue}\\+`, 'g'));
+                patterns.push(new RegExp(`\\b${formattedValue}\\+`, 'g')); // "10 000+"
+                patterns.push(new RegExp(`\\b${value.toLocaleString()}\\+`, 'g')); // "10,000+"
             } else if (key === 'teamSize') {
                 // For team size, just match the number without suffix to avoid "0-engineer"
                 patterns.push(new RegExp(`\\b${value}(?=-engineer)`, 'g'));
@@ -381,31 +312,45 @@ class SiteGenerator {
 
     createSkillsSection() {
         const section = document.createElement('section');
+        section.id = 'skills';
         
-        // Build skills string
-        const allSkills = this.resume.skills
+        // Get top skills
+        const topSkills = this.resume.skills
             .flatMap(category => category.keywords)
-            .slice(0, 6)
-            .join(', ');
+            .slice(0, 12);
         
         // Build languages string
         const languages = this.resume.languages
             .map(lang => `${lang.language} (${lang.fluency})`)
             .join(', ');
         
-        // Build interests string
-        const interests = this.resume.interests
+        // Build interests as tags
+        const interestTags = this.resume.interests
             .flatMap(interest => interest.keywords)
             .slice(0, 5)
-            .join(', ');
+            .map(interest => `<span class="skill-tag">${interest}</span>`)
+            .join('');
+        
+        // Build skill tags
+        const skillTags = topSkills
+            .map(skill => `<span class="skill-tag">${skill}</span>`)
+            .join('');
         
         section.innerHTML = `
             <h2>Skills & Interests</h2>
-            <p>
-                <strong>Technical:</strong> ${this.addSidenote(allSkills, 'Full-stack expertise from system design to implementation.')}<br>
-                <strong>Languages:</strong> ${languages}<br>
-                <strong>Causes:</strong> ${interests}
-            </p>
+            <div class="skills-section">
+                <div class="skill-category">
+                    <strong>Technical Skills:</strong>
+                    <div style="margin-top: 0.5rem">${skillTags}</div>
+                </div>
+                <div class="skill-category" style="margin-top: 1.5rem">
+                    <strong>Languages:</strong> ${languages}
+                </div>
+                <div class="skill-category" style="margin-top: 1.5rem">
+                    <strong>Causes & Interests:</strong>
+                    <div style="margin-top: 0.5rem">${interestTags}</div>
+                </div>
+            </div>
         `;
         
         return section;
@@ -413,6 +358,7 @@ class SiteGenerator {
 
     createWritingSection() {
         const section = document.createElement('section');
+        section.id = 'writing';
         section.innerHTML = '<h2>Writing</h2>';
         
         const list = document.createElement('ul');
@@ -434,6 +380,7 @@ class SiteGenerator {
 
     createContactSection() {
         const section = document.createElement('section');
+        section.id = 'contact';
         const contacts = [];
         
         if (this.resume.basics.url) {
@@ -613,6 +560,62 @@ class SiteGenerator {
         
         graph.nodes = nodes;
         graph.edges = edges;
+    }
+    
+    createNavigationTOC() {
+        const container = document.createElement('nav');
+        container.className = 'toc-container';
+        
+        const sections = [
+            { id: 'about', label: 'About' },
+            { id: 'experience', label: 'Experience' },
+            { id: 'skills', label: 'Skills' },
+            { id: 'writing', label: 'Writing' },
+            { id: 'contact', label: 'Contact' }
+        ];
+        
+        sections.forEach(section => {
+            const dot = document.createElement('a');
+            dot.className = 'toc-item';
+            dot.href = `#${section.id}`;
+            dot.setAttribute('data-label', section.label);
+            dot.onclick = (e) => {
+                e.preventDefault();
+                const target = document.getElementById(section.id);
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            };
+            container.appendChild(dot);
+        });
+        
+        document.body.appendChild(container);
+        
+        // Show after a delay
+        setTimeout(() => container.classList.add('visible'), 500);
+        
+        // Update active state on scroll
+        const updateActiveSection = () => {
+            const scrollPos = window.scrollY + window.innerHeight / 2;
+            sections.forEach((section, index) => {
+                const element = document.getElementById(section.id);
+                if (element) {
+                    const rect = element.getBoundingClientRect();
+                    const top = rect.top + window.scrollY;
+                    const bottom = top + rect.height;
+                    
+                    const dot = container.children[index];
+                    if (scrollPos >= top && scrollPos <= bottom) {
+                        dot.classList.add('active');
+                    } else {
+                        dot.classList.remove('active');
+                    }
+                }
+            });
+        };
+        
+        window.addEventListener('scroll', updateActiveSection);
+        updateActiveSection(); // Initial call
     }
 }
 
