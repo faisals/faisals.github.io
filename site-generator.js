@@ -187,6 +187,11 @@ class SiteGenerator {
         // Replace numbers in text with animated metrics
         let result = text;
         
+        // Skip if text already has data-metric spans (prevent double-processing)
+        if (result.includes('data-metric=')) {
+            return result;
+        }
+        
         // Sort metrics by value descending to handle larger numbers first (prevents conflicts)
         const sortedMetrics = Object.entries(metrics).sort(([,a], [,b]) => b.value - a.value);
         
@@ -229,23 +234,24 @@ class SiteGenerator {
             }
             
             patterns.forEach(pattern => {
-                // Only replace if not already wrapped in a span
+                // Create a unique marker to track what we've processed
+                const processedMarker = `__PROCESSED_${key}__`;
+                
+                // Only replace if not already processed
                 result = result.replace(pattern, (match, offset, string) => {
-                    // Check if this match is already inside a span
-                    const before = string.substring(0, offset);
-                    const openSpans = (before.match(/<span[^>]*>/g) || []).length;
-                    const closeSpans = (before.match(/<\/span>/g) || []).length;
-                    
-                    if (openSpans > closeSpans) {
-                        // We're inside a span, don't replace
+                    // Skip if this specific metric was already processed
+                    if (string.includes(processedMarker)) {
                         return match;
                     }
                     
                     // For patterns like "15-engineer", preserve the full match but animate the number
                     const animatedValue = `${prefix}0${suffix}${unit}`;
                     const displayText = match.replace(value.toString(), animatedValue);
-                    return `<span data-metric="${clean(value)}" data-prefix="${prefix}" data-suffix="${suffix}" data-placeholder="${animatedValue}">${displayText}</span>`;
+                    return `<span data-metric="${clean(value)}" data-prefix="${prefix}" data-suffix="${suffix}" data-placeholder="${animatedValue}">${displayText}</span>${processedMarker}`;
                 });
+                
+                // Remove the marker after processing
+                result = result.replace(new RegExp(processedMarker, 'g'), '');
             });
         });
         
