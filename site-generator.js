@@ -166,12 +166,11 @@ class SiteGenerator {
             <p class="project-summary">${job.summary}</p>
         `;
         
-        // Inject metrics after DOM creation to prevent conflicts
+        // Inject metrics manually using DOM manipulation to prevent HTML parsing conflicts
         if (job.metrics) {
             const summaryElement = div.querySelector('.project-summary');
             if (summaryElement) {
-                const processedSummary = this.injectMetrics(summaryElement.innerHTML, job.metrics);
-                summaryElement.innerHTML = processedSummary;
+                this.injectMetricsDOM(summaryElement, job.metrics);
             }
         }
         
@@ -259,6 +258,79 @@ class SiteGenerator {
         });
         
         return result;
+    }
+
+    injectMetricsDOM(element, metrics) {
+        // Safer DOM-based metric injection that can't create nested spans
+        const text = element.textContent;
+        
+        // Check if already processed
+        if (element.querySelector('[data-metric]')) {
+            return;
+        }
+        
+        // Sort metrics by value descending
+        const sortedMetrics = Object.entries(metrics).sort(([,a], [,b]) => b.value - a.value);
+        
+        // Create text nodes and spans manually
+        let currentText = text;
+        const fragments = [];
+        
+        sortedMetrics.forEach(([key, metric]) => {
+            const value = metric.value;
+            const unit = metric.unit || '';
+            const prefix = metric.prefix || '';
+            const suffix = metric.suffix || '';
+            
+            if (typeof value !== 'number' || isNaN(value)) {
+                return;
+            }
+            
+            const clean = v => String(v).replace(/[^\d.]/g, '');
+            
+            // Find the pattern in text
+            let pattern;
+            if (unit === '%') {
+                pattern = new RegExp(`\\b${value}%`, 'g');
+            } else if (unit === 'x') {
+                pattern = new RegExp(`\\b${value}×`, 'g');
+            } else if (suffix === '+') {
+                const formattedValue = value.toLocaleString().replace(/,/g, ' ');
+                pattern = new RegExp(`\\b${formattedValue}\\+`, 'g');
+            } else {
+                pattern = new RegExp(`\\b${value}-\\w+`, 'g');
+            }
+            
+            if (pattern && pattern.test(currentText)) {
+                const match = currentText.match(pattern);
+                if (match) {
+                    const matchText = match[0];
+                    const parts = currentText.split(matchText);
+                    
+                    if (parts.length === 2) {
+                        // Create the span element
+                        const span = document.createElement('span');
+                        span.setAttribute('data-metric', clean(value));
+                        span.setAttribute('data-prefix', prefix);
+                        span.setAttribute('data-suffix', suffix);
+                        span.setAttribute('data-placeholder', `${prefix}0${suffix}${unit}`);
+                        span.setAttribute('metric-injected', 'true');
+                        
+                        const animatedValue = `${prefix}0${suffix}${unit}`;
+                        const displayText = matchText.replace(value.toString(), animatedValue);
+                        span.textContent = displayText;
+                        
+                        // Clear element and rebuild with text nodes and span
+                        element.innerHTML = '';
+                        if (parts[0]) element.appendChild(document.createTextNode(parts[0]));
+                        element.appendChild(span);
+                        if (parts[1]) element.appendChild(document.createTextNode(parts[1]));
+                        
+                        return; // Only process one metric per element
+                    }
+                }
+            }
+        });
     }
 
     createSkillsSection() {
