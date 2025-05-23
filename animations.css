@@ -105,6 +105,8 @@ article {
     transition: padding 0.6s ease;
 }
 
+/* Disabled to maintain consistent content width */
+/*
 article.reading {
     padding-left: 12.5%;
     padding-right: 12.5%;
@@ -114,6 +116,7 @@ article.resting {
     padding-left: 15%;
     padding-right: 15%;
 }
+*/
 
 /* Margin Note Choreography */
 .sidenote,
@@ -416,9 +419,12 @@ article.resting {
         display: none;
     }
     
+    /* Disabled to maintain consistent content width */
+    /*
     article.reading,
     article.resting {
         padding-left: 8%;
         padding-right: 8%;
     }
+    */
 }
