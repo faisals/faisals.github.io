@@ -262,7 +262,7 @@ class SiteGenerator {
 
     injectMetricsDOM(element, metrics) {
         // Safer DOM-based metric injection that can't create nested spans
-        const text = element.textContent;
+        let currentText = element.textContent;
         
         // Check if already processed
         if (element.querySelector('[data-metric]')) {
@@ -272,9 +272,9 @@ class SiteGenerator {
         // Sort metrics by value descending
         const sortedMetrics = Object.entries(metrics).sort(([,a], [,b]) => b.value - a.value);
         
-        // Create text nodes and spans manually
-        let currentText = text;
-        const fragments = [];
+        // Track processed positions to avoid overlaps
+        const processedRanges = [];
+        const spansToCreate = [];
         
         sortedMetrics.forEach(([key, metric]) => {
             const value = metric.value;
@@ -288,49 +288,95 @@ class SiteGenerator {
             
             const clean = v => String(v).replace(/[^\d.]/g, '');
             
-            // Find the pattern in text
-            let pattern;
+            // Find patterns in text - be more specific for different types
+            let patterns = [];
             if (unit === '%') {
-                pattern = new RegExp(`\\b${value}%`, 'g');
+                patterns.push(new RegExp(`\\b${value}%`, 'g'));
             } else if (unit === 'x') {
-                pattern = new RegExp(`\\b${value}×`, 'g');
+                patterns.push(new RegExp(`\\b${value}×`, 'g'));
+            } else if (unit === 'min') {
+                patterns.push(new RegExp(`\\b${value}\\s*min`, 'g'));
             } else if (suffix === '+') {
                 const formattedValue = value.toLocaleString().replace(/,/g, ' ');
-                pattern = new RegExp(`\\b${formattedValue}\\+`, 'g');
+                patterns.push(new RegExp(`\\b${formattedValue}\\+`, 'g'));
+            } else if (key === 'teamSize') {
+                // For team size, just match the number without suffix to avoid "0-engineer"
+                patterns.push(new RegExp(`\\b${value}(?=-engineer)`, 'g'));
+            } else if (key === 'statesServed') {
+                // For states, match the number before "U.S. states"
+                patterns.push(new RegExp(`\\b${value}(?=\\s+U\\.S\\. states)`, 'g'));
             } else {
-                pattern = new RegExp(`\\b${value}-\\w+`, 'g');
+                // Default patterns
+                patterns.push(new RegExp(`\\b${value}`, 'g'));
             }
             
-            if (pattern && pattern.test(currentText)) {
-                const match = currentText.match(pattern);
-                if (match) {
-                    const matchText = match[0];
-                    const parts = currentText.split(matchText);
+            patterns.forEach(pattern => {
+                let match;
+                while ((match = pattern.exec(currentText)) !== null) {
+                    const start = match.index;
+                    const end = start + match[0].length;
                     
-                    if (parts.length === 2) {
-                        // Create the span element
-                        const span = document.createElement('span');
-                        span.setAttribute('data-metric', clean(value));
-                        span.setAttribute('data-prefix', prefix);
-                        span.setAttribute('data-suffix', suffix);
-                        span.setAttribute('data-placeholder', `${prefix}0${suffix}${unit}`);
-                        span.setAttribute('metric-injected', 'true');
-                        
-                        const animatedValue = `${prefix}0${suffix}${unit}`;
-                        const displayText = matchText.replace(value.toString(), animatedValue);
-                        span.textContent = displayText;
-                        
-                        // Clear element and rebuild with text nodes and span
-                        element.innerHTML = '';
-                        if (parts[0]) element.appendChild(document.createTextNode(parts[0]));
-                        element.appendChild(span);
-                        if (parts[1]) element.appendChild(document.createTextNode(parts[1]));
-                        
-                        return; // Only process one metric per element
+                    // Check if this overlaps with any processed range
+                    const overlaps = processedRanges.some(range => 
+                        (start >= range.start && start < range.end) || 
+                        (end > range.start && end <= range.end)
+                    );
+                    
+                    if (!overlaps) {
+                        spansToCreate.push({
+                            start,
+                            end,
+                            text: match[0],
+                            metric: clean(value),
+                            prefix,
+                            suffix,
+                            unit,
+                            placeholder: `${prefix}0${suffix}${unit}`
+                        });
+                        processedRanges.push({ start, end });
                     }
                 }
-            }
+                pattern.lastIndex = 0; // Reset regex
+            });
         });
+        
+        // If we found spans to create, rebuild the element
+        if (spansToCreate.length > 0) {
+            // Sort by start position descending so we can replace from end to start
+            spansToCreate.sort((a, b) => b.start - a.start);
+            
+            element.innerHTML = '';
+            let lastEnd = currentText.length;
+            const fragments = [];
+            
+            // Build fragments from end to start
+            spansToCreate.forEach(spanData => {
+                // Add text after this span
+                if (lastEnd > spanData.end) {
+                    fragments.unshift(document.createTextNode(currentText.slice(spanData.end, lastEnd)));
+                }
+                
+                // Create span
+                const span = document.createElement('span');
+                span.setAttribute('data-metric', spanData.metric);
+                span.setAttribute('data-prefix', spanData.prefix);
+                span.setAttribute('data-suffix', spanData.suffix);
+                span.setAttribute('data-placeholder', spanData.placeholder);
+                span.setAttribute('metric-injected', 'true');
+                span.textContent = spanData.placeholder;
+                fragments.unshift(span);
+                
+                lastEnd = spanData.start;
+            });
+            
+            // Add remaining text at the beginning
+            if (lastEnd > 0) {
+                fragments.unshift(document.createTextNode(currentText.slice(0, lastEnd)));
+            }
+            
+            // Append all fragments
+            fragments.forEach(fragment => element.appendChild(fragment));
+        }
     }
 
     createSkillsSection() {
