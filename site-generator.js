@@ -19,7 +19,24 @@ class SiteGenerator {
         document.title = `${this.resume.basics.name} - ${this.resume.basics.label}`;
         
         const article = document.querySelector('article');
+        
+        // Fade out skeleton before replacing content
+        const skeletonDiv = article.querySelector('.skeleton-loading');
+        if (skeletonDiv) {
+            skeletonDiv.style.transition = 'opacity 0.3s ease';
+            skeletonDiv.style.opacity = '0';
+            
+            setTimeout(() => {
+                this.replaceSkeleton(article);
+            }, 300);
+        } else {
+            this.replaceSkeleton(article);
+        }
+    }
+    
+    replaceSkeleton(article) {
         article.innerHTML = '';
+        article.style.opacity = '0';
         
         // Header
         article.appendChild(this.createHeader());
@@ -57,6 +74,12 @@ class SiteGenerator {
         
         // Footer
         article.appendChild(this.createFooter());
+        
+        // Fade in the content
+        article.style.transition = 'opacity 0.5s ease';
+        requestAnimationFrame(() => {
+            article.style.opacity = '1';
+        });
         
         // Initialize animations after DOM is ready
         setTimeout(() => {

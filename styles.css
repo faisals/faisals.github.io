@@ -35,6 +35,79 @@ body {
     counter-reset: sidenote-counter;
 }
 
+/* Skeleton Loading */
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s infinite;
+    border-radius: 3px;
+    margin-bottom: 0.5rem;
+}
+
+@keyframes skeleton-shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+.skeleton-header {
+    height: 3.2rem;
+    width: 60%;
+    margin-top: 4rem;
+    margin-bottom: 1.5rem;
+}
+
+.skeleton-subheader {
+    height: 1.4rem;
+    width: 40%;
+    margin-bottom: 1rem;
+}
+
+.skeleton-text {
+    height: 1.2rem;
+    margin-bottom: 0.8rem;
+}
+
+.skeleton-text.short {
+    width: 75%;
+}
+
+.skeleton-text.medium {
+    width: 85%;
+}
+
+.skeleton-text.long {
+    width: 95%;
+}
+
+.skeleton-h2 {
+    height: 1.6rem;
+    width: 30%;
+    margin-top: 2.1rem;
+    margin-bottom: 1.4rem;
+}
+
+.skeleton-project {
+    margin-bottom: 2rem;
+}
+
+.skeleton-project-title {
+    height: 1.3rem;
+    width: 50%;
+    margin-bottom: 0.5rem;
+}
+
+.skeleton-project-meta {
+    height: 1rem;
+    width: 35%;
+    margin-bottom: 0.8rem;
+}
+
+.skeleton-chart {
+    height: 200px;
+    width: 100%;
+    margin: 1rem 0;
+}
+
 /* Typography */
 h1 {
     font-weight: 400;
