@@ -43,9 +43,16 @@ class SiteGenerator {
         
         // Timeline
         if (this.resume.meta.animations.sparklineTimeline) {
+            const figure = document.createElement('figure');
             const timelineContainer = document.createElement('div');
             timelineContainer.className = 'timeline-container';
-            article.appendChild(timelineContainer);
+            
+            const caption = document.createElement('figcaption');
+            caption.textContent = 'Career trajectory showing key milestones from humanitarian work to technical leadership';
+            
+            figure.appendChild(timelineContainer);
+            figure.appendChild(caption);
+            article.appendChild(figure);
         }
         
         // About Section
@@ -56,9 +63,16 @@ class SiteGenerator {
         
         // Network Graph
         if (this.resume.meta.animations.networkGraph) {
+            const figure = document.createElement('figure');
             const networkContainer = document.createElement('div');
             networkContainer.className = 'network-container';
-            article.appendChild(networkContainer);
+            
+            const caption = document.createElement('figcaption');
+            caption.textContent = 'Professional network visualization mapping connections across technology and leadership domains';
+            
+            figure.appendChild(networkContainer);
+            figure.appendChild(caption);
+            article.appendChild(figure);
         }
         
         // Skills Section

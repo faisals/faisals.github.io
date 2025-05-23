@@ -157,6 +157,7 @@ class SiteBuilder {
                 'animations.css',
                 'animations.js',
                 'advanced-animations.js',
+                'baseline-grid.js',
                 'site-generator.js',
                 '.nojekyll'
             ];

@@ -32,17 +32,23 @@ class ProjectDeepDive {
             <p>${description}</p>
             
             <h2>Impact Over Time</h2>
-            <canvas id="impact-chart" width="800" height="300"></canvas>
+            <figure>
+                <canvas id="impact-chart" width="800" height="300"></canvas>
+                <figcaption>Project impact trajectory showing growth patterns and achievement milestones</figcaption>
+            </figure>
             
             <h2>Key Metrics</h2>
-            <div class="metrics-grid">
-                ${projectData.metrics.map(m => `
-                    <div class="metric-card">
-                        <h3>${m.value}</h3>
-                        <p>${m.label}</p>
-                    </div>
-                `).join('')}
-            </div>
+            <figure>
+                <div class="metrics-grid">
+                    ${projectData.metrics.map(m => `
+                        <div class="metric-card">
+                            <h3>${m.value}</h3>
+                            <p>${m.label}</p>
+                        </div>
+                    `).join('')}
+                </div>
+                <figcaption>Quantitative outcomes demonstrating measurable project impact and success criteria</figcaption>
+            </figure>
             
             <h2>Technical Stack</h2>
             <div class="tech-stack">
@@ -237,7 +243,14 @@ class SkillConstellation {
         });
         if (!skillSection) return;
         
-        skillSection.appendChild(this.container);
+        // Create figure wrapper
+        const figure = document.createElement('figure');
+        const caption = document.createElement('figcaption');
+        caption.textContent = 'Interactive skill constellation mapping technical expertise and interconnected competencies';
+        
+        figure.appendChild(this.container);
+        figure.appendChild(caption);
+        skillSection.appendChild(figure);
         this.createConstellation();
     }
 
@@ -341,7 +354,14 @@ class CareerMap {
         });
         if (!aboutSection) return;
         
-        aboutSection.appendChild(this.container);
+        // Create figure wrapper
+        const figure = document.createElement('figure');
+        const caption = document.createElement('figcaption');
+        caption.textContent = 'Geographic journey visualization tracing career progression across continents and cultures';
+        
+        figure.appendChild(this.container);
+        figure.appendChild(caption);
+        aboutSection.appendChild(figure);
         this.createMap();
         this.animateJourney();
     }
