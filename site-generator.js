@@ -297,8 +297,10 @@ class SiteGenerator {
             } else if (unit === 'min') {
                 patterns.push(new RegExp(`\\b${value}\\s*min`, 'g'));
             } else if (suffix === '+') {
+                // Handle both comma and space formatted numbers
                 const formattedValue = value.toLocaleString().replace(/,/g, ' ');
-                patterns.push(new RegExp(`\\b${formattedValue}\\+`, 'g'));
+                patterns.push(new RegExp(`\\b${formattedValue}\\+`, 'g')); // "10 000+"
+                patterns.push(new RegExp(`\\b${value.toLocaleString()}\\+`, 'g')); // "10,000+"
             } else if (key === 'teamSize') {
                 // For team size, just match the number without suffix to avoid "0-engineer"
                 patterns.push(new RegExp(`\\b${value}(?=-engineer)`, 'g'));
