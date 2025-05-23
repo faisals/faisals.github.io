@@ -231,7 +231,10 @@ class SkillConstellation {
     }
 
     init() {
-        const skillSection = document.querySelector('section:has(h2:contains("Skills"))');
+        const skillSection = Array.from(document.querySelectorAll('section')).find(section => {
+            const h2 = section.querySelector('h2');
+            return h2 && h2.textContent.includes('Skills');
+        });
         if (!skillSection) return;
         
         skillSection.appendChild(this.container);
@@ -332,7 +335,10 @@ class CareerMap {
     }
 
     init() {
-        const aboutSection = document.querySelector('section:has(h2:contains("About"))');
+        const aboutSection = Array.from(document.querySelectorAll('section')).find(section => {
+            const h2 = section.querySelector('h2');
+            return h2 && h2.textContent.includes('About');
+        });
         if (!aboutSection) return;
         
         aboutSection.appendChild(this.container);
