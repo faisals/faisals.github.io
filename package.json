@@ -18,7 +18,6 @@
   "author": "Faisal Sajjad",
   "license": "MIT",
   "devDependencies": {
-    "http-server": "^14.1.1",
-    "puppeteer": "^22.0.0"
+    "http-server": "^14.1.1"
   }
 }

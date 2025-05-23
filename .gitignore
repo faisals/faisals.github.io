@@ -31,8 +31,8 @@ npm-debug.log*
 *.temp
 .cache/
 
-# Generated PDFs (if you want to generate them fresh each time)
-# resume.pdf
+# PDF files (no longer auto-generated)
+resume.pdf
 
 # Environment variables
 .env

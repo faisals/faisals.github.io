@@ -7,7 +7,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const puppeteer = require('puppeteer');
+// PDF generation removed - no longer needed
 
 class SiteBuilder {
     constructor() {
@@ -15,7 +15,7 @@ class SiteBuilder {
         this.warnings = [];
     }
 
-    async build() {
+    build() {
         console.log('🔨 Building Tufte Personal Site...\n');
 
         // Validate resume.json
@@ -29,9 +29,6 @@ class SiteBuilder {
 
         // Minify CSS (simple version)
         this.minifyCSS();
-
-        // Generate PDF resume
-        await this.generatePDF();
 
         // Create dist folder
         this.createDistFolder();
@@ -177,70 +174,6 @@ class SiteBuilder {
         }
     }
 
-    async generatePDF() {
-        console.log('📄 Generating PDF resume...');
-        
-        try {
-            // Start a local server for PDF generation
-            const { spawn } = require('child_process');
-            const server = spawn('npx', ['http-server', '-p', '8081', '-c-1'], {
-                stdio: 'pipe'
-            });
-            
-            // Wait for server to start
-            await new Promise(resolve => setTimeout(resolve, 3000));
-            
-            const browser = await puppeteer.launch({
-                headless: 'new',
-                args: ['--no-sandbox', '--disable-setuid-sandbox']
-            });
-            
-            const page = await browser.newPage();
-            
-            // Load from local server
-            await page.goto('http://localhost:8081/index.html', { 
-                waitUntil: 'networkidle2',
-                timeout: 30000 
-            });
-            
-            // Wait for content to load and skeleton to be replaced
-            await page.waitForSelector('article', { timeout: 10000 });
-            
-            // Wait for skeleton loading to disappear (content has loaded)
-            await page.waitForFunction(
-                () => !document.querySelector('.skeleton-loading'),
-                { timeout: 15000 }
-            );
-            
-            // Wait for any final rendering
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            
-            // Generate PDF with ATS-friendly settings
-            await page.pdf({
-                path: 'resume.pdf',
-                format: 'Letter',
-                printBackground: true,
-                margin: {
-                    top: '0.5in',
-                    bottom: '0.5in',
-                    left: '0.5in',
-                    right: '0.5in'
-                },
-                preferCSSPageSize: false
-            });
-            
-            await browser.close();
-            
-            // Stop the server
-            server.kill();
-            
-            console.log('✅ Generated resume.pdf\n');
-            
-        } catch (error) {
-            this.warnings.push(`PDF generation warning: ${error.message}`);
-            console.log(`⚠️  PDF generation failed: ${error.message}\n`);
-        }
-    }
 
     createDistFolder() {
         console.log('📦 Creating distribution folder...');
@@ -255,7 +188,6 @@ class SiteBuilder {
             const files = [
                 'index.html',
                 'resume.json',
-                'resume.pdf',            // Include PDF
                 'print.css',             // Include print styles
                 'styles.min.css',        // Copy minified version
                 'animations.min.css',    // Copy minified version
@@ -310,7 +242,9 @@ class SiteBuilder {
 
 // Run the builder
 const builder = new SiteBuilder();
-builder.build().catch(error => {
+try {
+    builder.build();
+} catch (error) {
     console.error('Build failed:', error.message);
     process.exit(1);
-});
+}
