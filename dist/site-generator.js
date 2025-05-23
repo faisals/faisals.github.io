@@ -187,23 +187,57 @@ class SiteGenerator {
         // Replace numbers in text with animated metrics
         let result = text;
         
-        Object.entries(metrics).forEach(([key, metric]) => {
+        // Sort metrics by value descending to handle larger numbers first (prevents conflicts)
+        const sortedMetrics = Object.entries(metrics).sort(([,a], [,b]) => b.value - a.value);
+        
+        sortedMetrics.forEach(([key, metric]) => {
             const value = metric.value;
             const unit = metric.unit || '';
             const prefix = metric.prefix || '';
             const suffix = metric.suffix || '';
             
-            // Look for the value in the text
-            const patterns = [
-                new RegExp(`\\b${value}${unit}\\b`, 'g'),
-                new RegExp(`\\b${value}\\s*${unit}\\b`, 'g'),
-                new RegExp(`\\b${value}-\\w+`, 'g'), // Handle "15-engineer", "40%" etc.
-                new RegExp(`\\$${value}k?\\b`, 'g'),
-                new RegExp(`\\b${value}%\\b`, 'g')
-            ];
+            // Skip if value is not a valid number
+            if (typeof value !== 'number' || isNaN(value)) {
+                console.warn(`Invalid metric value for ${key}:`, value, typeof value);
+                return;
+            }
+            
+            // Create specific patterns to avoid conflicts
+            let patterns = [];
+            
+            // Handle different unit types with specific patterns
+            if (unit === '%') {
+                patterns.push(new RegExp(`\\b${value}%`, 'g'));
+                patterns.push(new RegExp(`\\b${value}\\s*%`, 'g'));
+            } else if (unit === '×') {
+                patterns.push(new RegExp(`\\b${value}×`, 'g'));
+                patterns.push(new RegExp(`\\b${value}\\s*×`, 'g'));
+            } else if (unit === 'min') {
+                patterns.push(new RegExp(`\\b${value}\\s*min`, 'g'));
+            } else if (suffix === '+') {
+                // Handle "10,000+" or "10 000+"
+                const formattedValue = value.toLocaleString().replace(/,/g, ' ');
+                patterns.push(new RegExp(`\\b${formattedValue}\\+`, 'g'));
+                patterns.push(new RegExp(`\\b${value}\\+`, 'g'));
+            } else {
+                // Default patterns for numbers like "15-engineer"
+                patterns.push(new RegExp(`\\b${value}-\\w+`, 'g'));
+                patterns.push(new RegExp(`\\b${value}\\b`, 'g'));
+            }
             
             patterns.forEach(pattern => {
-                result = result.replace(pattern, (match) => {
+                // Only replace if not already wrapped in a span
+                result = result.replace(pattern, (match, offset, string) => {
+                    // Check if this match is already inside a span
+                    const before = string.substring(0, offset);
+                    const openSpans = (before.match(/<span[^>]*>/g) || []).length;
+                    const closeSpans = (before.match(/<\/span>/g) || []).length;
+                    
+                    if (openSpans > closeSpans) {
+                        // We're inside a span, don't replace
+                        return match;
+                    }
+                    
                     // For patterns like "15-engineer", preserve the full match but animate the number
                     const animatedValue = `${prefix}0${suffix}${unit}`;
                     const displayText = match.replace(value.toString(), animatedValue);
