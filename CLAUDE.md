@@ -1,3 +1,7 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 # Tufte Personal Site - Claude Code Instructions
 
 ## Project Overview
@@ -117,3 +121,9 @@ The build script validates:
 - Lazy loading for heavy visualizations
 - Minified assets in production
 - Optimized for Core Web Vitals
+
+## Timeline Data Structure
+- Timeline points in `resume.json` meta.careerTimeline array control visualization order
+- Current order: newest-to-oldest (2025 → 2010)
+- Each point requires: year, label, value, type fields
+- Animation system processes points in array order for display

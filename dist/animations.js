@@ -4,12 +4,12 @@ class CareerTimeline {
         this.canvas = document.createElement('canvas');
         this.ctx = this.canvas.getContext('2d');
         this.points = [
-            { year: 2010, label: 'Flood Relief', value: 10.5, type: 'humanitarian' },
-            { year: 2013, label: 'RSI Start', value: 45, type: 'career' },
-            { year: 2017, label: 'ETL Optimization', value: 66, type: 'achievement' },
-            { year: 2020, label: 'Engineering Manager', value: 99.95, type: 'leadership' },
+            { year: 2025, label: 'Do Little Lab', value: 100, type: 'founder' },
             { year: 2023, label: 'Namaazi Launch', value: 85, type: 'founder' },
-            { year: 2025, label: 'Do Little Lab', value: 100, type: 'founder' }
+            { year: 2020, label: 'Engineering Manager', value: 99.95, type: 'leadership' },
+            { year: 2017, label: 'ETL Optimization', value: 66, type: 'achievement' },
+            { year: 2013, label: 'RSI Start', value: 45, type: 'career' },
+            { year: 2010, label: 'Flood Relief', value: 10.5, type: 'humanitarian' }
         ];
         this.drawn = false;
         this.init();
