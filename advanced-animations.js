@@ -23,7 +23,21 @@ class ProjectDeepDive {
         const expanded = document.createElement('div');
         expanded.className = 'project-expanded';
         
-        const projectData = this.getProjectData(title);
+        // Use dynamic data from dataset instead of hardcoded data
+        const dynamicData = JSON.parse(project.dataset.projectData);
+        
+        // Generate metrics HTML from dynamic data
+        const metricsHTML = Object.entries(dynamicData.metrics || {}).map(([key, metric]) => `
+            <div class="metric-card">
+                <h3>${metric.prefix || ''}${metric.value}${metric.unit || ''}${metric.suffix || ''}</h3>
+                <p>${metric.label}</p>
+            </div>
+        `).join('');
+        
+        // Generate technologies HTML from dynamic data
+        const technologiesHTML = (dynamicData.technologies || []).map(t => 
+            `<span class="tech-tag">${t}</span>`
+        ).join('');
         
         expanded.innerHTML = `
             <span class="close-btn">&times;</span>
@@ -31,29 +45,29 @@ class ProjectDeepDive {
             <p class="subtitle">${meta}</p>
             <p>${description}</p>
             
-            <h2>Impact Over Time</h2>
-            <figure>
-                <canvas id="impact-chart" width="800" height="300"></canvas>
-                <figcaption>Project impact trajectory showing growth patterns and achievement milestones</figcaption>
-            </figure>
+            ${Object.keys(dynamicData.metrics || {}).length > 0 ? `
+                <h2>Key Metrics</h2>
+                <figure>
+                    <div class="metrics-grid">
+                        ${metricsHTML}
+                    </div>
+                    <figcaption>Quantitative outcomes demonstrating measurable project impact and success criteria</figcaption>
+                </figure>
+            ` : ''}
             
-            <h2>Key Metrics</h2>
-            <figure>
-                <div class="metrics-grid">
-                    ${projectData.metrics.map(m => `
-                        <div class="metric-card">
-                            <h3>${m.value}</h3>
-                            <p>${m.label}</p>
-                        </div>
-                    `).join('')}
+            ${dynamicData.technologies && dynamicData.technologies.length > 0 ? `
+                <h2>Technical Stack</h2>
+                <div class="tech-stack">
+                    ${technologiesHTML}
                 </div>
-                <figcaption>Quantitative outcomes demonstrating measurable project impact and success criteria</figcaption>
-            </figure>
+            ` : ''}
             
-            <h2>Technical Stack</h2>
-            <div class="tech-stack">
-                ${projectData.technologies.map(t => `<span class="tech-tag">${t}</span>`).join('')}
-            </div>
+            ${dynamicData.highlights && dynamicData.highlights.length > 0 ? `
+                <h2>Key Highlights</h2>
+                <ul>
+                    ${dynamicData.highlights.map(h => `<li>${h}</li>`).join('')}
+                </ul>
+            ` : ''}
             
             <div class="project-footer">
                 <a href="#" class="back-to-top">Back to top</a>
@@ -86,8 +100,6 @@ class ProjectDeepDive {
             });
         });
         
-        // Draw impact chart
-        this.drawImpactChart(projectData.timeline);
         
         // Close function
         const closeModal = () => {
@@ -120,145 +132,6 @@ class ProjectDeepDive {
         });
     }
 
-    getProjectData(title) {
-        // Handle aliases for mismatched keys
-        const aliases = {
-            'RSI': 'Engineering Leadership at RSI'
-        };
-        
-        const lookupKey = aliases[title] || title;
-        
-        const data = {
-            'Do Little Lab': {
-                metrics: [
-                    { value: '8 weeks', label: 'Time to MVP' },
-                    { value: '$5k', label: 'Bootstrap Budget' },
-                    { value: '1000s', label: 'Dollars Recovered' },
-                    { value: '100%', label: 'Success Rate' }
-                ],
-                technologies: ['Next.js', 'Python', 'LLMs', 'Vercel', 'PostgreSQL'],
-                timeline: [
-                    { month: 'Jan', value: 10 },
-                    { month: 'Feb', value: 35 },
-                    { month: 'Mar', value: 60 },
-                    { month: 'Apr', value: 85 },
-                    { month: 'May', value: 100 }
-                ]
-            },
-            'Engineering Leadership at RSI': {
-                metrics: [
-                    { value: '15', label: 'Team Size' },
-                    { value: '40%', label: 'Release Time Reduction' },
-                    { value: '99.95%', label: 'Uptime' },
-                    { value: '5', label: 'States Served' }
-                ],
-                technologies: ['C#', 'SQL Server', 'Azure', 'Kubernetes', 'Jenkins'],
-                timeline: [
-                    { month: '2020', value: 60 },
-                    { month: '2021', value: 70 },
-                    { month: '2022', value: 85 },
-                    { month: '2023', value: 95 },
-                    { month: '2024', value: 99.95 }
-                ]
-            },
-            'Namaazi': {
-                metrics: [
-                    { value: '100s', label: 'Active Users' },
-                    { value: '4.8', label: 'App Store Rating' },
-                    { value: '5', label: 'Prayer Times Daily' },
-                    { value: '99.9%', label: 'Accuracy' }
-                ],
-                technologies: ['Swift', 'SwiftUI', 'CoreLocation', 'CloudKit'],
-                timeline: [
-                    { month: 'Mar', value: 0 },
-                    { month: 'Jun', value: 50 },
-                    { month: 'Sep', value: 150 },
-                    { month: 'Dec', value: 300 },
-                    { month: 'Mar', value: 500 }
-                ]
-            },
-            'New Horizon Flood Relief': {
-                metrics: [
-                    { value: '30', label: 'Volunteers' },
-                    { value: '50', label: 'Families Helped' },
-                    { value: '$10.5k', label: 'Funds Raised' },
-                    { value: '30 days', label: 'Campaign Duration' }
-                ],
-                technologies: ['Community Organizing', 'Fundraising', 'Logistics', 'Distribution'],
-                timeline: [
-                    { month: 'Week 1', value: 20 },
-                    { month: 'Week 2', value: 45 },
-                    { month: 'Week 3', value: 75 },
-                    { month: 'Week 4', value: 100 }
-                ]
-            }
-        };
-        
-        return data[lookupKey] || data['Do Little Lab'];
-    }
-
-    drawImpactChart(timeline) {
-        const canvas = document.getElementById('impact-chart');
-        if (!canvas) return;
-        
-        const ctx = canvas.getContext('2d');
-        const width = canvas.width;
-        const height = canvas.height;
-        const padding = 40;
-        
-        // Clear canvas
-        ctx.clearRect(0, 0, width, height);
-        
-        // Draw axes
-        ctx.strokeStyle = '#ddd';
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(padding, height - padding);
-        ctx.lineTo(width - padding, height - padding);
-        ctx.moveTo(padding, height - padding);
-        ctx.lineTo(padding, padding);
-        ctx.stroke();
-        
-        // Calculate points
-        const xStep = (width - 2 * padding) / (timeline.length - 1);
-        const yScale = (height - 2 * padding) / 100;
-        
-        const points = timeline.map((item, index) => ({
-            x: padding + index * xStep,
-            y: height - padding - item.value * yScale
-        }));
-        
-        // Draw line
-        ctx.strokeStyle = '#e74c3c';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        points.forEach((point, index) => {
-            if (index === 0) {
-                ctx.moveTo(point.x, point.y);
-            } else {
-                ctx.lineTo(point.x, point.y);
-            }
-        });
-        ctx.stroke();
-        
-        // Draw points
-        points.forEach(point => {
-            ctx.fillStyle = '#e74c3c';
-            ctx.beginPath();
-            ctx.arc(point.x, point.y, 4, 0, Math.PI * 2);
-            ctx.fill();
-        });
-        
-        // Draw labels
-        ctx.fillStyle = '#666';
-        ctx.font = '12px et-book, Georgia, serif';
-        ctx.textAlign = 'center';
-        
-        timeline.forEach((item, index) => {
-            const x = padding + index * xStep;
-            ctx.fillText(item.month, x, height - padding + 20);
-        });
-    }
 }
 
 // Skill Constellation
