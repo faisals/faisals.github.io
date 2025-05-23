@@ -344,97 +344,190 @@ class SkillConstellation {
     }
 }
 
-// Career Map
+// Tufte-Style Career Map
 class CareerMap {
     constructor() {
         this.container = document.createElement('div');
         this.container.className = 'career-map';
-        this.locations = [
-            { name: 'Pakistan', x: 70, y: 40, projects: ['Flood Relief', 'Early Education'] },
-            { name: 'BYU, Utah', x: 20, y: 35, projects: ['Systems Admin', 'BSc Actuarial Science'] },
-            { name: 'San Francisco', x: 10, y: 25, projects: ['RSI', 'Do Little Lab', 'Namaazi'] }
-        ];
+        this.tooltip = null;
         this.init();
     }
 
-    init() {
+    async init() {
+        try {
+            // Get locations from resume data
+            const resumeData = window.resume || {};
+            this.locations = resumeData.meta?.locations || [
+                { name: 'Pakistan', lon: 73.0479, lat: 33.6844, projects: ['New Horizon Flood Relief', 'Early Education'] },
+                { name: 'Provo, Utah', lon: -111.6587, lat: 40.2338, projects: ['BYU Systems Admin', 'BSc Actuarial Science'] },
+                { name: 'San Francisco', lon: -122.4194, lat: 37.7749, projects: ['RSI', 'Do Little Lab', 'Namaazi'] }
+            ];
+
+            this.createMap();
+            this.createTooltip();
+            this.addToPage();
+        } catch (error) {
+            console.warn('Career map failed to load:', error);
+            this.createFallbackMap();
+        }
+    }
+
+    createMap() {
+        const w = 600, h = 400;
+        
+        // Create SVG
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+        svg.style.width = '100%';
+        svg.style.height = 'auto';
+
+        // Simple Mercator-like projection
+        const projection = (lon, lat) => {
+            const x = (lon + 180) * (w / 360);
+            const latRad = lat * Math.PI / 180;
+            const mercN = Math.log(Math.tan((Math.PI / 4) + (latRad / 2)));
+            const y = (h / 2) - (w * mercN / (2 * Math.PI));
+            return [Math.max(20, Math.min(w-20, x)), Math.max(20, Math.min(h-20, y))];
+        };
+
+        // Add minimal coastlines (very faint)
+        const coastlines = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        coastlines.setAttribute('d', `M 50 ${h*0.3} Q 150 ${h*0.25} 250 ${h*0.3} Q 350 ${h*0.35} 450 ${h*0.3} Q 550 ${h*0.25} ${w-50} ${h*0.3}
+                                      M 100 ${h*0.6} Q 200 ${h*0.55} 300 ${h*0.6} Q 400 ${h*0.65} 500 ${h*0.6}`);
+        coastlines.setAttribute('stroke', '#777');
+        coastlines.setAttribute('stroke-width', '0.4');
+        coastlines.setAttribute('fill', 'none');
+        coastlines.setAttribute('opacity', '0.2');
+        svg.appendChild(coastlines);
+
+        // Add arrowhead marker
+        const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+        const marker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+        marker.setAttribute('id', 'arrow');
+        marker.setAttribute('viewBox', '0 0 10 10');
+        marker.setAttribute('refX', '8');
+        marker.setAttribute('refY', '3');
+        marker.setAttribute('markerWidth', '4');
+        marker.setAttribute('markerHeight', '4');
+        marker.setAttribute('orient', 'auto');
+        
+        const arrowPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        arrowPath.setAttribute('d', 'M0,0 L0,6 L9,3 z');
+        arrowPath.setAttribute('fill', '#b20808');
+        marker.appendChild(arrowPath);
+        defs.appendChild(marker);
+        svg.appendChild(defs);
+
+        // Project locations
+        const projectedLocations = this.locations.map(loc => {
+            const [x, y] = projection(loc.lon, loc.lat);
+            return { ...loc, x, y };
+        });
+
+        // Create journey path
+        let pathData = `M ${projectedLocations[0].x} ${projectedLocations[0].y}`;
+        for (let i = 1; i < projectedLocations.length; i++) {
+            const curr = projectedLocations[i];
+            const prev = projectedLocations[i-1];
+            const midX = (prev.x + curr.x) / 2;
+            const midY = Math.min(prev.y, curr.y) - 30;
+            pathData += ` Q ${midX} ${midY} ${curr.x} ${curr.y}`;
+        }
+        
+        const journeyPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        journeyPath.setAttribute('d', pathData);
+        journeyPath.setAttribute('stroke', '#b20808');
+        journeyPath.setAttribute('stroke-width', '1');
+        journeyPath.setAttribute('stroke-linecap', 'round');
+        journeyPath.setAttribute('fill', 'none');
+        journeyPath.setAttribute('marker-end', 'url(#arrow)');
+        svg.appendChild(journeyPath);
+
+        // Add location markers with interactions
+        projectedLocations.forEach((location, index) => {
+            // Halo (appears on hover)
+            const halo = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            halo.setAttribute('class', 'map-marker-halo');
+            halo.setAttribute('cx', location.x);
+            halo.setAttribute('cy', location.y);
+            halo.setAttribute('r', '16');
+            svg.appendChild(halo);
+
+            // Main marker
+            const marker = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            marker.setAttribute('class', 'map-marker');
+            marker.setAttribute('cx', location.x);
+            marker.setAttribute('cy', location.y);
+            marker.setAttribute('r', '3');
+            marker.setAttribute('tabindex', '0');
+            
+            // Add interaction events
+            marker.addEventListener('mouseenter', (e) => this.showTooltip(e, location));
+            marker.addEventListener('mouseleave', () => this.hideTooltip());
+            marker.addEventListener('focus', (e) => this.showTooltip(e, location));
+            marker.addEventListener('blur', () => this.hideTooltip());
+            
+            svg.appendChild(marker);
+
+            // Add location label
+            const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            label.setAttribute('x', location.x);
+            label.setAttribute('y', location.y + 20);
+            label.setAttribute('text-anchor', 'middle');
+            label.setAttribute('font-family', 'et-book');
+            label.setAttribute('font-size', '11');
+            label.setAttribute('font-variant', 'small-caps');
+            label.setAttribute('fill', '#555');
+            label.textContent = location.name;
+            svg.appendChild(label);
+        });
+
+        this.container.appendChild(svg);
+    }
+
+    createTooltip() {
+        this.tooltip = document.createElement('div');
+        this.tooltip.className = 'location-tooltip';
+        document.body.appendChild(this.tooltip);
+    }
+
+    showTooltip(event, location) {
+        if (!this.tooltip) return;
+        
+        this.tooltip.innerHTML = `
+            <h4>${location.name}</h4>
+            <ul>
+                ${location.projects.map(project => `<li>${project}</li>`).join('')}
+            </ul>
+        `;
+        
+        this.tooltip.style.display = 'block';
+        this.tooltip.style.left = (event.pageX + 10) + 'px';
+        this.tooltip.style.top = (event.pageY - 10) + 'px';
+    }
+
+    hideTooltip() {
+        if (this.tooltip) {
+            this.tooltip.style.display = 'none';
+        }
+    }
+
+    addToPage() {
         const aboutSection = Array.from(document.querySelectorAll('section')).find(section => {
             const h2 = section.querySelector('h2');
             return h2 && h2.textContent.includes('About');
         });
         if (!aboutSection) return;
         
-        // Create figure wrapper
         const figure = document.createElement('figure');
-        const caption = document.createElement('figcaption');
-        caption.textContent = 'Geographic journey visualization tracing career progression across continents and cultures';
-        
         figure.appendChild(this.container);
-        figure.appendChild(caption);
+        
+        const figcaption = document.createElement('figcaption');
+        figcaption.className = 'tufte-figure';
+        figcaption.innerHTML = '<span class="figure-number">Figure 3.</span> Geographic path of my career across continents and cultures';
+        figure.appendChild(figcaption);
+        
         aboutSection.appendChild(figure);
-        this.createMap();
-        this.animateJourney();
-    }
-
-    createMap() {
-        // Add a simple SVG path for the journey
-        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        svg.style.position = 'absolute';
-        svg.style.width = '100%';
-        svg.style.height = '100%';
-        svg.style.pointerEvents = 'none';
-        
-        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        path.setAttribute('d', 'M 280 160 Q 150 140 80 140 Q 40 140 40 100');
-        path.setAttribute('stroke', '#e74c3c');
-        path.setAttribute('stroke-width', '2');
-        path.setAttribute('fill', 'none');
-        path.setAttribute('stroke-dasharray', '5,5');
-        path.classList.add('journey-path');
-        
-        svg.appendChild(path);
-        this.container.appendChild(svg);
-        
-        // Add location markers
-        this.locations.forEach((location, i) => {
-            const marker = document.createElement('div');
-            marker.className = 'map-marker';
-            marker.style.left = location.x + '%';
-            marker.style.top = location.y + '%';
-            
-            const label = document.createElement('div');
-            label.className = 'map-label';
-            label.innerHTML = `<strong>${location.name}</strong><br>${location.projects.join(', ')}`;
-            label.style.left = location.x + '%';
-            label.style.top = (location.y + 3) + '%';
-            
-            // Animate marker appearance
-            marker.style.opacity = '0';
-            marker.style.transform = 'scale(0)';
-            
-            setTimeout(() => {
-                marker.style.transition = 'all 0.5s ease';
-                marker.style.opacity = '1';
-                marker.style.transform = 'scale(1)';
-            }, i * 500);
-            
-            this.container.appendChild(marker);
-            this.container.appendChild(label);
-        });
-    }
-
-    animateJourney() {
-        const path = this.container.querySelector('.journey-path');
-        if (path) {
-            const length = path.getTotalLength();
-            path.style.strokeDasharray = length;
-            path.style.strokeDashoffset = length;
-            
-            setTimeout(() => {
-                path.style.transition = 'stroke-dashoffset 3s ease';
-                path.style.strokeDashoffset = '0';
-            }, 1500);
-        }
     }
 }
 

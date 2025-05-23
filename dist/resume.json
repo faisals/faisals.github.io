@@ -209,9 +209,9 @@
       { "year": 2025, "label": "Do Little Lab", "value": 100, "type": "founder" }
     ],
     "locations": [
-      { "name": "Pakistan", "x": 70, "y": 40, "projects": ["Flood Relief", "Early Education"] },
-      { "name": "BYU, Utah", "x": 20, "y": 35, "projects": ["Systems Admin", "BSc Actuarial Science"] },
-      { "name": "San Francisco", "x": 10, "y": 25, "projects": ["RSI", "Do Little Lab", "Namaazi"] }
+      { "name": "Pakistan", "lon": 73.0479, "lat": 33.6844, "projects": ["New Horizon Flood Relief", "Early Education"] },
+      { "name": "Provo, Utah", "lon": -111.6587, "lat": 40.2338, "projects": ["BYU Systems Admin", "BSc Actuarial Science"] },
+      { "name": "San Francisco", "lon": -122.4194, "lat": 37.7749, "projects": ["RSI", "Do Little Lab", "Namaazi"] }
     ],
     "annotations": [
       { "selector": "[data-metric=\"40\"]", "text": "Agile transformation!", "delay": 2000 },

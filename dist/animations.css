@@ -249,42 +249,84 @@ article.resting {
     height: 2px;
 }
 
-/* Career Map */
+/* Career Map - Tufte Style */
 .career-map {
     position: relative;
-    height: 500px;
-    margin: 3rem 0;
-    background: #f8f8f8;
-    border: 1px solid #ccc;
+    width: 100%;
+    max-width: 640px;
+    margin: 3rem auto;
 }
 
+.career-map svg {
+    width: 100%;
+    height: auto;
+}
+
+/* Map markers */
 .map-marker {
-    position: absolute;
-    width: 12px;
-    height: 12px;
-    background: #b20808;
-    border-radius: 50%;
+    fill: #b20808;
     cursor: pointer;
-    transition: all 0.6s ease;
 }
 
-.map-marker:hover {
-    transform: scale(1.5);
+.map-marker:hover,
+.map-marker:focus {
+    outline: none;
 }
 
-.map-label {
-    position: absolute;
-    font-size: 0.8rem;
-    background: #fffff8;
-    padding: 4px 8px;
-    border: 1px solid #ccc;
-    white-space: nowrap;
+/* Halo appears only on interaction */
+.map-marker-halo {
+    fill: rgba(178, 8, 8, 0.05);
+    pointer-events: none;
     opacity: 0;
-    transition: opacity 0.6s ease;
+    transition: opacity 0.2s ease;
 }
 
-.map-marker:hover + .map-label {
+.map-marker:hover + .map-marker-halo,
+.map-marker:focus + .map-marker-halo {
     opacity: 1;
+}
+
+/* Tufte-style figure caption */
+.tufte-figure {
+    font-style: italic;
+    font-size: 1.15rem;
+    text-align: center;
+    margin-top: 0.8rem;
+    color: #555;
+}
+
+.figure-number {
+    font-variant: small-caps;
+}
+
+/* Location tooltip */
+.location-tooltip {
+    position: fixed;
+    background: #fffff8;
+    border: 1px solid #ccc;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    pointer-events: none;
+    display: none;
+    z-index: 1000;
+    max-width: 200px;
+}
+
+.location-tooltip h4 {
+    margin: 0 0 4px 0;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.location-tooltip ul {
+    margin: 0;
+    padding-left: 1rem;
+    font-size: 0.85rem;
+}
+
+.location-tooltip ul li {
+    margin-bottom: 2px;
 }
 
 /* Handwritten Annotations */
