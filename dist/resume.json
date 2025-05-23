@@ -70,7 +70,7 @@
         "trafficSpike": { "value": 50, "unit": "%", "label": "Traffic Absorbed" },
         "servers": { "value": 10000, "label": "Servers Managed", "suffix": "+" },
         "provTime": { "value": 15, "unit": "min", "label": "DB Provisioning" },
-        "dbPerformance": { "value": 100, "unit": "×", "label": "DB Performance Boost" }
+        "dbPerformance": { "value": 100, "unit": "x", "label": "DB Performance Boost" }
       },
       "technologies": ["C#", "SQL Server", "Azure", "Kubernetes", "Jenkins"],
       "previousRoles": [
@@ -253,7 +253,7 @@
       { "selector": "[data-metric=\"10000\"]", "text": "That's a LOT of servers 🚀", "delay": 1800 },
       { "selector": "[data-metric=\"20\"]", "text": "double‑digit uptime gain", "delay": 2200 },
       { "selector": "[data-metric=\"15\"]", "text": "minutes, not hours!", "delay": 2600 },
-      { "selector": "[data-metric=\"100\"][data-unit=\"×\"]", "text": "100× performance! 🚄", "delay": 2400 }
+      { "selector": "[data-metric=\"100\"][data-unit=\"x\"]", "text": "100× performance! 🚄", "delay": 2400 }
     ]
   }
 }

@@ -202,6 +202,9 @@ class SiteGenerator {
                 return;
             }
             
+            // Helper: strip any char that isn't a digit or decimal point
+            const clean = v => String(v).replace(/[^\d.]/g, '');
+            
             // Create specific patterns to avoid conflicts
             let patterns = [];
             
@@ -209,7 +212,7 @@ class SiteGenerator {
             if (unit === '%') {
                 patterns.push(new RegExp(`\\b${value}%`, 'g'));
                 patterns.push(new RegExp(`\\b${value}\\s*%`, 'g'));
-            } else if (unit === '×') {
+            } else if (unit === 'x') {
                 patterns.push(new RegExp(`\\b${value}×`, 'g'));
                 patterns.push(new RegExp(`\\b${value}\\s*×`, 'g'));
             } else if (unit === 'min') {
@@ -241,7 +244,7 @@ class SiteGenerator {
                     // For patterns like "15-engineer", preserve the full match but animate the number
                     const animatedValue = `${prefix}0${suffix}${unit}`;
                     const displayText = match.replace(value.toString(), animatedValue);
-                    return `<span data-metric="${value}" data-prefix="${prefix}" data-suffix="${suffix}" data-placeholder="${animatedValue}">${displayText}</span>`;
+                    return `<span data-metric="${clean(value)}" data-prefix="${prefix}" data-suffix="${suffix}" data-placeholder="${animatedValue}">${displayText}</span>`;
                 });
             });
         });

@@ -176,7 +176,12 @@ class ImpactMetrics {
 
     init() {
         this.metrics.forEach(metric => {
-            const target = parseFloat(metric.getAttribute('data-metric'));
+            const raw = metric.getAttribute('data-metric');
+            const target = Number(raw);
+            if (Number.isNaN(target)) {
+                console.warn('ImpactMetrics skipped – non‑numeric data-metric:', raw, metric);
+                return;            // don't observe/animate this element
+            }
             const suffix = metric.getAttribute('data-suffix') || '';
             const prefix = metric.getAttribute('data-prefix') || '';
             
