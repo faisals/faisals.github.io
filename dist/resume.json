@@ -50,10 +50,11 @@
       "name": "RSI",
       "position": "Engineering Manager",
       "startDate": "2020-01",
-      "summary": "Lead 15-engineer team delivering state-tax software used by five U.S. states.",
+      "summary": "Lead 15-engineer team delivering state-tax software used by five U.S. states. Achieved 20% uptime improvement, 40% faster releases, and 100× database performance gains while scaling 10,000+ servers.",
       "highlights": [
         "Drove a **20 % uptime improvement** by rolling out SRE best‑practices and self‑heal automation",
         "Cut release lead‑time **40 %** and defects **25 %** after standing up Kanban&nbsp;+ CI/CD",
+        "Achieved **100× database performance boost** by rewriting critical SQL hot‑paths (9s → 90ms)",
         "Provisioned on‑demand DB instances in **15 min (↓ 97 % from 8 h)** through Terraform pipelines",
         "Scaled a hybrid estate of **10 000+ servers** while holding costs flat (cloud‑cost optimisation)",
         "Delivered a labelled **50 % traffic surge** on a new tax‑filing season without pagers going off",
@@ -68,7 +69,8 @@
         "uptimeLift": { "value": 20, "unit": "%", "label": "Uptime Gain" },
         "trafficSpike": { "value": 50, "unit": "%", "label": "Traffic Absorbed" },
         "servers": { "value": 10000, "label": "Servers Managed", "suffix": "+" },
-        "provTime": { "value": 15, "unit": "min", "label": "DB Provisioning" }
+        "provTime": { "value": 15, "unit": "min", "label": "DB Provisioning" },
+        "dbPerformance": { "value": 100, "unit": "×", "label": "DB Performance Boost" }
       },
       "technologies": ["C#", "SQL Server", "Azure", "Kubernetes", "Jenkins"],
       "previousRoles": [
@@ -79,7 +81,10 @@
           "highlights": [
             "Migrated two state‑tax platforms to cloud with < 60 s cumulative downtime",
             "Expanded Elastic / Kibana observability coverage from 40 % → 95 % of prod stack",
-            "Introduced Selenium smoke‑tests cutting post‑deploy outages by 70 %"
+            "Introduced Selenium smoke‑tests cutting post‑deploy outages by 70 %",
+            "Led SRE transformation reducing incident MTTR from 4h to 30min",
+            "Architected auto‑scaling infrastructure handling 3× peak tax‑season load",
+            "Mentored 4 junior engineers in SRE practices and cloud‑native design"
           ]
         },
         {
@@ -247,7 +252,8 @@
       { "selector": "[data-metric=\"10.5\"]", "text": "Community impact", "delay": 3000 },
       { "selector": "[data-metric=\"10000\"]", "text": "That's a LOT of servers 🚀", "delay": 1800 },
       { "selector": "[data-metric=\"20\"]", "text": "double‑digit uptime gain", "delay": 2200 },
-      { "selector": "[data-metric=\"15\"]", "text": "minutes, not hours!", "delay": 2600 }
+      { "selector": "[data-metric=\"15\"]", "text": "minutes, not hours!", "delay": 2600 },
+      { "selector": "[data-metric=\"100\"][data-unit=\"×\"]", "text": "100× performance! 🚄", "delay": 2400 }
     ]
   }
 }
