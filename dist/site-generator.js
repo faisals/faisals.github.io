@@ -354,7 +354,7 @@ class SiteGenerator {
         }
         
         if (animations.skillConstellation) {
-            new SkillConstellation();
+            new SkillConstellation(this.resume);
         }
         
         if (animations.careerMap) {

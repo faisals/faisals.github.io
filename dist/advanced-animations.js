@@ -136,20 +136,89 @@ class ProjectDeepDive {
 
 // Skill Constellation
 class SkillConstellation {
-    constructor() {
+    constructor(resumeData = null) {
         this.container = document.createElement('div');
         this.container.className = 'skill-constellation';
-        this.skills = [
-            { name: 'Swift', x: 20, y: 30, connections: ['iOS', 'SwiftUI'] },
-            { name: 'Python', x: 70, y: 20, connections: ['ML', 'Data Analysis'] },
-            { name: 'Next.js', x: 40, y: 60, connections: ['React', 'TypeScript'] },
-            { name: 'SQL', x: 60, y: 50, connections: ['PostgreSQL', 'Data'] },
-            { name: 'iOS', x: 10, y: 70, connections: ['Swift', 'Mobile'] },
-            { name: 'ML', x: 80, y: 40, connections: ['Python', 'AI'] },
-            { name: 'React', x: 30, y: 40, connections: ['Next.js', 'Frontend'] },
-            { name: 'Data', x: 50, y: 80, connections: ['SQL', 'Analysis'] }
-        ];
+        this.resumeData = resumeData || window.resume;
+        this.skills = this.generateSkillsFromResume();
         this.init();
+    }
+
+    generateSkillsFromResume() {
+        if (!this.resumeData || !this.resumeData.skills) {
+            // Fallback to simplified hardcoded data if no resume data
+            return [
+                { name: 'Swift', x: 20, y: 30, connections: [] },
+                { name: 'Python', x: 70, y: 20, connections: [] },
+                { name: 'Next.js', x: 40, y: 60, connections: [] }
+            ];
+        }
+
+        // Extract all skills from resume.json skill categories
+        const allSkills = [];
+        this.resumeData.skills.forEach(category => {
+            category.keywords.forEach(skill => {
+                allSkills.push(skill);
+            });
+        });
+
+        // Take the first 8-10 skills and generate positions algorithmically
+        const selectedSkills = allSkills.slice(0, Math.min(10, allSkills.length));
+        
+        return selectedSkills.map((skill, index) => {
+            // Generate positions in a rough circle/constellation pattern
+            const angle = (index / selectedSkills.length) * 2 * Math.PI;
+            const radius = 30 + (index % 3) * 15; // Vary radius for visual interest
+            const centerX = 50;
+            const centerY = 50;
+            
+            const x = Math.max(10, Math.min(90, centerX + radius * Math.cos(angle)));
+            const y = Math.max(10, Math.min(90, centerY + radius * Math.sin(angle)));
+            
+            // Simple connection logic based on skill relationships
+            const connections = this.inferConnections(skill, selectedSkills);
+            
+            return {
+                name: skill,
+                x: x,
+                y: y,
+                connections: connections
+            };
+        });
+    }
+
+    inferConnections(skill, allSkills) {
+        // Simple heuristic-based connection inference
+        const connections = [];
+        const skillLower = skill.toLowerCase();
+        
+        // Define some common relationships
+        const relationships = {
+            'swift': ['swiftui', 'ios'],
+            'swiftui': ['swift'],
+            'python': ['machine learning', 'llms', 'postgresql'],
+            'javascript': ['react', 'next.js', 'node.js'],
+            'typescript': ['react', 'next.js', 'node.js'],
+            'react': ['next.js', 'javascript', 'typescript'],
+            'next.js': ['react', 'javascript', 'typescript'],
+            'sql': ['postgresql', 'sql server'],
+            'postgresql': ['sql', 'python'],
+            'machine learning': ['python', 'llms'],
+            'llms': ['python', 'machine learning'],
+            'c#': ['.net'],
+            '.net': ['c#']
+        };
+        
+        const relatedSkills = relationships[skillLower] || [];
+        
+        allSkills.forEach(otherSkill => {
+            if (otherSkill !== skill && 
+                relatedSkills.some(related => otherSkill.toLowerCase().includes(related))) {
+                connections.push(otherSkill);
+            }
+        });
+        
+        return connections.slice(0, 3); // Limit connections to avoid clutter
     }
 
     init() {
