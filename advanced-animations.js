@@ -60,7 +60,16 @@ class ProjectDeepDive {
             </div>
         `;
         
+        // Add accessibility attributes
+        expanded.setAttribute('role', 'dialog');
+        expanded.setAttribute('aria-modal', 'true');
+        expanded.setAttribute('aria-labelledby', 'modal-title');
+        expanded.querySelector('h1').id = 'modal-title';
+        
         document.body.appendChild(expanded);
+        
+        // Store previous focus to restore later
+        const previousFocus = document.activeElement;
         
         // Animate entrance
         requestAnimationFrame(() => {
@@ -71,20 +80,37 @@ class ProjectDeepDive {
             requestAnimationFrame(() => {
                 expanded.style.opacity = '1';
                 expanded.style.transform = 'scale(1)';
+                
+                // Focus the modal for screen readers
+                expanded.focus();
             });
         });
         
         // Draw impact chart
         this.drawImpactChart(projectData.timeline);
         
-        // Close handler
-        expanded.querySelector('.close-btn').addEventListener('click', () => {
+        // Close function
+        const closeModal = () => {
             expanded.style.opacity = '0';
             expanded.style.transform = 'scale(0.9)';
             
             setTimeout(() => {
                 expanded.remove();
+                // Restore focus
+                if (previousFocus) {
+                    previousFocus.focus();
+                }
             }, 300);
+        };
+        
+        // Close handler
+        expanded.querySelector('.close-btn').addEventListener('click', closeModal);
+        
+        // Keyboard handler for ESC key
+        expanded.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
         });
         
         // Back to top handler
@@ -625,11 +651,3 @@ class TufteAnnotations {
     }
 }
 
-// Add to initialization
-document.addEventListener('DOMContentLoaded', () => {
-    // Previous initializations...
-    new ProjectDeepDive();
-    new SkillConstellation();
-    new CareerMap();
-    new TufteAnnotations();
-});

@@ -2,6 +2,7 @@
 
 # Test script for Tufte Personal Site
 # Builds the site, starts Python server, and opens in browser
+# Updated with recent bug fixes validation
 
 set -e  # Exit on any error
 
@@ -61,11 +62,20 @@ fi
 
 echo ""
 echo "✅ Site is running at http://localhost:$PORT"
-echo "📋 Testing checklist:"
+echo "📋 Testing checklist (Production Polish):"
 echo "   □ Skeleton loading appears briefly"
 echo "   □ Content loads smoothly with fade transition"
 echo "   □ Typography scale looks consistent (h1→3.2rem, h2→2.4rem, h3→1.8rem)"
-echo "   □ Animations work properly"
+echo "   □ Timeline animation works without console errors"
+echo "   □ NO duplicate canvases or double animations (fixed!)"
+echo "   □ Minified CSS assets are served (check Network tab)"
+echo "   □ CareerMap shows real locations with proper hover effects"
+echo "   □ Project modals open with ESC key support and proper focus"
+echo "   □ Animated metrics display properly with reliable placeholders"
+echo "   □ Network graph reloads without node duplicates"
+echo "   □ Font loads smoothly with preload (reduced CLS)"
+echo "   □ Animations respect prefers-reduced-motion setting"
+echo "   □ SEO meta tags present in <head> (check View Source)"
 echo "   □ Site is responsive on mobile"
 echo ""
 echo "⏹️  Press Ctrl+C to stop the server"

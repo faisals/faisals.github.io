@@ -207,7 +207,7 @@ class SiteGenerator {
                     // For patterns like "15-engineer", preserve the full match but animate the number
                     const animatedValue = `${prefix}0${suffix}${unit}`;
                     const displayText = match.replace(value.toString(), animatedValue);
-                    return `<span data-metric="${value}" data-prefix="${prefix}" data-suffix="${suffix}">${displayText}</span>`;
+                    return `<span data-metric="${value}" data-prefix="${prefix}" data-suffix="${suffix}" data-placeholder="${animatedValue}">${displayText}</span>`;
                 });
             });
         });
@@ -314,6 +314,12 @@ class SiteGenerator {
     }
 
     initializeAnimations() {
+        // Check for reduced motion preference
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            console.log('Reduced motion detected - skipping animations');
+            return;
+        }
+        
         // Initialize all animation classes with configuration from resume.json
         const animations = this.resume.meta.animations;
         
@@ -374,6 +380,10 @@ class SiteGenerator {
     }
 
     updateNetworkGraph(graph) {
+        // Clear existing data to prevent duplicates
+        graph.nodes.length = 0;
+        graph.edges.length = 0;
+        
         // Build network from resume data
         const nodes = [];
         const edges = [];

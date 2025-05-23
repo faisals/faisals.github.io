@@ -107,10 +107,39 @@ class SiteBuilder {
         console.log('📄 Creating production index.html...');
         
         try {
-            // Copy dynamic index to index.html
-            const dynamicIndex = fs.readFileSync('index-dynamic.html', 'utf8');
-            fs.writeFileSync('index.html', dynamicIndex);
-            console.log('✅ Created index.html\n');
+            // Copy dynamic index to index.html and replace with minified CSS
+            let indexContent = fs.readFileSync('index-dynamic.html', 'utf8');
+            
+            // Load resume data for SEO tags
+            const resumeData = JSON.parse(fs.readFileSync('resume.json', 'utf8'));
+            
+            // Replace CSS links with minified versions
+            indexContent = indexContent
+                .replace('styles.css', 'styles.min.css')
+                .replace('animations.css', 'animations.min.css');
+            
+            // Replace title
+            const pageTitle = `${resumeData.basics.name} - ${resumeData.basics.label}`;
+            indexContent = indexContent.replace('<title>Loading...</title>', `<title>${pageTitle}</title>`);
+            
+            // Add SEO meta tags
+            const seoTags = `    <meta name="description" content="${resumeData.basics.summary}">
+    <meta property="og:title" content="${pageTitle}">
+    <meta property="og:description" content="${resumeData.basics.summary}">
+    <meta property="og:type" content="profile">
+    <meta property="og:url" content="${resumeData.basics.url}">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="${pageTitle}">
+    <meta name="twitter:description" content="${resumeData.basics.summary}">
+`;
+            
+            // Add font preload for better performance
+            const fontPreload = '    <link rel="preload" href="https://cdn.jsdelivr.net/gh/edwardtufte/et-book@gh-pages/et-book/et-book-roman-line-figures/et-book-roman-line-figures.woff" as="font" type="font/woff" crossorigin>\n';
+            
+            indexContent = indexContent.replace('</head>', seoTags + fontPreload + '</head>');
+            
+            fs.writeFileSync('index.html', indexContent);
+            console.log('✅ Created index.html with SEO tags and minified CSS links\n');
         } catch (error) {
             this.errors.push(`Error creating index.html: ${error.message}`);
         }
