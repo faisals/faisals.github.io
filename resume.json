@@ -70,7 +70,7 @@
         "trafficSpike": { "value": 50, "unit": "%", "label": "Traffic Absorbed" },
         "servers": { "value": 10000, "label": "Servers Managed", "suffix": "+" },
         "provTime": { "value": 15, "unit": "min", "label": "DB Provisioning" },
-        "dbPerformance": { "value": 100, "unit": "x", "label": "DB Performance Boost" }
+        "dbPerformance": { "value": 100, "unit": "×", "label": "DB Performance Boost" }
       },
       "technologies": ["C#", "SQL Server", "Azure", "Kubernetes", "Jenkins"],
       "previousRoles": [
