@@ -160,17 +160,20 @@ class SiteGenerator {
         const endYear = job.endDate ? new Date(job.endDate).getFullYear() : 'Present';
         const duration = endYear === 'Present' ? `${startYear}–Present` : `${startYear}–${endYear}`;
         
-        // Build summary with metrics
-        let summary = job.summary;
-        if (job.metrics) {
-            summary = this.injectMetrics(summary, job.metrics);
-        }
-        
         div.innerHTML = `
             <h3>${job.name}</h3>
             <p class="project-meta">${duration} · ${job.position}</p>
-            <p>${summary}</p>
+            <p class="project-summary">${job.summary}</p>
         `;
+        
+        // Inject metrics after DOM creation to prevent conflicts
+        if (job.metrics) {
+            const summaryElement = div.querySelector('.project-summary');
+            if (summaryElement) {
+                const processedSummary = this.injectMetrics(summaryElement.innerHTML, job.metrics);
+                summaryElement.innerHTML = processedSummary;
+            }
+        }
         
         // Store data for deep-dive
         div.dataset.projectData = JSON.stringify({
@@ -187,8 +190,8 @@ class SiteGenerator {
         // Replace numbers in text with animated metrics
         let result = text;
         
-        // Skip if text already has data-metric spans (prevent double-processing)
-        if (result.includes('data-metric=')) {
+        // Skip if text already has metric spans (prevent double-processing)
+        if (result.includes('data-metric=') || result.includes('metric-injected')) {
             return result;
         }
         
@@ -247,7 +250,7 @@ class SiteGenerator {
                     // For patterns like "15-engineer", preserve the full match but animate the number
                     const animatedValue = `${prefix}0${suffix}${unit}`;
                     const displayText = match.replace(value.toString(), animatedValue);
-                    return `<span data-metric="${clean(value)}" data-prefix="${prefix}" data-suffix="${suffix}" data-placeholder="${animatedValue}">${displayText}</span>${processedMarker}`;
+                    return `<span data-metric="${clean(value)}" data-prefix="${prefix}" data-suffix="${suffix}" data-placeholder="${animatedValue}" metric-injected="true">${displayText}</span>${processedMarker}`;
                 });
                 
                 // Remove the marker after processing
