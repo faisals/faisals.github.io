@@ -366,15 +366,71 @@ class CareerMap {
             return [Math.max(20, Math.min(w-20, x)), Math.max(20, Math.min(h-20, y))];
         };
 
-        // Add minimal coastlines (very faint)
-        const coastlines = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        coastlines.setAttribute('d', `M 50 ${h*0.3} Q 150 ${h*0.25} 250 ${h*0.3} Q 350 ${h*0.35} 450 ${h*0.3} Q 550 ${h*0.25} ${w-50} ${h*0.3}
-                                      M 100 ${h*0.6} Q 200 ${h*0.55} 300 ${h*0.6} Q 400 ${h*0.65} 500 ${h*0.6}`);
-        coastlines.setAttribute('stroke', '#777');
-        coastlines.setAttribute('stroke-width', '0.4');
-        coastlines.setAttribute('fill', 'none');
-        coastlines.setAttribute('opacity', '0.2');
-        svg.appendChild(coastlines);
+        // Add simplified world outline (Natural Earth 110m inspired, single-stroke)
+        const worldOutline = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        
+        // Simplified world landmasses projected to our Mercator-like coordinates
+        // Scale factors for our 600x400 viewport
+        const scaleX = w / 360;
+        const scaleY = h / 180;
+        const offsetX = w / 2;
+        const offsetY = h / 2;
+        
+        // Function to convert lat/lon to our coordinate system
+        const toCoords = (lon, lat) => {
+            const x = (lon + 180) * scaleX;
+            const latRad = lat * Math.PI / 180;
+            const mercN = Math.log(Math.tan((Math.PI / 4) + (latRad / 2)));
+            const y = (h / 2) - (w * mercN / (2 * Math.PI));
+            return `${x.toFixed(1)},${y.toFixed(1)}`;
+        };
+        
+        // Simplified world outline focusing on major landmasses
+        const worldPath = [
+            // North America (rough outline)
+            `M ${toCoords(-130, 60)}`,
+            `L ${toCoords(-60, 45)}`,
+            `L ${toCoords(-80, 25)}`,
+            `L ${toCoords(-110, 25)}`,
+            `L ${toCoords(-130, 60)}`,
+            
+            // Europe & Asia (simplified)
+            `M ${toCoords(-10, 60)}`,
+            `L ${toCoords(180, 60)}`,
+            `L ${toCoords(180, 10)}`,
+            `L ${toCoords(40, 10)}`,
+            `L ${toCoords(10, 35)}`,
+            `L ${toCoords(-10, 35)}`,
+            `L ${toCoords(-10, 60)}`,
+            
+            // Africa (simplified)
+            `M ${toCoords(-20, 35)}`,
+            `L ${toCoords(50, 35)}`,
+            `L ${toCoords(40, -35)}`,
+            `L ${toCoords(15, -35)}`,
+            `L ${toCoords(-20, 35)}`,
+            
+            // South America (simplified)
+            `M ${toCoords(-80, 10)}`,
+            `L ${toCoords(-35, 10)}`,
+            `L ${toCoords(-40, -55)}`,
+            `L ${toCoords(-70, -55)}`,
+            `L ${toCoords(-80, 10)}`,
+            
+            // Australia (simplified)
+            `M ${toCoords(110, -10)}`,
+            `L ${toCoords(155, -10)}`,
+            `L ${toCoords(150, -45)}`,
+            `L ${toCoords(115, -35)}`,
+            `L ${toCoords(110, -10)}`
+        ].join(' ');
+        
+        worldOutline.setAttribute('d', worldPath);
+        worldOutline.setAttribute('stroke', '#d7d7d7');
+        worldOutline.setAttribute('stroke-width', '0.4');
+        worldOutline.setAttribute('fill', 'none');
+        worldOutline.setAttribute('opacity', '1');
+        svg.appendChild(worldOutline);
 
         // Add arrowhead marker
         const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
