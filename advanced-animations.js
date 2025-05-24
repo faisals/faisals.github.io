@@ -330,52 +330,20 @@ class CareerMap {
 
     async init() {
         try {
-            // Get locations from resume data
+            // Get locations from resume data - fully dynamic, no fallback
             const resumeData = window.resume || {};
-            this.locations = resumeData.meta?.locations || [
-                { 
-                    name: 'Pakistan', 
-                    lon: 73.0479, 
-                    lat: 33.6844, 
-                    projects: [
-                        { title: 'New Horizon Flood Relief', year: '2010', role: 'Founder', description: 'Humanitarian relief effort for Pakistan flood victims' },
-                        { title: 'Early Education Initiative', year: '2009', role: 'Volunteer', description: 'Educational outreach in rural communities' }
-                    ]
-                },
-                { 
-                    name: 'Provo, Utah', 
-                    lon: -111.6587, 
-                    lat: 40.2338, 
-                    projects: [
-                        { title: 'BYU Systems Admin', year: '2011-2013', role: 'Systems Administrator', description: 'Campus IT infrastructure management' },
-                        { title: 'BSc Actuarial Science', year: '2009-2013', role: 'Student', description: 'Degree in mathematical risk assessment' }
-                    ]
-                },
-                { 
-                    name: 'Pembroke, MA', 
-                    lon: -70.7717, 
-                    lat: 42.0667, 
-                    projects: [
-                        { title: 'RSI', year: '2013-2017', role: 'Software Engineer', description: 'ETL systems for state tax software' }
-                    ]
-                },
-                { 
-                    name: 'San Francisco', 
-                    lon: -122.4194, 
-                    lat: 37.7749, 
-                    projects: [
-                        { title: 'Do Little Lab', year: '2025', role: 'Founder', description: 'AI-driven healthcare claims advocacy' },
-                        { title: 'Namaazi', year: '2020-2024', role: 'Engineering Manager', description: 'Prayer timing app serving global Muslim community' }
-                    ]
-                }
-            ];
+            this.locations = resumeData.meta?.locations || [];
+            
+            if (this.locations.length === 0) {
+                console.warn('No locations found in resume data');
+                return;
+            }
 
             this.createMap();
             this.createTooltip();
             this.addToPage();
         } catch (error) {
-            console.warn('Career map failed to load:', error);
-            this.createFallbackMap();
+            console.error('Career map failed to load:', error);
         }
     }
 
@@ -621,7 +589,10 @@ class CareerMap {
             label.setAttribute('font-size', 'max(9px, 0.6vw)');  // responsive, min 9px
             label.setAttribute('font-variant', 'small-caps');
             label.setAttribute('fill', '#444');            // darker, but low-saturation
-            label.textContent = location.name;
+            
+            // Add numbers to show career progression - using dynamic array position
+            const labelNumber = index + 1;
+            label.textContent = `${labelNumber}. ${location.name}`;
             svg.appendChild(label);
         });
 

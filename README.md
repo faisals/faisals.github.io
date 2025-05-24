@@ -138,6 +138,29 @@ article > * {
 }
 ```
 
+### Career Map
+The interactive career map is fully data-driven from `resume.json`. To update:
+
+1. Edit `meta.locations` array in `resume.json`
+2. Each location needs:
+   ```json
+   {
+     "name": "City Name",
+     "lon": -122.4194,  // longitude
+     "lat": 37.7749,    // latitude
+     "projects": [
+       {
+         "title": "Project Name",
+         "year": "2025",
+         "role": "Your Role",
+         "description": "Brief description"
+       }
+     ]
+   }
+   ```
+3. Locations are numbered automatically (1, 2, 3...) based on array order
+4. Run `node build.js` to rebuild the site
+
 ## Deployment
 
 ### GitHub Pages

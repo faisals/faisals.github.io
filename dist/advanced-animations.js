@@ -330,52 +330,20 @@ class CareerMap {
 
     async init() {
         try {
-            // Get locations from resume data
+            // Get locations from resume data - fully dynamic, no fallback
             const resumeData = window.resume || {};
-            this.locations = resumeData.meta?.locations || [
-                { 
-                    name: 'Pakistan', 
-                    lon: 73.0479, 
-                    lat: 33.6844, 
-                    projects: [
-                        { title: 'New Horizon Flood Relief', year: '2010', role: 'Founder', description: 'Humanitarian relief effort for Pakistan flood victims' },
-                        { title: 'Early Education Initiative', year: '2009', role: 'Volunteer', description: 'Educational outreach in rural communities' }
-                    ]
-                },
-                { 
-                    name: 'Provo, Utah', 
-                    lon: -111.6587, 
-                    lat: 40.2338, 
-                    projects: [
-                        { title: 'BYU Systems Admin', year: '2011-2013', role: 'Systems Administrator', description: 'Campus IT infrastructure management' },
-                        { title: 'BSc Actuarial Science', year: '2009-2013', role: 'Student', description: 'Degree in mathematical risk assessment' }
-                    ]
-                },
-                { 
-                    name: 'Pembroke, MA', 
-                    lon: -70.7717, 
-                    lat: 42.0667, 
-                    projects: [
-                        { title: 'RSI', year: '2013-2017', role: 'Software Engineer', description: 'ETL systems for state tax software' }
-                    ]
-                },
-                { 
-                    name: 'San Francisco', 
-                    lon: -122.4194, 
-                    lat: 37.7749, 
-                    projects: [
-                        { title: 'Do Little Lab', year: '2025', role: 'Founder', description: 'AI-driven healthcare claims advocacy' },
-                        { title: 'Namaazi', year: '2020-2024', role: 'Engineering Manager', description: 'Prayer timing app serving global Muslim community' }
-                    ]
-                }
-            ];
+            this.locations = resumeData.meta?.locations || [];
+            
+            if (this.locations.length === 0) {
+                console.warn('No locations found in resume data');
+                return;
+            }
 
             this.createMap();
             this.createTooltip();
             this.addToPage();
         } catch (error) {
-            console.warn('Career map failed to load:', error);
-            this.createFallbackMap();
+            console.error('Career map failed to load:', error);
         }
     }
 
@@ -515,6 +483,7 @@ class CareerMap {
 
             // Create one continuous array of points for the entire journey
             const allPoints = [];
+            let outOfBounds = false;
             
             for (let i = 0; i < this.locations.length - 1; i++) {
                 const source = [this.locations[i].lon, this.locations[i].lat];
@@ -531,9 +500,22 @@ class CareerMap {
                     
                     const [lon, lat] = interpolate(t);
                     const [x, y] = projection(lon, lat);
+                    const nudgedY = y + 8;
+                    
+                    // Check if point goes out of bounds
+                    if (nudgedY < 0 || nudgedY > h) {
+                        outOfBounds = true;
+                    }
+                    
                     // Apply the same 8px nudge to path points
-                    allPoints.push([x, y + 8]);
+                    allPoints.push([x, nudgedY]);
                 }
+            }
+            
+            // Fall back to Bézier curves if geodesic goes out of bounds
+            if (outOfBounds) {
+                console.warn('Great-circle arc left viewBox – switching to Bézier');
+                return this.createFallbackPath(markerLocations);
             }
             
             // Use D3's line generator with cardinal curve for smooth interpolation
@@ -607,7 +589,10 @@ class CareerMap {
             label.setAttribute('font-size', 'max(9px, 0.6vw)');  // responsive, min 9px
             label.setAttribute('font-variant', 'small-caps');
             label.setAttribute('fill', '#444');            // darker, but low-saturation
-            label.textContent = location.name;
+            
+            // Add numbers to show career progression - using dynamic array position
+            const labelNumber = index + 1;
+            label.textContent = `${labelNumber}. ${location.name}`;
             svg.appendChild(label);
         });
 
@@ -621,7 +606,7 @@ class CareerMap {
             const curr = projectedLocations[i];
             const prev = projectedLocations[i-1];
             const midX = (prev.x + curr.x) / 2;
-            const midY = (prev.y + curr.y) / 2 + 35;   // tighter bell-curve arch
+            const midY = (prev.y + curr.y) / 2 - 35;   // tighter bell-curve arch
             pathData += ` Q ${midX},${midY} ${curr.x},${curr.y}`;
         }
         return pathData;
