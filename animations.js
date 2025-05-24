@@ -75,19 +75,61 @@ class CareerTimeline {
             this.ctx.strokeStyle = '#999';
             this.ctx.lineWidth = 1;
             
-            // Draw baseline
-            this.ctx.beginPath();
-            this.ctx.moveTo(padding, height / 2);
-            this.ctx.lineTo(padding + (width - 2 * padding) * progress, height / 2);
-            this.ctx.stroke();
+            // Draw subtle value grid lines instead of single baseline
+            this.ctx.strokeStyle = '#f0f0f0';
+            this.ctx.lineWidth = 0.5;
+            const valueRange = height - 2 * padding - 20;
+            
+            // Draw light grid lines for 25%, 50%, 75% value marks
+            [25, 50, 75].forEach(value => {
+                const gridY = padding + 10 + (100 - value) * (valueRange / 100);
+                const gridProgress = padding + (width - 2 * padding) * progress;
+                this.ctx.beginPath();
+                this.ctx.moveTo(padding, gridY);
+                this.ctx.lineTo(gridProgress, gridY);
+                this.ctx.stroke();
+            });
+            
+            // Draw year labels and tick marks (every 2 years)
+            this.ctx.fillStyle = '#bbb';
+            this.ctx.font = '10px "ET Book", Palatino, "Palatino Linotype", serif';
+            this.ctx.textAlign = 'center';
+            
+            const yearRange = endYear - startYear;
+            const tickInterval = 2; // Every 2 years
+            const firstTick = Math.ceil(startYear / tickInterval) * tickInterval;
+            
+            for (let year = firstTick; year <= endYear; year += tickInterval) {
+                if (year >= startYear && year <= endYear) {
+                    const x = padding + ((year - startYear) / yearRange) * (width - 2 * padding);
+                    
+                    // Only draw if within animated progress
+                    if (x <= padding + (width - 2 * padding) * progress) {
+                        // Draw subtle tick mark at bottom of chart
+                        this.ctx.strokeStyle = '#ddd';
+                        this.ctx.lineWidth = 0.5;
+                        const bottomY = height - padding;
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(x, bottomY - 5);
+                        this.ctx.lineTo(x, bottomY);
+                        this.ctx.stroke();
+                        
+                        // Draw year label below chart
+                        this.ctx.fillText(year.toString(), x, bottomY + 12);
+                    }
+                }
+            }
+            
+            // Reset stroke style for points
+            this.ctx.strokeStyle = '#999';
+            this.ctx.lineWidth = 1;
             
             // Draw points using normalized data
             normalizedPoints.forEach((point, i) => {
                 const x = padding + ((point.year - startYear) / (endYear - startYear)) * (width - 2 * padding);
-                // Vary Y position slightly based on normalized value for visual interest
-                const baseY = height / 2;
-                const valueOffset = (point.normalizedValue - 50) * 0.3; // Subtle vertical variation
-                const y = baseY - valueOffset;
+                // Use Y position to represent actual value data (not just decoration)
+                const valueRange = height - 2 * padding - 20; // Leave space for year labels below
+                const y = padding + 10 + (100 - point.normalizedValue) * (valueRange / 100); // Invert: higher values = higher position
                 
                 if (x <= padding + (width - 2 * padding) * progress) {
                     const pointProgress = Math.min(1, Math.max(0, (progress - i * 0.1) * 3));
@@ -121,10 +163,67 @@ class CareerTimeline {
             
             if (progress < 1) {
                 requestAnimationFrame(animate);
+            } else {
+                // Show narrative hook annotation after animation completes
+                this.showNarrativeHook();
             }
         };
         
         animate();
+    }
+
+    showNarrativeHook() {
+        // Find the most recent milestone (should be first in array)
+        const mostRecent = this.points[0];
+        if (!mostRecent || !mostRecent.x || !mostRecent.y) return;
+        
+        // Create annotation element if it doesn't exist
+        if (!this.narrativeAnnotation) {
+            this.narrativeAnnotation = document.createElement('div');
+            this.narrativeAnnotation.className = 'timeline-narrative-hook';
+            this.narrativeAnnotation.innerHTML = `
+                <div class="hook-content">
+                    <strong>${mostRecent.year}</strong> · ${mostRecent.label}
+                    <div class="hook-subtitle">Latest milestone</div>
+                </div>
+                <div class="hook-arrow"></div>
+            `;
+            this.canvas.parentElement.appendChild(this.narrativeAnnotation);
+            
+            // Add scroll listener to hide annotation
+            this.setupScrollHide();
+        }
+        
+        // Position annotation relative to the most recent dot
+        const rect = this.canvas.getBoundingClientRect();
+        const containerRect = this.canvas.parentElement.getBoundingClientRect();
+        
+        // Position above and slightly to the right of the dot
+        const annotationX = mostRecent.x - 60; // Offset left to center over dot
+        const annotationY = mostRecent.y - 60; // Position above the dot
+        
+        this.narrativeAnnotation.style.left = `${annotationX}px`;
+        this.narrativeAnnotation.style.top = `${annotationY}px`;
+        
+        // Animate in after a brief delay
+        setTimeout(() => {
+            this.narrativeAnnotation.classList.add('visible');
+        }, 500);
+    }
+    
+    setupScrollHide() {
+        let hasScrolled = false;
+        
+        const hideOnScroll = () => {
+            if (!hasScrolled && this.narrativeAnnotation) {
+                hasScrolled = true;
+                this.narrativeAnnotation.classList.add('hidden');
+                // Remove listener after first scroll
+                window.removeEventListener('scroll', hideOnScroll);
+            }
+        };
+        
+        window.addEventListener('scroll', hideOnScroll, { passive: true });
     }
 
     getColorForType(type) {

@@ -36,7 +36,7 @@ section {
 
 /* Timeline Container */
 .timeline-container {
-    margin: 2rem 0;
+    margin: 4rem 0 2rem 0;
     height: 80px;
     position: relative;
 }
@@ -99,6 +99,70 @@ section {
 
 [data-metric]:hover::after {
     width: 100%;
+}
+
+/* Narrative Hook Annotation */
+.timeline-narrative-hook {
+    position: absolute;
+    background: #fff;
+    border: 2px solid #f39c12;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 14px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 200;
+    opacity: 0;
+    transform: translateY(-10px) scale(0.9);
+    transition: all 0.3s ease;
+    max-width: 180px;
+    pointer-events: none;
+}
+
+.timeline-narrative-hook.visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.timeline-narrative-hook.hidden {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.9);
+    pointer-events: none;
+}
+
+.timeline-narrative-hook .hook-content strong {
+    color: #f39c12;
+    font-weight: 600;
+}
+
+.timeline-narrative-hook .hook-subtitle {
+    font-size: 11px;
+    color: #666;
+    margin-top: 4px;
+    font-style: italic;
+}
+
+.timeline-narrative-hook .hook-arrow {
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid #f39c12;
+}
+
+.timeline-narrative-hook .hook-arrow::after {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -6px;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid #fff;
 }
 
 /* Reading Progress */
