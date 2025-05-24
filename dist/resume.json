@@ -39,12 +39,35 @@
         "Recruiting and mentoring founding engineering team"
       ],
       "metrics": {
-        "mvpTime": { "value": 8, "unit": "weeks", "label": "Time to MVP" },
-        "budget": { "value": 5000, "unit": "$", "label": "Bootstrap Budget" },
-        "recovered": { "value": 1000, "unit": "$", "label": "Dollars Recovered", "suffix": "s" },
-        "successRate": { "value": 100, "unit": "%", "label": "Success Rate" }
+        "mvpTime": {
+          "value": 8,
+          "unit": "weeks",
+          "label": "Time to MVP"
+        },
+        "budget": {
+          "value": 5000,
+          "unit": "$",
+          "label": "Bootstrap Budget"
+        },
+        "recovered": {
+          "value": 1000,
+          "unit": "$",
+          "label": "Dollars Recovered",
+          "suffix": "s"
+        },
+        "successRate": {
+          "value": 100,
+          "unit": "%",
+          "label": "Success Rate"
+        }
       },
-      "technologies": ["Next.js", "Python", "LLMs", "Vercel", "PostgreSQL"]
+      "technologies": [
+        "Next.js",
+        "Python",
+        "LLMs",
+        "Vercel",
+        "PostgreSQL"
+      ]
     },
     {
       "name": "RSI",
@@ -61,18 +84,62 @@
         "Recruited and mentored 6 DB/SRE hires, halving new‑hire time‑to‑first‑PR"
       ],
       "metrics": {
-        "teamSize": { "value": 6, "label": "Team Size" },
-        "releaseImprovement": { "value": 40, "unit": "%", "label": "Release Time Reduction" },
-        "defectReduction": { "value": 25, "unit": "%", "label": "Defect Reduction" },
-        "uptime": { "value": 99.95, "unit": "%", "label": "Uptime" },
-        "statesServed": { "value": 10, "label": "States Served" },
-        "uptimeLift": { "value": 20, "unit": "%", "label": "Uptime Gain" },
-        "trafficSpike": { "value": 50, "unit": "%", "label": "Traffic Absorbed" },
-        "servers": { "value": 10000, "label": "Servers Managed", "suffix": "+" },
-        "provTime": { "value": 15, "unit": "min", "label": "DB Provisioning" },
-        "dbPerformance": { "value": 100, "unit": "×", "label": "DB Performance Boost" }
+        "teamSize": {
+          "value": 6,
+          "label": "Team Size"
+        },
+        "releaseImprovement": {
+          "value": 40,
+          "unit": "%",
+          "label": "Release Time Reduction"
+        },
+        "defectReduction": {
+          "value": 25,
+          "unit": "%",
+          "label": "Defect Reduction"
+        },
+        "uptime": {
+          "value": 99.95,
+          "unit": "%",
+          "label": "Uptime"
+        },
+        "statesServed": {
+          "value": 10,
+          "label": "States Served"
+        },
+        "uptimeLift": {
+          "value": 20,
+          "unit": "%",
+          "label": "Uptime Gain"
+        },
+        "trafficSpike": {
+          "value": 50,
+          "unit": "%",
+          "label": "Traffic Absorbed"
+        },
+        "servers": {
+          "value": 10000,
+          "label": "Servers Managed",
+          "suffix": "+"
+        },
+        "provTime": {
+          "value": 15,
+          "unit": "min",
+          "label": "DB Provisioning"
+        },
+        "dbPerformance": {
+          "value": 100,
+          "unit": "×",
+          "label": "DB Performance Boost"
+        }
       },
-      "technologies": ["C#", "SQL Server", "Azure", "Kubernetes", "Jenkins"],
+      "technologies": [
+        "C#",
+        "SQL Server",
+        "Azure",
+        "Kubernetes",
+        "Jenkins"
+      ],
       "previousRoles": [
         {
           "title": "Senior Site Reliability Engineer",
@@ -118,11 +185,27 @@
         "Manage full lifecycle: UX design, coding, analytics, marketing"
       ],
       "metrics": {
-        "users": { "value": 500, "label": "Active Users", "suffix": "+" },
-        "rating": { "value": 4.8, "label": "App Store Rating" },
-        "accuracy": { "value": 99.9, "unit": "%", "label": "Accuracy" }
+        "users": {
+          "value": 500,
+          "label": "Active Users",
+          "suffix": "+"
+        },
+        "rating": {
+          "value": 4.8,
+          "label": "App Store Rating"
+        },
+        "accuracy": {
+          "value": 99.9,
+          "unit": "%",
+          "label": "Accuracy"
+        }
       },
-      "technologies": ["Swift", "SwiftUI", "CoreLocation", "CloudKit"]
+      "technologies": [
+        "Swift",
+        "SwiftUI",
+        "CoreLocation",
+        "CloudKit"
+      ]
     },
     {
       "name": "New Horizon Flood Relief",
@@ -135,11 +218,26 @@
         "Raised ~$10.5k through grassroots fundraising in one month"
       ],
       "metrics": {
-        "volunteers": { "value": 30, "label": "Volunteers" },
-        "familiesHelped": { "value": 50, "label": "Families Helped" },
-        "fundsRaised": { "value": 10500, "unit": "$", "label": "Funds Raised" }
+        "volunteers": {
+          "value": 30,
+          "label": "Volunteers"
+        },
+        "familiesHelped": {
+          "value": 50,
+          "label": "Families Helped"
+        },
+        "fundsRaised": {
+          "value": 10500,
+          "unit": "$",
+          "label": "Funds Raised"
+        }
       },
-      "technologies": ["Community Organizing", "Fundraising", "Logistics", "Distribution"]
+      "technologies": [
+        "Community Organizing",
+        "Fundraising",
+        "Logistics",
+        "Distribution"
+      ]
     }
   ],
   "education": [
@@ -149,29 +247,65 @@
       "studyType": "BSc",
       "startDate": "2007",
       "endDate": "2012",
-      "courses": ["Minor in Business Management"]
+      "courses": [
+        "Minor in Business Management"
+      ]
     }
   ],
   "skills": [
     {
       "name": "Programming Languages",
-      "keywords": ["Swift", "Python", "JavaScript", "TypeScript", "C#", "SQL"]
+      "keywords": [
+        "Swift",
+        "Python",
+        "JavaScript",
+        "TypeScript",
+        "C#",
+        "SQL"
+      ]
     },
     {
       "name": "Frameworks & Tools",
-      "keywords": ["Next.js", "React", "SwiftUI", "Node.js", ".NET", "Docker"]
+      "keywords": [
+        "Next.js",
+        "React",
+        "SwiftUI",
+        "Node.js",
+        ".NET",
+        "Docker"
+      ]
     },
     {
       "name": "Data & ML",
-      "keywords": ["Machine Learning", "LLMs", "PostgreSQL", "SQL Server", "ETL"]
+      "keywords": [
+        "Machine Learning",
+        "LLMs",
+        "PostgreSQL",
+        "SQL Server",
+        "ETL"
+      ]
     },
     {
       "name": "DevOps & Cloud",
-      "keywords": ["Terraform", "Kubernetes", "Docker", "Azure", "AWS", "CI/CD", "Observability"]
+      "keywords": [
+        "Terraform",
+        "Kubernetes",
+        "Docker",
+        "Azure",
+        "AWS",
+        "CI/CD",
+        "Observability"
+      ]
     },
     {
       "name": "Leadership",
-      "keywords": ["Engineering Management", "Agile", "CI/CD", "SRE", "Mentoring"]
+      "keywords": [
+        "Engineering Management",
+        "Agile",
+        "CI/CD",
+        "SRE",
+        "Mentoring"
+      ]
     }
   ],
   "languages": [
@@ -191,11 +325,22 @@
   "interests": [
     {
       "name": "Causes",
-      "keywords": ["Civil Rights", "Economic Empowerment", "Education", "Human Rights", "Science & Technology"]
+      "keywords": [
+        "Civil Rights",
+        "Economic Empowerment",
+        "Education",
+        "Human Rights",
+        "Science & Technology"
+      ]
     },
     {
       "name": "Technology",
-      "keywords": ["AI/ML", "Healthcare Tech", "Mobile Development", "Open Source"]
+      "keywords": [
+        "AI/ML",
+        "Healthcare Tech",
+        "Mobile Development",
+        "Open Source"
+      ]
     }
   ],
   "publications": [
@@ -232,59 +377,156 @@
       "tufteAnnotations": true
     },
     "careerTimeline": [
-      { "year": 2025, "label": "Do Little Lab", "value": 100, "type": "founder" },
-      { "year": 2023, "label": "Namaazi Launch", "value": 85, "type": "founder" },
-      { "year": 2020, "label": "Engineering Manager", "value": 99.95, "type": "leadership" },
-      { "year": 2017, "label": "ETL Optimization", "value": 66, "type": "achievement" },
-      { "year": 2013, "label": "RSI Start", "value": 45, "type": "career" },
-      { "year": 2010, "label": "Flood Relief", "value": 10.5, "type": "humanitarian" }
+      {
+        "year": 2025,
+        "label": "Do Little Lab",
+        "value": 100,
+        "type": "founder"
+      },
+      {
+        "year": 2023,
+        "label": "Namaazi Launch",
+        "value": 85,
+        "type": "founder"
+      },
+      {
+        "year": 2020,
+        "label": "Engineering Manager",
+        "value": 99.95,
+        "type": "leadership"
+      },
+      {
+        "year": 2017,
+        "label": "ETL Optimization",
+        "value": 66,
+        "type": "achievement"
+      },
+      {
+        "year": 2013,
+        "label": "RSI Start",
+        "value": 45,
+        "type": "career"
+      },
+      {
+        "year": 2010,
+        "label": "Flood Relief",
+        "value": 10.5,
+        "type": "humanitarian"
+      }
     ],
     "locations": [
-      { 
-        "name": "Pakistan", 
-        "lon": 73.0479, 
-        "lat": 33.6844, 
+      {
+        "name": "Karachi",
+        "lon": 66.990501,
+        "lat": 24.860966,
         "projects": [
-          { "title": "New Horizon Flood Relief", "year": "2010", "role": "Founder", "description": "Humanitarian relief effort for Pakistan flood victims" },
-          { "title": "Early Education Initiative", "year": "2009", "role": "Volunteer", "description": "Educational outreach in rural communities" }
+          {
+            "title": "New Horizon Flood Relief",
+            "year": "2010",
+            "role": "Founder",
+            "description": "Humanitarian relief effort for Pakistan flood victims"
+          },
+          {
+            "title": "Early Education Initiative",
+            "year": "2009",
+            "role": "Volunteer",
+            "description": "Educational outreach in rural communities"
+          }
         ]
       },
-      { 
-        "name": "Provo, Utah", 
-        "lon": -111.6587, 
-        "lat": 40.2338, 
+      {
+        "name": "Provo, Utah",
+        "lon": -111.6587,
+        "lat": 40.2338,
         "projects": [
-          { "title": "BYU Systems Admin", "year": "2011-2013", "role": "Systems Administrator", "description": "Campus IT infrastructure management" },
-          { "title": "BSc Actuarial Science", "year": "2009-2013", "role": "Student", "description": "Degree in mathematical risk assessment" }
+          {
+            "title": "BYU Systems Admin",
+            "year": "2011-2013",
+            "role": "Systems Administrator",
+            "description": "Campus IT infrastructure management"
+          },
+          {
+            "title": "BSc Actuarial Science",
+            "year": "2009-2013",
+            "role": "Student",
+            "description": "Degree in mathematical risk assessment"
+          }
         ]
       },
-      { 
-        "name": "Pembroke, MA", 
-        "lon": -70.7717, 
-        "lat": 42.0667, 
+      {
+        "name": "Pembroke, MA",
+        "lon": -70.7717,
+        "lat": 42.0667,
         "projects": [
-          { "title": "RSI", "year": "2013-2017", "role": "Software Engineer", "description": "ETL systems for state tax software" }
+          {
+            "title": "RSI",
+            "year": "2013-2017",
+            "role": "Software Engineer",
+            "description": "ETL systems for state tax software"
+          }
         ]
       },
-      { 
-        "name": "San Francisco", 
-        "lon": -122.4194, 
-        "lat": 37.7749, 
+      {
+        "name": "San Francisco",
+        "lon": -122.4194,
+        "lat": 37.7749,
         "projects": [
-          { "title": "Do Little Lab", "year": "2025", "role": "Founder", "description": "AI-driven healthcare claims advocacy" },
-          { "title": "Namaazi", "year": "2020-2024", "role": "Engineering Manager", "description": "Prayer timing app serving global Muslim community" }
+          {
+            "title": "Do Little Lab",
+            "year": "2025",
+            "role": "Founder",
+            "description": "AI-driven healthcare claims advocacy"
+          },
+          {
+            "title": "Namaazi",
+            "year": "2020-2024",
+            "role": "Engineering Manager",
+            "description": "Prayer timing app serving global Muslim community"
+          }
         ]
       }
     ],
     "annotations": [
-      { "selector": "[data-metric=\"40\"]", "text": "Agile transformation!", "delay": 2000 },
-      { "selector": "[data-metric=\"99.95\"]", "text": "Five 9s reliability", "delay": 2500 },
-      { "selector": "[data-metric=\"8\"]", "text": "Speed matters", "delay": 1500 },
-      { "selector": "[data-metric=\"10.5\"]", "text": "Community impact", "delay": 3000 },
-      { "selector": "[data-metric=\"10000\"]", "text": "That's a LOT of servers 🚀", "delay": 1800 },
-      { "selector": "[data-metric=\"20\"]", "text": "double‑digit uptime gain", "delay": 2200 },
-      { "selector": "[data-metric=\"15\"]", "text": "minutes, not hours!", "delay": 2600 },
-      { "selector": "[data-metric=\"100\"][data-unit=\"x\"]", "text": "100× performance! 🚄", "delay": 2400 }
+      {
+        "selector": "[data-metric=\"40\"]",
+        "text": "Agile transformation!",
+        "delay": 2000
+      },
+      {
+        "selector": "[data-metric=\"99.95\"]",
+        "text": "Five 9s reliability",
+        "delay": 2500
+      },
+      {
+        "selector": "[data-metric=\"8\"]",
+        "text": "Speed matters",
+        "delay": 1500
+      },
+      {
+        "selector": "[data-metric=\"10.5\"]",
+        "text": "Community impact",
+        "delay": 3000
+      },
+      {
+        "selector": "[data-metric=\"10000\"]",
+        "text": "That's a LOT of servers 🚀",
+        "delay": 1800
+      },
+      {
+        "selector": "[data-metric=\"20\"]",
+        "text": "double‑digit uptime gain",
+        "delay": 2200
+      },
+      {
+        "selector": "[data-metric=\"15\"]",
+        "text": "minutes, not hours!",
+        "delay": 2600
+      },
+      {
+        "selector": "[data-metric=\"100\"][data-unit=\"x\"]",
+        "text": "100× performance! 🚄",
+        "delay": 2400
+      }
     ]
   }
 }
