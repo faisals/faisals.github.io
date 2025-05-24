@@ -376,13 +376,18 @@ article.resting {
 .career-map {
     position: relative;
     width: 100%;
-    max-width: 640px;
-    margin: 3rem auto;
 }
 
 .career-map svg {
     width: 100%;
     height: auto;
+    aspect-ratio: 16/9;
+}
+
+/* Figure wrapper for compact composition */
+.career-map-figure {
+    max-width: 640px;
+    margin: 3rem auto;
 }
 
 /* Map markers */
@@ -391,9 +396,13 @@ article.resting {
     cursor: pointer;
 }
 
-.map-marker:hover,
-.map-marker:focus {
+.map-marker:hover {
     outline: none;
+}
+
+.map-marker:focus {
+    outline: 2px solid #b20808;
+    outline-offset: 2px;
 }
 
 /* Halo appears only on interaction */
@@ -426,20 +435,88 @@ article.resting {
     font-variant: small-caps;
 }
 
-/* Location tooltip */
+/* Location tooltip - Glassmorphic design */
 .location-tooltip {
     position: fixed;
-    background: #fffff8;
-    border: 1px solid #ccc;
-    padding: 8px 12px;
+    backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    padding: 16px 20px;
     font-size: 0.9rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
     pointer-events: none;
     display: none;
     z-index: 1000;
-    max-width: 200px;
+    max-width: 280px;
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+    transition: all 0.3s ease;
 }
 
+.location-tooltip.visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+/* Project card structure */
+.project-card {
+    margin-bottom: 12px;
+}
+
+.project-card:last-child {
+    margin-bottom: 0;
+}
+
+/* Title styling */
+.location-tooltip .title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+    line-height: 1.3;
+}
+
+/* Metric chips container */
+.metric-chips {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+    align-items: center;
+}
+
+/* Individual chips */
+.year-chip,
+.role-chip {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    line-height: 1;
+}
+
+.year-chip {
+    background: rgba(178, 8, 8, 0.1);
+    color: #b20808;
+    border: 1px solid rgba(178, 8, 8, 0.2);
+}
+
+.role-chip {
+    background: rgba(102, 102, 102, 0.1);
+    color: #666;
+    border: 1px solid rgba(102, 102, 102, 0.2);
+}
+
+/* Description text */
+.location-tooltip .description {
+    font-size: 0.85rem;
+    color: #555;
+    line-height: 1.4;
+    margin-top: 6px;
+}
+
+/* Legacy support for old tooltip structure */
 .location-tooltip h4 {
     margin: 0 0 4px 0;
     font-size: 0.95rem;
@@ -547,4 +624,26 @@ article.resting {
         padding-right: 8%;
     }
     */
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .map-marker-halo {
+        transition: none;
+    }
+    
+    .location-tooltip {
+        transition: none;
+    }
+    
+    .timeline-tooltip {
+        transition: none;
+    }
+    
+    /* Disable all CSS animations */
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }

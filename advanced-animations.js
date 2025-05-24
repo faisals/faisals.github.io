@@ -333,10 +333,41 @@ class CareerMap {
             // Get locations from resume data
             const resumeData = window.resume || {};
             this.locations = resumeData.meta?.locations || [
-                { name: 'Pakistan', lon: 73.0479, lat: 33.6844, projects: ['New Horizon Flood Relief', 'Early Education'] },
-                { name: 'Provo, Utah', lon: -111.6587, lat: 40.2338, projects: ['BYU Systems Admin', 'BSc Actuarial Science'] },
-                { name: 'Pembroke, MA', lon: -70.7717, lat: 42.0667, projects: ['RSI'] },
-                { name: 'San Francisco', lon: -122.4194, lat: 37.7749, projects: ['Do Little Lab', 'Namaazi'] }
+                { 
+                    name: 'Pakistan', 
+                    lon: 73.0479, 
+                    lat: 33.6844, 
+                    projects: [
+                        { title: 'New Horizon Flood Relief', year: '2010', role: 'Founder', description: 'Humanitarian relief effort for Pakistan flood victims' },
+                        { title: 'Early Education Initiative', year: '2009', role: 'Volunteer', description: 'Educational outreach in rural communities' }
+                    ]
+                },
+                { 
+                    name: 'Provo, Utah', 
+                    lon: -111.6587, 
+                    lat: 40.2338, 
+                    projects: [
+                        { title: 'BYU Systems Admin', year: '2011-2013', role: 'Systems Administrator', description: 'Campus IT infrastructure management' },
+                        { title: 'BSc Actuarial Science', year: '2009-2013', role: 'Student', description: 'Degree in mathematical risk assessment' }
+                    ]
+                },
+                { 
+                    name: 'Pembroke, MA', 
+                    lon: -70.7717, 
+                    lat: 42.0667, 
+                    projects: [
+                        { title: 'RSI', year: '2013-2017', role: 'Software Engineer', description: 'ETL systems for state tax software' }
+                    ]
+                },
+                { 
+                    name: 'San Francisco', 
+                    lon: -122.4194, 
+                    lat: 37.7749, 
+                    projects: [
+                        { title: 'Do Little Lab', year: '2025', role: 'Founder', description: 'AI-driven healthcare claims advocacy' },
+                        { title: 'Namaazi', year: '2020-2024', role: 'Engineering Manager', description: 'Prayer timing app serving global Muslim community' }
+                    ]
+                }
             ];
 
             this.createMap();
@@ -349,39 +380,44 @@ class CareerMap {
     }
 
     createMap() {
-        const w = 600, h = 400;
+        const w = 550, h = 300;
         
         // Create SVG
         const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+        svg.setAttribute('role', 'img');
+        svg.setAttribute('aria-label', 'Map showing career moves from San Francisco → Provo → Pembroke → Pakistan');
         svg.style.width = '100%';
         svg.style.height = 'auto';
 
-        // Simple Mercator-like projection
+        // Simple Mercator-like projection with visual center shifted down 1/3
         const projection = (lon, lat) => {
             const x = (lon + 180) * (w / 360);
             const latRad = lat * Math.PI / 180;
             const mercN = Math.log(Math.tan((Math.PI / 4) + (latRad / 2)));
-            const y = (h / 2) - (w * mercN / (2 * Math.PI));
-            return [Math.max(20, Math.min(w-20, x)), Math.max(20, Math.min(h-20, y))];
+            // Shift the vertical center down by h/5 for better canvas positioning
+            const y = (h / 2 + h / 5) - (w * mercN / (2 * Math.PI));
+            // No Y-clamp; only a soft 10-px padding
+            return [Math.max(10, Math.min(w-10, x)), Math.max(10, Math.min(h-10, y))];
         };
 
         // Add simplified world outline (Natural Earth 110m inspired, single-stroke)
         const worldOutline = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         
         // Simplified world landmasses projected to our Mercator-like coordinates
-        // Scale factors for our 600x400 viewport
+        // Scale factors for our 550x300 compact viewport
         const scaleX = w / 360;
         const scaleY = h / 180;
         const offsetX = w / 2;
         const offsetY = h / 2;
         
-        // Function to convert lat/lon to our coordinate system
+        // Function to convert lat/lon to our coordinate system (matching main projection)
         const toCoords = (lon, lat) => {
             const x = (lon + 180) * scaleX;
             const latRad = lat * Math.PI / 180;
             const mercN = Math.log(Math.tan((Math.PI / 4) + (latRad / 2)));
-            const y = (h / 2) - (w * mercN / (2 * Math.PI));
+            // Use same vertical shift as main projection
+            const y = (h / 2 + h / 5) - (w * mercN / (2 * Math.PI));
             return `${x.toFixed(1)},${y.toFixed(1)}`;
         };
         
@@ -427,9 +463,9 @@ class CareerMap {
         
         worldOutline.setAttribute('d', worldPath);
         worldOutline.setAttribute('stroke', '#d7d7d7');
-        worldOutline.setAttribute('stroke-width', '0.4');
+        worldOutline.setAttribute('stroke-width', '0.25');
         worldOutline.setAttribute('fill', 'none');
-        worldOutline.setAttribute('opacity', '1');
+        worldOutline.setAttribute('opacity', '0.35');
         svg.appendChild(worldOutline);
 
         // Add arrowhead marker
@@ -448,6 +484,14 @@ class CareerMap {
         arrowPath.setAttribute('fill', '#b20808');
         marker.appendChild(arrowPath);
         defs.appendChild(marker);
+        
+        // Add gradient stroke that fades to the destination
+        const grad = document.createElementNS('http://www.w3.org/2000/svg','linearGradient');
+        grad.id = 'journeyGrad';
+        grad.innerHTML = `<stop offset="0%" stop-color="#b20808" stop-opacity="0.4"/>
+                          <stop offset="100%" stop-color="#b20808" stop-opacity="1"/>`;
+        defs.appendChild(grad);
+        
         svg.appendChild(defs);
 
         // Project locations
@@ -455,28 +499,66 @@ class CareerMap {
             const [x, y] = projection(loc.lon, loc.lat);
             return { ...loc, x, y };
         });
+        
+        // Create a copy for marker positions with nudge
+        const markerLocations = projectedLocations.map(loc => ({
+            ...loc,
+            y: loc.y + 8  // Nudge markers down 8px for better visual balance
+        }));
 
-        // Create journey path
-        let pathData = `M ${projectedLocations[0].x} ${projectedLocations[0].y}`;
-        for (let i = 1; i < projectedLocations.length; i++) {
-            const curr = projectedLocations[i];
-            const prev = projectedLocations[i-1];
-            const midX = (prev.x + curr.x) / 2;
-            const midY = Math.min(prev.y, curr.y) - 30;
-            pathData += ` Q ${midX} ${midY} ${curr.x} ${curr.y}`;
-        }
+        // Create geodesic journey path using D3
+        const createGeodesicPath = () => {
+            if (typeof d3 === 'undefined') {
+                console.warn('D3 not loaded, falling back to simple arcs');
+                return this.createFallbackPath(markerLocations);
+            }
+
+            // Create one continuous array of points for the entire journey
+            const allPoints = [];
+            
+            for (let i = 0; i < this.locations.length - 1; i++) {
+                const source = [this.locations[i].lon, this.locations[i].lat];
+                const target = [this.locations[i+1].lon, this.locations[i+1].lat];
+                
+                // Use D3's geoInterpolate for great circle interpolation
+                const interpolate = d3.geoInterpolate(source, target);
+                
+                // Sample points along the great circle
+                const segmentSamples = (i === this.locations.length - 2) ? 30 : 29; // Last segment gets full 30 points
+                for (let t = 0; t <= 1; t += 1/29) {
+                    // Skip the first point of segments after the first to avoid duplicates
+                    if (i > 0 && t === 0) continue;
+                    
+                    const [lon, lat] = interpolate(t);
+                    const [x, y] = projection(lon, lat);
+                    // Apply the same 8px nudge to path points
+                    allPoints.push([x, y + 8]);
+                }
+            }
+            
+            // Use D3's line generator with cardinal curve for smooth interpolation
+            const line = d3.line()
+                .curve(d3.curveCardinal.tension(0.3))
+                .x(d => d[0])
+                .y(d => d[1]);
+            
+            return line(allPoints);
+        };
         
         const journeyPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        journeyPath.setAttribute('d', pathData);
-        journeyPath.setAttribute('stroke', '#b20808');
+        journeyPath.setAttribute('d', createGeodesicPath());
+        journeyPath.setAttribute('stroke', 'url(#journeyGrad)');
         journeyPath.setAttribute('stroke-width', '1');
         journeyPath.setAttribute('stroke-linecap', 'round');
+        journeyPath.setAttribute('stroke-linejoin', 'round');       // smoother
+        journeyPath.setAttribute('stroke-dasharray', '3 5');        // tighter rhythm
+        journeyPath.setAttribute('stroke-opacity', '0.3');          // lighter appearance
         journeyPath.setAttribute('fill', 'none');
         journeyPath.setAttribute('marker-end', 'url(#arrow)');
         svg.appendChild(journeyPath);
 
         // Add location markers with interactions
-        projectedLocations.forEach((location, index) => {
+        markerLocations.forEach((location, index) => {
             // Halo (appears on hover)
             const halo = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
             halo.setAttribute('class', 'map-marker-halo');
@@ -496,6 +578,7 @@ class CareerMap {
             // Add interaction events
             marker.addEventListener('mouseenter', (e) => {
                 halo.classList.add('active');
+                marker.animate([{r:3},{r:5},{r:3}],{duration:600,iterations:1});
                 this.showTooltip(e, location);
             });
             marker.addEventListener('mouseleave', () => {
@@ -513,20 +596,35 @@ class CareerMap {
             
             svg.appendChild(marker);
 
-            // Add location label
+            // Add location label with better spacing around the curve
             const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
             label.setAttribute('x', location.x);
-            label.setAttribute('y', location.y + 20);
+            // Position labels with more breathing room - above or below markers strategically
+            const labelY = location.y < h/2 ? location.y + 22 : location.y - 20;
+            label.setAttribute('y', labelY);
             label.setAttribute('text-anchor', 'middle');
             label.setAttribute('font-family', 'et-book');
-            label.setAttribute('font-size', '11');
+            label.setAttribute('font-size', 'max(9px, 0.6vw)');  // responsive, min 9px
             label.setAttribute('font-variant', 'small-caps');
-            label.setAttribute('fill', '#555');
+            label.setAttribute('fill', '#444');            // darker, but low-saturation
             label.textContent = location.name;
             svg.appendChild(label);
         });
 
         this.container.appendChild(svg);
+    }
+
+    createFallbackPath(projectedLocations) {
+        // Fallback to simple Bézier curves when D3 is not available
+        let pathData = `M ${projectedLocations[0].x},${projectedLocations[0].y}`;
+        for (let i = 1; i < projectedLocations.length; i++) {
+            const curr = projectedLocations[i];
+            const prev = projectedLocations[i-1];
+            const midX = (prev.x + curr.x) / 2;
+            const midY = (prev.y + curr.y) / 2 + 35;   // tighter bell-curve arch
+            pathData += ` Q ${midX},${midY} ${curr.x},${curr.y}`;
+        }
+        return pathData;
     }
 
     createTooltip() {
@@ -538,21 +636,70 @@ class CareerMap {
     showTooltip(event, location) {
         if (!this.tooltip) return;
         
+        // Create rich tooltip content with glassmorphic design
+        const projectCards = location.projects.map(project => {
+            // Handle both old (string) and new (object) project formats
+            if (typeof project === 'string') {
+                return `<div class="project-card">
+                    <div class="title">${project}</div>
+                </div>`;
+            }
+            
+            return `<div class="project-card">
+                <div class="title">${project.title}</div>
+                <div class="metric-chips">
+                    <span class="year-chip">${project.year}</span>
+                    <span class="role-chip">${project.role}</span>
+                </div>
+                <div class="description">${project.description}</div>
+            </div>`;
+        }).join('');
+        
         this.tooltip.innerHTML = `
-            <h4>${location.name}</h4>
-            <ul>
-                ${location.projects.map(project => `<li>${project}</li>`).join('')}
-            </ul>
+            <div class="tooltip-header">
+                <h4 class="location-title">${location.name}</h4>
+            </div>
+            <div class="tooltip-content">
+                ${projectCards}
+            </div>
         `;
         
+        // Position tooltip with edge clamping
         this.tooltip.style.display = 'block';
-        this.tooltip.style.left = (event.pageX + 10) + 'px';
-        this.tooltip.style.top = (event.pageY - 10) + 'px';
+        
+        // Calculate position with viewport edge detection
+        let left = event.pageX + 10;
+        let top = event.pageY - 10;
+        
+        // Get tooltip dimensions after content is set
+        const tooltipRect = this.tooltip.getBoundingClientRect();
+        
+        // Clamp to viewport edges
+        if (left + tooltipRect.width > window.innerWidth - 12) {
+            left = window.innerWidth - tooltipRect.width - 12;
+        }
+        if (top + tooltipRect.height > window.innerHeight - 12) {
+            top = window.innerHeight - tooltipRect.height - 12;
+        }
+        
+        this.tooltip.style.left = left + 'px';
+        this.tooltip.style.top = top + 'px';
+        
+        // Trigger glassmorphic fade-in animation
+        requestAnimationFrame(() => {
+            this.tooltip.classList.add('visible');
+        });
     }
 
     hideTooltip() {
         if (this.tooltip) {
-            this.tooltip.style.display = 'none';
+            this.tooltip.classList.remove('visible');
+            // Hide after animation completes
+            setTimeout(() => {
+                if (this.tooltip && !this.tooltip.classList.contains('visible')) {
+                    this.tooltip.style.display = 'none';
+                }
+            }, 300); // Match CSS transition duration
         }
     }
 
@@ -564,6 +711,7 @@ class CareerMap {
         if (!aboutSection) return;
         
         const figure = document.createElement('figure');
+        figure.className = 'career-map-figure';
         figure.appendChild(this.container);
         
         const figcaption = document.createElement('figcaption');
