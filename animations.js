@@ -91,7 +91,7 @@ class CareerTimeline {
             });
             
             // Draw year labels and tick marks (every 2 years)
-            this.ctx.fillStyle = '#bbb';
+            this.ctx.fillStyle = 'rgba(0, 0, 0, 0.6)'; // Better contrast for accessibility (WCAG AA)
             this.ctx.font = '10px "ET Book", Palatino, "Palatino Linotype", serif';
             this.ctx.textAlign = 'center';
             
@@ -105,8 +105,8 @@ class CareerTimeline {
                     
                     // Only draw if within animated progress
                     if (x <= padding + (width - 2 * padding) * progress) {
-                        // Draw subtle tick mark at bottom of chart
-                        this.ctx.strokeStyle = '#ddd';
+                        // Draw subtle tick mark at bottom of chart  
+                        this.ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)'; // Consistent with improved contrast
                         this.ctx.lineWidth = 0.5;
                         const bottomY = height - padding;
                         this.ctx.beginPath();
