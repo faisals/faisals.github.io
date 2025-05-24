@@ -16,6 +16,7 @@ class CareerTimeline {
         this.canvas.height = 80;
         container.appendChild(this.canvas);
         
+        this.createGradients();
         this.setupIntersectionObserver();
         this.setupHoverInteractions();
     }
@@ -138,15 +139,17 @@ class CareerTimeline {
                     const radius = Math.max(0, baseRadius * pointProgress);
                     
                     if (radius > 0) {
-                        this.ctx.fillStyle = this.getColorForType(point.type);
+                        // Use vibrant gradient fill
+                        this.ctx.fillStyle = this.getGradientForType(point.type);
                         this.ctx.beginPath();
                         this.ctx.arc(x, y, radius, 0, Math.PI * 2);
                         this.ctx.fill();
                         
-                        // Add subtle glow for high-value points
+                        // Add subtle glow for high-value points with gradient color
                         if (point.normalizedValue > 75) {
-                            this.ctx.shadowColor = this.getColorForType(point.type);
-                            this.ctx.shadowBlur = 4;
+                            const gradientColors = this.getColorForType(point.type);
+                            this.ctx.shadowColor = gradientColors.start;
+                            this.ctx.shadowBlur = 6;
                             this.ctx.beginPath();
                             this.ctx.arc(x, y, radius * 0.7, 0, Math.PI * 2);
                             this.ctx.fill();
@@ -227,14 +230,63 @@ class CareerTimeline {
     }
 
     getColorForType(type) {
-        const colors = {
-            humanitarian: '#e74c3c',
-            career: '#3498db',
-            achievement: '#2ecc71',
-            leadership: '#9b59b6',
-            founder: '#f39c12'
+        // Vibrant tech-forward gradient colors (WCAG AA compliant on eggshell)
+        const gradients = {
+            humanitarian: { start: '#FF6B6B', end: '#FF3E3E' },  // Vibrant red gradient
+            career: { start: '#4ECDC4', end: '#26D0CE' },        // Vibrant teal gradient  
+            achievement: { start: '#45B7D1', end: '#2196F3' },   // Vibrant blue gradient
+            leadership: { start: '#96CEB4', end: '#52C98B' },    // Vibrant green gradient
+            founder: { start: '#FFEAA7', end: '#FDCB6E' }        // Vibrant orange gradient
         };
-        return colors[type] || '#333';
+        return gradients[type] || { start: '#333', end: '#666' };
+    }
+
+    createGradients() {
+        // Create SVG gradients for each timeline type
+        const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.style.position = 'absolute';
+        svg.style.width = '0';
+        svg.style.height = '0';
+        svg.appendChild(defs);
+        
+        const types = ['humanitarian', 'career', 'achievement', 'leadership', 'founder'];
+        
+        types.forEach(type => {
+            const gradient = this.getColorForType(type);
+            const linearGradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+            linearGradient.id = `timeline-grad-${type}`;
+            linearGradient.setAttribute('x1', '0%');
+            linearGradient.setAttribute('y1', '0%');
+            linearGradient.setAttribute('x2', '100%');
+            linearGradient.setAttribute('y2', '100%');
+            
+            const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+            stop1.setAttribute('offset', '0%');
+            stop1.setAttribute('stop-color', gradient.start);
+            
+            const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+            stop2.setAttribute('offset', '100%');
+            stop2.setAttribute('stop-color', gradient.end);
+            
+            linearGradient.appendChild(stop1);
+            linearGradient.appendChild(stop2);
+            defs.appendChild(linearGradient);
+        });
+        
+        this.canvas.parentElement.appendChild(svg);
+        return types.reduce((acc, type) => {
+            acc[type] = `url(#timeline-grad-${type})`;
+            return acc;
+        }, {});
+    }
+
+    getGradientForType(type) {
+        const gradient = this.getColorForType(type);
+        const canvasGradient = this.ctx.createLinearGradient(0, 0, 14, 14); // Small gradient for dots
+        canvasGradient.addColorStop(0, gradient.start);
+        canvasGradient.addColorStop(1, gradient.end);
+        return canvasGradient;
     }
 
     setupHoverInteractions() {
