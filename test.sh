@@ -44,20 +44,31 @@ SERVER_PID=$!
 # Step 4: Wait a moment for server to start
 sleep 2
 
-# Step 5: Open in browser
-echo "🌐 Opening http://localhost:$PORT in browser..."
+# Step 5: Open in Chrome browser
+echo "🌐 Opening http://localhost:$PORT in Chrome..."
 
 if command -v open &> /dev/null; then
-    # macOS
-    open "http://localhost:$PORT"
-elif command -v xdg-open &> /dev/null; then
-    # Linux
-    xdg-open "http://localhost:$PORT"
+    # macOS - open in Chrome
+    if [ -d "/Applications/Google Chrome.app" ]; then
+        open -a "Google Chrome" "http://localhost:$PORT"
+    else
+        echo "⚠️  Chrome not found. Opening in default browser..."
+        open "http://localhost:$PORT"
+    fi
+elif command -v google-chrome &> /dev/null; then
+    # Linux - Chrome
+    google-chrome "http://localhost:$PORT" &
+elif command -v google-chrome-stable &> /dev/null; then
+    # Linux - Chrome stable
+    google-chrome-stable "http://localhost:$PORT" &
+elif command -v chromium-browser &> /dev/null; then
+    # Linux - Chromium
+    chromium-browser "http://localhost:$PORT" &
 elif command -v start &> /dev/null; then
-    # Windows
-    start "http://localhost:$PORT"
+    # Windows - Chrome
+    start chrome "http://localhost:$PORT" 2>/dev/null || start "http://localhost:$PORT"
 else
-    echo "🔗 Please manually open: http://localhost:$PORT"
+    echo "🔗 Chrome not found. Please manually open: http://localhost:$PORT"
 fi
 
 echo ""

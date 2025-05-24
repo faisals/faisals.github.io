@@ -515,6 +515,7 @@ class CareerMap {
 
             // Create one continuous array of points for the entire journey
             const allPoints = [];
+            let outOfBounds = false;
             
             for (let i = 0; i < this.locations.length - 1; i++) {
                 const source = [this.locations[i].lon, this.locations[i].lat];
@@ -531,9 +532,22 @@ class CareerMap {
                     
                     const [lon, lat] = interpolate(t);
                     const [x, y] = projection(lon, lat);
+                    const nudgedY = y + 8;
+                    
+                    // Check if point goes out of bounds
+                    if (nudgedY < 0 || nudgedY > h) {
+                        outOfBounds = true;
+                    }
+                    
                     // Apply the same 8px nudge to path points
-                    allPoints.push([x, y + 8]);
+                    allPoints.push([x, nudgedY]);
                 }
+            }
+            
+            // Fall back to Bézier curves if geodesic goes out of bounds
+            if (outOfBounds) {
+                console.warn('Great-circle arc left viewBox – switching to Bézier');
+                return this.createFallbackPath(markerLocations);
             }
             
             // Use D3's line generator with cardinal curve for smooth interpolation
@@ -621,7 +635,7 @@ class CareerMap {
             const curr = projectedLocations[i];
             const prev = projectedLocations[i-1];
             const midX = (prev.x + curr.x) / 2;
-            const midY = (prev.y + curr.y) / 2 + 35;   // tighter bell-curve arch
+            const midY = (prev.y + curr.y) / 2 - 35;   // tighter bell-curve arch
             pathData += ` Q ${midX},${midY} ${curr.x},${curr.y}`;
         }
         return pathData;
