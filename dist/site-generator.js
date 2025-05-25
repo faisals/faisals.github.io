@@ -490,8 +490,7 @@ class SiteGenerator {
         }
         
         if (animations.tufteAnnotations) {
-            const annotations = new TufteAnnotations();
-            annotations.annotations = this.resume.meta.annotations;
+            new TufteAnnotations(this.resume.meta.annotations);
         }
     }
 

@@ -710,8 +710,9 @@ class CareerMap {
 
 // Tufte-Style Annotations
 class TufteAnnotations {
-    constructor() {
-        this.annotations = [
+    constructor(annotations = null) {
+        // Use passed annotations or fall back to defaults
+        this.annotations = annotations || [
             { selector: '[data-metric="40"]', text: 'Agile transformation!', delay: 2000 },
             { selector: '[data-metric="99.95"]', text: 'Five 9s reliability', delay: 2500 },
             { selector: '[data-metric="8"]', text: 'Speed matters', delay: 1500 },
