@@ -1,3 +1,487 @@
+// Enhanced Tufte Timeline System
+class EnhancedTimeline {
+    constructor() {
+        this.container = null;
+        this.data = [];
+        this.selectedMilestone = null;
+        this.visualizationStyle = 'timeline'; // timeline, sparkline, table
+        this.config = {
+            margin: { left: 20, right: 20, top: 20, bottom: 40 },
+            roleHeights: {
+                founder: 35,
+                leadership: 25, 
+                achievement: 20,
+                career: 15,
+                humanitarian: 10
+            },
+            colors: {
+                baseline: '#111',  // Site's main text color
+                text: '#111',      // Site's main text color
+                textSecondary: '#666',  // Site's secondary text color
+                indicator: '#111',      // Default indicator color
+                hover: '#b20808'        // Site's accent red color
+            }
+        };
+        this.init();
+    }
+
+    init() {
+        // Get timeline data from resume
+        const resumeData = window.resume || {};
+        const timelineData = resumeData.meta?.careerTimeline || [];
+        
+        if (timelineData.length === 0) {
+            console.warn('No career timeline data found');
+            return;
+        }
+
+        // Transform data to match our format
+        this.data = timelineData.map(item => ({
+            year: item.year,
+            title: item.label,
+            company: this.getCompanyForYear(item.year, resumeData),
+            impact: this.getImpactForYear(item.year, resumeData),
+            achievements: this.getAchievementsForYear(item.year, resumeData),
+            duration: this.getDurationForYear(item.year, resumeData),
+            type: item.type,
+            value: item.value
+        }));
+
+        this.createTimelineInterface();
+    }
+
+    getCompanyForYear(year, resumeData) {
+        const workEntries = resumeData.work || [];
+        for (const work of workEntries) {
+            const startYear = parseInt(work.startDate);
+            const endYear = work.endDate ? parseInt(work.endDate) : new Date().getFullYear();
+            if (year >= startYear && year <= endYear) {
+                return work.name;
+            }
+        }
+        return 'Independent';
+    }
+
+    getImpactForYear(year, resumeData) {
+        const workEntries = resumeData.work || [];
+        for (const work of workEntries) {
+            const startYear = parseInt(work.startDate);
+            const endYear = work.endDate ? parseInt(work.endDate) : new Date().getFullYear();
+            if (year >= startYear && year <= endYear) {
+                return work.summary || 'Career milestone';
+            }
+        }
+        return 'Significant career achievement';
+    }
+
+    getAchievementsForYear(year, resumeData) {
+        const workEntries = resumeData.work || [];
+        for (const work of workEntries) {
+            const startYear = parseInt(work.startDate);
+            const endYear = work.endDate ? parseInt(work.endDate) : new Date().getFullYear();
+            if (year >= startYear && year <= endYear) {
+                return work.highlights?.slice(0, 3) || ['Key career milestone'];
+            }
+        }
+        return ['Significant achievement'];
+    }
+
+    getDurationForYear(year, resumeData) {
+        const workEntries = resumeData.work || [];
+        for (const work of workEntries) {
+            const startYear = parseInt(work.startDate);
+            const endYear = work.endDate ? parseInt(work.endDate) : new Date().getFullYear();
+            if (year >= startYear && year <= endYear) {
+                const duration = endYear - startYear;
+                return duration > 0 ? `${duration}yr` : '1yr';
+            }
+        }
+        return '1yr';
+    }
+
+    createTimelineInterface() {
+        // Find the About section
+        const aboutSection = Array.from(document.querySelectorAll('section')).find(section => {
+            const h2 = section.querySelector('h2');
+            return h2 && h2.textContent.includes('About');
+        });
+
+        if (!aboutSection) return;
+
+        // Create main container as a figure element
+        const timelineWrapper = document.createElement('figure');
+        timelineWrapper.className = 'enhanced-timeline-wrapper';
+        timelineWrapper.innerHTML = `
+            <div class="timeline-header">
+                <h3 class="timeline-title">Career Progression, ${this.data[this.data.length-1]?.year}–${this.data[0]?.year}</h3>
+                <p class="timeline-subtitle">${this.data.length} major milestones across ${this.getUniqueCompanies()} organizations</p>
+            </div>
+            <div class="timeline-controls">
+                <button class="timeline-btn ${this.visualizationStyle === 'timeline' ? 'active' : ''}" data-style="timeline">timeline</button>
+                <button class="timeline-btn ${this.visualizationStyle === 'sparkline' ? 'active' : ''}" data-style="sparkline">sparkline</button>
+                <button class="timeline-btn ${this.visualizationStyle === 'table' ? 'active' : ''}" data-style="table">table</button>
+            </div>
+            <div class="timeline-container" id="timeline-container"></div>
+            <div class="timeline-detail" id="timeline-detail" style="display: none;"></div>
+            <figcaption>Career trajectory showing key milestones from humanitarian work to technical leadership</figcaption>
+        `;
+
+        // Insert BEFORE the About section instead of appending to it
+        aboutSection.parentNode.insertBefore(timelineWrapper, aboutSection);
+        this.container = document.getElementById('timeline-container');
+        this.detailPanel = document.getElementById('timeline-detail');
+
+        // Add event listeners
+        timelineWrapper.querySelectorAll('.timeline-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                this.switchVisualization(e.target.dataset.style);
+            });
+        });
+
+        // Initial render
+        this.renderVisualization();
+    }
+
+    getUniqueCompanies() {
+        return new Set(this.data.map(d => d.company)).size;
+    }
+
+    switchVisualization(style) {
+        this.visualizationStyle = style;
+        
+        // Update button states
+        const buttons = document.querySelectorAll('.timeline-btn');
+        buttons.forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.style === style);
+        });
+
+        this.renderVisualization();
+    }
+
+    renderVisualization() {
+        if (!this.container) return;
+
+        this.container.innerHTML = '';
+        this.selectedMilestone = null;
+        this.hideDetail();
+
+        // Set container height based on visualization type
+        switch (this.visualizationStyle) {
+            case 'timeline':
+                this.container.style.height = '140px';
+                this.renderTimeline();
+                break;
+            case 'sparkline':
+                this.container.style.height = '60px';
+                this.renderSparkline();
+                break;
+            case 'table':
+                this.container.style.height = 'auto'; // Table determines its own height
+                this.container.style.maxHeight = '400px'; // But with a max limit
+                this.container.style.overflowY = 'auto';
+                this.renderTable();
+                break;
+        }
+    }
+
+    renderTimeline() {
+        const containerRect = this.container.getBoundingClientRect();
+        const width = Math.max(600, containerRect.width || 600);
+        const height = 140;
+
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('width', width);
+        svg.setAttribute('height', height);
+        svg.setAttribute('role', 'img');
+        svg.setAttribute('aria-label', 'Career progression timeline');
+        svg.style.width = '100%';
+        svg.style.height = 'auto';
+
+        const sortedData = [...this.data].sort((a, b) => a.year - b.year);
+        const timelineY = height - this.config.margin.bottom;
+        const timelineWidth = width - this.config.margin.left - this.config.margin.right;
+
+        // Baseline
+        const baseline = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        baseline.setAttribute('x1', this.config.margin.left);
+        baseline.setAttribute('y1', timelineY);
+        baseline.setAttribute('x2', this.config.margin.left + timelineWidth);
+        baseline.setAttribute('y2', timelineY);
+        baseline.setAttribute('stroke', this.config.colors.baseline);
+        baseline.setAttribute('stroke-width', '0.5');
+        baseline.classList.add('timeline-baseline');
+        svg.appendChild(baseline);
+
+        // Milestones
+        sortedData.forEach((milestone, index) => {
+            const x = this.config.margin.left + (index / (sortedData.length - 1)) * timelineWidth;
+            const roleHeight = this.config.roleHeights[milestone.type] || 15;
+
+            const milestoneGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            milestoneGroup.classList.add('milestone-group');
+            milestoneGroup.setAttribute('data-year', milestone.year);
+
+            // Tick mark
+            const tick = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            tick.setAttribute('x1', x);
+            tick.setAttribute('y1', timelineY - 1);
+            tick.setAttribute('x2', x);
+            tick.setAttribute('y2', timelineY + 1);
+            tick.setAttribute('stroke', this.config.colors.baseline);
+            tick.setAttribute('stroke-width', '0.5');
+            tick.classList.add('milestone-tick');
+            tick.style.animationDelay = `${index * 100}ms`;
+            milestoneGroup.appendChild(tick);
+
+            // Role indicator bar
+            const indicator = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            indicator.setAttribute('x', x - 0.5);
+            indicator.setAttribute('y', timelineY - roleHeight);
+            indicator.setAttribute('width', 1);
+            indicator.setAttribute('height', roleHeight);
+            // Use accent color for founder milestones
+            const fillColor = milestone.type === 'founder' ? this.config.colors.hover : this.config.colors.indicator;
+            indicator.setAttribute('fill', fillColor);
+            indicator.classList.add('milestone-indicator');
+            indicator.style.animationDelay = `${index * 100 + 200}ms`;
+            indicator.addEventListener('click', () => this.selectMilestone(milestone));
+            indicator.addEventListener('mouseenter', () => this.highlightMilestone(indicator));
+            indicator.addEventListener('mouseleave', () => this.unhighlightMilestone(indicator, fillColor));
+            milestoneGroup.appendChild(indicator);
+
+            // Interactive area
+            const interactiveArea = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            interactiveArea.setAttribute('x', x - 15);
+            interactiveArea.setAttribute('y', timelineY - roleHeight - 10);
+            interactiveArea.setAttribute('width', 30);
+            interactiveArea.setAttribute('height', roleHeight + 20);
+            interactiveArea.setAttribute('fill', 'transparent');
+            interactiveArea.style.cursor = 'pointer';
+            interactiveArea.addEventListener('click', () => this.selectMilestone(milestone));
+            milestoneGroup.appendChild(interactiveArea);
+
+            // Year label
+            const yearLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            yearLabel.setAttribute('x', x);
+            yearLabel.setAttribute('y', timelineY + 16);
+            yearLabel.setAttribute('text-anchor', 'middle');
+            yearLabel.setAttribute('font-family', 'et-book, serif');
+            yearLabel.setAttribute('font-size', '12px');
+            yearLabel.setAttribute('fill', this.config.colors.text);
+            yearLabel.classList.add('milestone-year');
+            yearLabel.style.animationDelay = `${index * 100 + 400}ms`;
+            yearLabel.textContent = milestone.year;
+            milestoneGroup.appendChild(yearLabel);
+
+            // Company label
+            const companyLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            companyLabel.setAttribute('x', x);
+            companyLabel.setAttribute('y', timelineY + 28);
+            companyLabel.setAttribute('text-anchor', 'middle');
+            companyLabel.setAttribute('font-family', 'et-book, serif');
+            companyLabel.setAttribute('font-size', '10px');
+            companyLabel.setAttribute('fill', this.config.colors.textSecondary);
+            companyLabel.classList.add('milestone-company');
+            companyLabel.style.animationDelay = `${index * 100 + 500}ms`;
+            companyLabel.textContent = milestone.company;
+            milestoneGroup.appendChild(companyLabel);
+
+            // Type labels for significant roles
+            if (milestone.type === 'founder' || milestone.type === 'leadership') {
+                const typeLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                typeLabel.setAttribute('x', x);
+                typeLabel.setAttribute('y', timelineY - roleHeight - 3);
+                typeLabel.setAttribute('text-anchor', 'middle');
+                typeLabel.setAttribute('font-family', 'et-book, serif');
+                typeLabel.setAttribute('font-size', '9px');
+                typeLabel.setAttribute('fill', this.config.colors.text);
+                typeLabel.classList.add('milestone-type');
+                typeLabel.style.animationDelay = `${index * 100 + 600}ms`;
+                typeLabel.textContent = milestone.type === 'founder' ? 'Found' : 'Lead';
+                milestoneGroup.appendChild(typeLabel);
+            }
+
+            svg.appendChild(milestoneGroup);
+        });
+
+        this.container.appendChild(svg);
+    }
+
+    renderSparkline() {
+        const containerRect = this.container.getBoundingClientRect();
+        const width = Math.max(600, containerRect.width || 600);
+        const height = 60;
+
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('width', width);
+        svg.setAttribute('height', height);
+        svg.setAttribute('role', 'img');
+        svg.setAttribute('aria-label', 'Career progression sparkline');
+        svg.style.width = '100%';
+        svg.style.height = 'auto';
+
+        const sortedData = [...this.data].sort((a, b) => a.year - b.year);
+        const margin = { left: 20, right: 20, top: 10, bottom: 20 };
+        const lineWidth = width - margin.left - margin.right;
+        const lineHeight = height - margin.top - margin.bottom;
+
+        // Calculate sparkline path based on values
+        const points = sortedData.map((milestone, index) => {
+            const x = margin.left + (index / (sortedData.length - 1)) * lineWidth;
+            const normalizedValue = milestone.value / 100; // Assuming values are 0-100 scale
+            const y = margin.top + lineHeight - (normalizedValue * lineHeight);
+            return { x, y, milestone };
+        });
+
+        // Create path
+        const pathData = points.reduce((path, point, index) => {
+            const command = index === 0 ? 'M' : 'L';
+            return `${path} ${command} ${point.x} ${point.y}`;
+        }, '');
+
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', pathData);
+        path.setAttribute('stroke', '#111');
+        path.setAttribute('stroke-width', '1');
+        path.setAttribute('fill', 'none');
+        path.classList.add('sparkline-path');
+        svg.appendChild(path);
+
+        // Add data points
+        points.forEach((point, index) => {
+            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circle.setAttribute('cx', point.x);
+            circle.setAttribute('cy', point.y);
+            circle.setAttribute('r', '1.5');
+            circle.setAttribute('fill', '#b20808');
+            circle.classList.add('sparkline-point');
+            circle.style.animationDelay = `${index * 100 + 500}ms`;
+            svg.appendChild(circle);
+        });
+
+        // Year labels
+        const startLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        startLabel.setAttribute('x', margin.left);
+        startLabel.setAttribute('y', height - 5);
+        startLabel.setAttribute('font-family', 'et-book, serif');
+        startLabel.setAttribute('font-size', '10px');
+        startLabel.setAttribute('fill', '#666');
+        startLabel.textContent = sortedData[0]?.year;
+        svg.appendChild(startLabel);
+
+        const endLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        endLabel.setAttribute('x', width - margin.right);
+        endLabel.setAttribute('y', height - 5);
+        endLabel.setAttribute('text-anchor', 'end');
+        endLabel.setAttribute('font-family', 'et-book, serif');
+        endLabel.setAttribute('font-size', '10px');
+        endLabel.setAttribute('fill', '#666');
+        endLabel.textContent = sortedData[sortedData.length - 1]?.year;
+        svg.appendChild(endLabel);
+
+        this.container.appendChild(svg);
+    }
+
+    renderTable() {
+        const table = document.createElement('div');
+        table.className = 'timeline-table';
+        table.setAttribute('role', 'table');
+        table.setAttribute('aria-label', 'Career milestones table');
+
+        const header = document.createElement('div');
+        header.className = 'timeline-table-header';
+        header.innerHTML = `
+            <div>Year</div>
+            <div>Company</div>
+            <div>Role</div>
+            <div>Duration</div>
+        `;
+        table.appendChild(header);
+
+        const sortedData = [...this.data].sort((a, b) => a.year - b.year);
+        sortedData.forEach((milestone, index) => {
+            const row = document.createElement('div');
+            row.className = 'timeline-table-row';
+            row.setAttribute('role', 'row');
+            row.setAttribute('data-year', milestone.year);
+            row.style.animationDelay = `${index * 50}ms`;
+            row.innerHTML = `
+                <div style="font-family: monospace">${milestone.year}</div>
+                <div style="color: rgb(75 85 99)">${milestone.company}</div>
+                <div>${milestone.title}</div>
+                <div style="font-size: 0.75rem; color: rgb(107 114 128)">${milestone.duration}</div>
+            `;
+            row.addEventListener('click', () => this.selectMilestone(milestone));
+            table.appendChild(row);
+        });
+
+        this.container.appendChild(table);
+    }
+
+    selectMilestone(milestone) {
+        // Remove previous selected state
+        const allRows = document.querySelectorAll('.timeline-table-row');
+        allRows.forEach(row => row.classList.remove('selected'));
+        
+        if (this.selectedMilestone?.year === milestone.year) {
+            this.selectedMilestone = null;
+            this.hideDetail();
+        } else {
+            this.selectedMilestone = milestone;
+            this.showDetail(milestone);
+            
+            // Add selected state to current row
+            const selectedRow = document.querySelector(`.timeline-table-row[data-year="${milestone.year}"]`);
+            if (selectedRow) {
+                selectedRow.classList.add('selected');
+            }
+        }
+    }
+
+    highlightMilestone(indicator) {
+        indicator.setAttribute('fill', this.config.colors.hover);
+        indicator.style.transform = 'scaleX(1.5)';
+    }
+
+    unhighlightMilestone(indicator, originalColor) {
+        indicator.setAttribute('fill', originalColor || this.config.colors.indicator);
+        indicator.style.transform = 'scaleX(1)';
+    }
+
+    showDetail(milestone) {
+        if (!this.detailPanel) return;
+
+        const achievementsHTML = milestone.achievements.map((achievement, i) => 
+            `<div class="achievement-item" style="animation-delay: ${i * 100}ms">• ${achievement}</div>`
+        ).join('');
+
+        this.detailPanel.innerHTML = `
+            <div class="milestone-detail">
+                <div class="milestone-detail-header">
+                    <div class="milestone-detail-title">${milestone.year} — ${milestone.title}</div>
+                    <div class="milestone-detail-meta">${milestone.company}, ${milestone.duration}</div>
+                </div>
+                <div class="milestone-detail-impact">${milestone.impact}</div>
+                <div class="milestone-detail-achievements">
+                    ${achievementsHTML}
+                </div>
+            </div>
+        `;
+
+        this.detailPanel.style.display = 'block';
+        this.detailPanel.classList.add('visible');
+    }
+
+    hideDetail() {
+        if (this.detailPanel) {
+            this.detailPanel.classList.remove('visible');
+            setTimeout(() => {
+                this.detailPanel.style.display = 'none';
+            }, 300);
+        }
+    }
+}
+
 // Project Deep-Dives
 class ProjectDeepDive {
     constructor() {
@@ -711,8 +1195,9 @@ class CareerMap {
 // Tufte-Style Annotations
 class TufteAnnotations {
     constructor(annotations = null) {
-        // Use passed annotations or fall back to defaults
-        this.annotations = annotations || [
+        // Get annotations from resume data or use defaults
+        const resumeData = window.resume || {};
+        this.annotations = annotations || resumeData.meta?.annotations || [
             { selector: '[data-metric="40"]', text: 'Agile transformation!', delay: 2000 },
             { selector: '[data-metric="99.95"]', text: 'Five 9s reliability', delay: 2500 },
             { selector: '[data-metric="8"]', text: 'Speed matters', delay: 1500 },

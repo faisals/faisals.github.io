@@ -42,20 +42,6 @@ class SiteGenerator {
         // Header
         article.appendChild(this.createHeader());
         
-        // Timeline
-        if (this.resume.meta.animations.sparklineTimeline) {
-            const figure = document.createElement('figure');
-            const timelineContainer = document.createElement('div');
-            timelineContainer.className = 'timeline-container';
-            
-            const caption = document.createElement('figcaption');
-            caption.textContent = 'Career trajectory showing key milestones from humanitarian work to technical leadership';
-            
-            figure.appendChild(timelineContainer);
-            figure.appendChild(caption);
-            article.appendChild(figure);
-        }
-        
         // About Section
         article.appendChild(this.createAboutSection());
         
@@ -471,6 +457,12 @@ class SiteGenerator {
         
         if (animations.skillConstellation) {
             new SkillConstellation(this.resume);
+        }
+
+        if (animations.sparklineTimeline) {
+            // Make resume data available to EnhancedTimeline
+            window.resume = this.resume;
+            new EnhancedTimeline();
         }
         
         if (animations.careerMap) {
