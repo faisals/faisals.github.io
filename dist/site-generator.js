@@ -112,7 +112,7 @@ class SiteGenerator {
         section.innerHTML = `
             <h2>About</h2>
             <p>
-                ${this.addSidenote(firstPart, 'Building technology that makes a difference in people\'s lives.')}
+                ${this.addSidenote(firstPart, "Building technology that makes a difference in people's lives.")}
             </p>
             <p>${secondPart}</p>
         `;
@@ -507,30 +507,53 @@ class SiteGenerator {
         const edges = [];
         let id = 0;
         
-        // Add skill nodes
+        // Track skill frequency across projects
+        const skillFrequency = {};
+        const nodeMap = {}; // Map labels to node IDs
+        
+        // First pass: count skill frequency
+        this.resume.work.forEach(job => {
+            if (job.technologies) {
+                job.technologies.forEach(tech => {
+                    skillFrequency[tech] = (skillFrequency[tech] || 0) + 1;
+                });
+            }
+        });
+        
+        // Add skill nodes with frequency data
         const skillNodes = {};
         this.resume.skills.forEach(category => {
-            category.keywords.slice(0, 3).forEach(skill => {
-                skillNodes[skill] = id;
-                nodes.push({
-                    id: id++,
-                    label: skill,
-                    type: 'skill',
-                    x: Math.random() * graph.canvas.width,
-                    y: Math.random() * graph.canvas.height,
-                    vx: 0,
-                    vy: 0
-                });
+            category.keywords.forEach(skill => {
+                if (!skillNodes[skill]) {
+                    skillNodes[skill] = id;
+                    nodeMap[skill] = id;
+                    nodes.push({
+                        id: id++,
+                        label: skill,
+                        type: 'skill',
+                        frequency: skillFrequency[skill] || 0,
+                        category: category.name,
+                        x: Math.random() * graph.canvas.width,
+                        y: Math.random() * graph.canvas.height,
+                        vx: 0,
+                        vy: 0
+                    });
+                }
             });
         });
         
         // Add project nodes and connect to skills
-        this.resume.work.slice(0, 4).forEach(job => {
+        const projectNodes = {};
+        this.resume.work.forEach(job => {
             const projectId = id;
+            projectNodes[job.name] = projectId;
+            nodeMap[job.name] = projectId;
+            
             nodes.push({
                 id: id++,
                 label: job.name,
                 type: 'project',
+                position: job.position,
                 x: Math.random() * graph.canvas.width,
                 y: Math.random() * graph.canvas.height,
                 vx: 0,
@@ -541,27 +564,78 @@ class SiteGenerator {
             if (job.technologies) {
                 job.technologies.forEach(tech => {
                     if (skillNodes[tech] !== undefined) {
-                        edges.push({ source: skillNodes[tech], target: projectId });
+                        edges.push({ 
+                            source: skillNodes[tech], 
+                            target: projectId,
+                            weight: 1
+                        });
                     }
                 });
             }
         });
         
-        // Add impact nodes
-        this.resume.interests[0].keywords.slice(0, 3).forEach(interest => {
-            nodes.push({
-                id: id++,
-                label: interest,
-                type: 'impact',
-                x: Math.random() * graph.canvas.width,
-                y: Math.random() * graph.canvas.height,
-                vx: 0,
-                vy: 0
+        // Add impact nodes from interests and connect to relevant projects
+        const impactNodes = {};
+        this.resume.interests.forEach(interest => {
+            interest.keywords.forEach(keyword => {
+                if (!impactNodes[keyword]) {
+                    impactNodes[keyword] = id;
+                    nodeMap[keyword] = id;
+                    
+                    nodes.push({
+                        id: id++,
+                        label: keyword,
+                        type: 'impact',
+                        x: Math.random() * graph.canvas.width,
+                        y: Math.random() * graph.canvas.height,
+                        vx: 0,
+                        vy: 0
+                    });
+                }
+            });
+        });
+        
+        // Connect projects to impacts based on project highlights
+        this.resume.work.forEach(job => {
+            const projectId = projectNodes[job.name];
+            if (!projectId) return;
+            
+            // Simple keyword matching to connect projects to impacts
+            const projectText = (job.summary + ' ' + (job.highlights || []).join(' ')).toLowerCase();
+            
+            Object.keys(impactNodes).forEach(impact => {
+                if (projectText.includes(impact.toLowerCase())) {
+                    edges.push({
+                        source: projectId,
+                        target: impactNodes[impact],
+                        weight: 0.5
+                    });
+                }
+            });
+        });
+        
+        // Add connections between skills in same category
+        Object.entries(skillNodes).forEach(([skill1, id1]) => {
+            Object.entries(skillNodes).forEach(([skill2, id2]) => {
+                if (id1 < id2) { // Avoid duplicates
+                    const cat1 = nodes[id1].category;
+                    const cat2 = nodes[id2].category;
+                    if (cat1 === cat2 && cat1) {
+                        edges.push({
+                            source: id1,
+                            target: id2,
+                            weight: 0.3
+                        });
+                    }
+                }
             });
         });
         
         graph.nodes = nodes;
         graph.edges = edges;
+        
+        // Log stats for debugging
+        console.log(`Network graph: ${nodes.length} nodes, ${edges.length} edges`);
     }
     
     createNavigationTOC() {

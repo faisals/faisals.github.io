@@ -191,7 +191,9 @@ class CareerTimeline {
                 </div>
                 <div class="hook-arrow"></div>
             `;
-            this.canvas.parentElement.appendChild(this.narrativeAnnotation);
+            if (this.canvas.parentElement) {
+                this.canvas.parentElement.appendChild(this.narrativeAnnotation);
+            }
             
             // Add scroll listener to hide annotation
             this.setupScrollHide();
@@ -199,7 +201,7 @@ class CareerTimeline {
         
         // Position annotation relative to the most recent dot
         const rect = this.canvas.getBoundingClientRect();
-        const containerRect = this.canvas.parentElement.getBoundingClientRect();
+        const containerRect = this.canvas.parentElement ? this.canvas.parentElement.getBoundingClientRect() : rect;
         
         // Position above and slightly to the right of the dot
         const annotationX = mostRecent.x - 60; // Offset left to center over dot
@@ -274,7 +276,9 @@ class CareerTimeline {
             defs.appendChild(linearGradient);
         });
         
-        this.canvas.parentElement.appendChild(svg);
+        if (this.canvas.parentElement) {
+            this.canvas.parentElement.appendChild(svg);
+        }
         return types.reduce((acc, type) => {
             acc[type] = `url(#timeline-grad-${type})`;
             return acc;
@@ -389,6 +393,10 @@ class NetworkGraph {
         this.ctx = this.canvas.getContext('2d');
         this.nodes = [];
         this.edges = [];
+        this.animationId = null;
+        this.simulationAlpha = 1;
+        this.hoveredNode = null;
+        this.selectedNode = null;
         this.init();
     }
 
@@ -396,71 +404,25 @@ class NetworkGraph {
         const container = document.querySelector('.network-container');
         if (!container) return;
         
+        this.container = container;
         this.canvas.width = container.offsetWidth;
         this.canvas.height = 400;
+        
+        // Add accessibility attributes
+        this.canvas.setAttribute('role', 'img');
+        this.canvas.setAttribute('aria-label', 'Interactive professional network graph showing skills, projects, and their connections');
+        
         container.appendChild(this.canvas);
         
         this.setupNetwork();
         this.setupIntersectionObserver();
+        this.setupInteractions();
+        this.setupResizeObserver();
     }
 
     setupNetwork() {
-        // Define nodes
-        const skills = ['Swift', 'Python', 'Next.js', 'SQL', 'Machine Learning'];
-        const projects = ['Do Little Lab', 'Namaazi', 'RSI', 'Flood Relief'];
-        const impacts = ['Healthcare', 'Civil Rights', 'Education', 'Technology'];
-        
-        // Create nodes with initial random positions
-        let id = 0;
-        skills.forEach(skill => {
-            this.nodes.push({
-                id: id++,
-                label: skill,
-                type: 'skill',
-                x: Math.random() * this.canvas.width,
-                y: Math.random() * this.canvas.height,
-                vx: 0,
-                vy: 0
-            });
-        });
-        
-        projects.forEach(project => {
-            this.nodes.push({
-                id: id++,
-                label: project,
-                type: 'project',
-                x: Math.random() * this.canvas.width,
-                y: Math.random() * this.canvas.height,
-                vx: 0,
-                vy: 0
-            });
-        });
-        
-        impacts.forEach(impact => {
-            this.nodes.push({
-                id: id++,
-                label: impact,
-                type: 'impact',
-                x: Math.random() * this.canvas.width,
-                y: Math.random() * this.canvas.height,
-                vx: 0,
-                vy: 0
-            });
-        });
-        
-        // Define connections
-        this.edges = [
-            { source: 0, target: 6 }, // Swift -> Namaazi
-            { source: 1, target: 5 }, // Python -> Do Little Lab
-            { source: 2, target: 5 }, // Next.js -> Do Little Lab
-            { source: 3, target: 7 }, // SQL -> RSI
-            { source: 4, target: 5 }, // ML -> Do Little Lab
-            { source: 5, target: 9 }, // Do Little Lab -> Healthcare
-            { source: 6, target: 12 }, // Namaazi -> Technology
-            { source: 7, target: 12 }, // RSI -> Technology
-            { source: 8, target: 10 }, // Flood Relief -> Civil Rights
-            { source: 8, target: 11 }, // Flood Relief -> Education
-        ];
+        // Data will be populated by updateNetworkGraph from site-generator.js
+        // This is now just a placeholder for initial setup
     }
 
     setupIntersectionObserver() {
@@ -478,27 +440,46 @@ class NetworkGraph {
 
     startAnimation() {
         const animate = () => {
-            this.applyForces();
-            this.updatePositions();
-            this.draw();
+            // Apply alpha decay to eventually stop simulation
+            this.simulationAlpha *= 0.99;
             
-            requestAnimationFrame(animate);
+            if (this.simulationAlpha > 0.001) {
+                this.applyForces();
+                this.updatePositions();
+                this.draw();
+                
+                this.animationId = requestAnimationFrame(animate);
+            } else {
+                // Stop animation when alpha is too low
+                this.stopAnimation();
+            }
         };
         
         animate();
     }
+    
+    stopAnimation() {
+        if (this.animationId) {
+            cancelAnimationFrame(this.animationId);
+            this.animationId = null;
+        }
+        this.simulationAlpha = 0;
+    }
 
     applyForces() {
-        // Apply repulsion between all nodes
+        // Apply forces with alpha decay for convergence
+        const alpha = this.simulationAlpha;
+        
+        // Apply repulsion between all nodes (Barnes-Hut approximation for better performance)
         for (let i = 0; i < this.nodes.length; i++) {
             for (let j = i + 1; j < this.nodes.length; j++) {
                 const dx = this.nodes[j].x - this.nodes[i].x;
                 const dy = this.nodes[j].y - this.nodes[i].y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
                 
-                if (distance > 0) {
-                    // Prevent force explosion when nodes overlap
-                    const force = 1000 / Math.max(distance * distance, 0.1);
+                if (distance > 0 && distance < 200) { // Only calculate for nearby nodes
+                    // Improved force calculation with alpha decay
+                    const force = (30 * alpha) / Math.max(distance * distance, 1);
                     const fx = (dx / distance) * force;
                     const fy = (dy / distance) * force;
                     
@@ -515,12 +496,15 @@ class NetworkGraph {
             const source = this.nodes[edge.source];
             const target = this.nodes[edge.target];
             
+            if (!source || !target) return;
+            
             const dx = target.x - source.x;
             const dy = target.y - source.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
             
             if (distance > 0) {
-                const force = (distance - 150) * 0.01;
+                const idealDistance = 100;
+                const force = (distance - idealDistance) * 0.02 * alpha;
                 const fx = (dx / distance) * force;
                 const fy = (dy / distance) * force;
                 
@@ -536,35 +520,54 @@ class NetworkGraph {
         const centerY = this.canvas.height / 2;
         
         this.nodes.forEach(node => {
-            node.vx += (centerX - node.x) * 0.01;
-            node.vy += (centerY - node.y) * 0.01;
+            node.vx += (centerX - node.x) * 0.02 * alpha;
+            node.vy += (centerY - node.y) * 0.02 * alpha;
         });
     }
 
     updatePositions() {
         this.nodes.forEach(node => {
-            node.vx *= 0.85; // Damping
-            node.vy *= 0.85;
+            // Velocity damping with alpha influence
+            const damping = 0.9 - (0.05 * (1 - this.simulationAlpha));
+            node.vx *= damping;
+            node.vy *= damping;
+            
+            // Velocity ceiling to prevent runaway nodes
+            const maxVelocity = 10;
+            node.vx = Math.max(-maxVelocity, Math.min(maxVelocity, node.vx));
+            node.vy = Math.max(-maxVelocity, Math.min(maxVelocity, node.vy));
             
             node.x += node.vx;
             node.y += node.vy;
             
-            // Keep nodes within bounds
-            node.x = Math.max(20, Math.min(this.canvas.width - 20, node.x));
-            node.y = Math.max(20, Math.min(this.canvas.height - 20, node.y));
+            // Keep nodes within bounds with soft boundaries
+            const margin = 30;
+            if (node.x < margin) node.vx += (margin - node.x) * 0.1;
+            if (node.x > this.canvas.width - margin) node.vx += (this.canvas.width - margin - node.x) * 0.1;
+            if (node.y < margin) node.vy += (margin - node.y) * 0.1;
+            if (node.y > this.canvas.height - margin) node.vy += (this.canvas.height - margin - node.y) * 0.1;
         });
     }
 
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         
-        // Draw edges
-        this.ctx.strokeStyle = '#ddd';
-        this.ctx.lineWidth = 1;
+        // Save context state
+        this.ctx.save();
         
+        // Draw edges first (behind nodes)
         this.edges.forEach(edge => {
             const source = this.nodes[edge.source];
             const target = this.nodes[edge.target];
+            
+            if (!source || !target) return;
+            
+            const isHighlighted = this.hoveredNode && 
+                (this.hoveredNode === source || this.hoveredNode === target);
+            
+            this.ctx.strokeStyle = isHighlighted ? '#b20808' : '#ddd';
+            this.ctx.lineWidth = isHighlighted ? 2 : 1;
+            this.ctx.globalAlpha = (this.hoveredNode && !isHighlighted) ? 0.2 : 1;
             
             this.ctx.beginPath();
             this.ctx.moveTo(source.x, source.y);
@@ -572,20 +575,67 @@ class NetworkGraph {
             this.ctx.stroke();
         });
         
+        // Reset alpha
+        this.ctx.globalAlpha = 1;
+        
         // Draw nodes
         this.nodes.forEach(node => {
-            // Node circle
-            this.ctx.fillStyle = this.getNodeColor(node.type);
+            const isHovered = node === this.hoveredNode;
+            const isConnected = this.hoveredNode && this.edges.some(edge => 
+                (this.nodes[edge.source] === this.hoveredNode && this.nodes[edge.target] === node) ||
+                (this.nodes[edge.target] === this.hoveredNode && this.nodes[edge.source] === node)
+            );
+            
+            // Apply hover dimming
+            if (this.hoveredNode && !isHovered && !isConnected) {
+                this.ctx.globalAlpha = 0.2;
+            }
+            
+            // Node size based on frequency/importance
+            const baseRadius = node.type === 'skill' ? 6 + (node.frequency || 0) * 2 : 8;
+            const radius = isHovered ? baseRadius * 1.2 : baseRadius;
+            
+            // Node circle with subtle shadow for depth
+            if (isHovered) {
+                this.ctx.shadowColor = 'rgba(178, 8, 8, 0.3)';
+                this.ctx.shadowBlur = 10;
+            }
+            
+            this.ctx.fillStyle = isHovered ? '#b20808' : this.getNodeColor(node.type);
             this.ctx.beginPath();
-            this.ctx.arc(node.x, node.y, 8, 0, Math.PI * 2);
+            this.ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
             this.ctx.fill();
             
-            // Node label
-            this.ctx.fillStyle = '#333';
-            this.ctx.font = '11px et-book, Georgia, serif';
+            // Reset shadow
+            this.ctx.shadowBlur = 0;
+            
+            // Node label with better readability
+            this.ctx.fillStyle = isHovered ? '#b20808' : '#333';
+            this.ctx.font = isHovered ? 'bold 12px et-book, Georgia, serif' : '11px et-book, Georgia, serif';
             this.ctx.textAlign = 'center';
-            this.ctx.fillText(node.label, node.x, node.y - 12);
+            this.ctx.textBaseline = 'bottom';
+            
+            // Add white background for text readability
+            const textMetrics = this.ctx.measureText(node.label);
+            const textHeight = 12;
+            this.ctx.fillStyle = 'rgba(255, 255, 248, 0.8)';
+            this.ctx.fillRect(
+                node.x - textMetrics.width / 2 - 2,
+                node.y - radius - textHeight - 6,
+                textMetrics.width + 4,
+                textHeight + 2
+            );
+            
+            // Draw text
+            this.ctx.fillStyle = isHovered ? '#b20808' : '#333';
+            this.ctx.fillText(node.label, node.x, node.y - radius - 4);
+            
+            // Reset alpha
+            this.ctx.globalAlpha = 1;
         });
+        
+        // Restore context
+        this.ctx.restore();
     }
 
     getNodeColor(type) {
@@ -595,6 +645,78 @@ class NetworkGraph {
             impact: '#e74c3c'
         };
         return colors[type] || '#333';
+    }
+    
+    setupInteractions() {
+        // Mouse move for hover effects
+        this.canvas.addEventListener('mousemove', (e) => {
+            const rect = this.canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            // Find hovered node
+            let newHoveredNode = null;
+            this.nodes.forEach(node => {
+                const dx = x - node.x;
+                const dy = y - node.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const radius = node.type === 'skill' ? 6 + (node.frequency || 0) * 2 : 8;
+                
+                if (distance <= radius + 5) { // 5px tolerance
+                    newHoveredNode = node;
+                }
+            });
+            
+            if (newHoveredNode !== this.hoveredNode) {
+                this.hoveredNode = newHoveredNode;
+                this.canvas.style.cursor = newHoveredNode ? 'pointer' : 'default';
+                this.draw(); // Redraw with hover state
+            }
+        });
+        
+        // Mouse leave to clear hover
+        this.canvas.addEventListener('mouseleave', () => {
+            if (this.hoveredNode) {
+                this.hoveredNode = null;
+                this.canvas.style.cursor = 'default';
+                this.draw();
+            }
+        });
+        
+        // Click for selection (future enhancement)
+        this.canvas.addEventListener('click', (e) => {
+            if (this.hoveredNode) {
+                this.selectedNode = this.hoveredNode;
+                // Future: Show detail panel
+                console.log('Selected node:', this.selectedNode);
+            }
+        });
+    }
+    
+    setupResizeObserver() {
+        if ('ResizeObserver' in window) {
+            const resizeObserver = new ResizeObserver(() => {
+                const newWidth = this.container.offsetWidth;
+                if (Math.abs(this.canvas.width - newWidth) > 10) {
+                    // Resize canvas
+                    this.canvas.width = newWidth;
+                    
+                    // Recenter nodes
+                    const scaleX = newWidth / this.canvas.width;
+                    this.nodes.forEach(node => {
+                        node.x *= scaleX;
+                    });
+                    
+                    // Restart simulation briefly
+                    this.simulationAlpha = 0.3;
+                    if (!this.animationId) {
+                        this.startAnimation();
+                    }
+                }
+            });
+            
+            resizeObserver.observe(this.container);
+        }
     }
 }
 
