@@ -23,12 +23,13 @@ class CareerTimeline {
 
     setupIntersectionObserver() {
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting && !this.drawn) {
+            if (entries[0].isIntersecting) {
+                observer.disconnect();          // ← disconnect instead of unobserve
+                if (!this.drawn) {
                     this.animateTimeline();
                     this.drawn = true;
                 }
-            });
+            }
         }, { threshold: 0.5 });
         
         observer.observe(this.canvas);
@@ -350,7 +351,10 @@ class ImpactMetrics {
 
     animateValue(element, start, end, duration, prefix, suffix) {
         const startTime = performance.now();
-        const targetValue = end.toString();
+        
+        // Find the metric-number span if it exists, otherwise update the whole element
+        const numberSpan = element.querySelector('.metric-number');
+        const targetElement = numberSpan || element;
         
         const animate = (currentTime) => {
             const elapsed = currentTime - startTime;
@@ -361,8 +365,13 @@ class ImpactMetrics {
             const current = start + (end - start) * easeOutQuart;
             const currentValue = current.toFixed(end % 1 === 0 ? 0 : 2);
             
-            // Directly update text content to avoid flicker
-            element.textContent = prefix + currentValue + suffix;
+            // Update only the number to avoid layout shift
+            if (numberSpan) {
+                numberSpan.textContent = currentValue;
+            } else {
+                // Fallback for elements without the new structure
+                element.textContent = prefix + currentValue + suffix;
+            }
             
             if (progress < 1) {
                 requestAnimationFrame(animate);
@@ -766,34 +775,28 @@ class DataInkReveals {
 class BreathingWhitespace {
     constructor() {
         this.article = document.querySelector('article');
-        this.lastScrollTime = Date.now();
-        this.isReading = false;
+        this.expanded = false;
         this.init();
     }
 
     init() {
-        let scrollTimer;
-        
-        window.addEventListener('scroll', () => {
-            this.lastScrollTime = Date.now();
-            this.isReading = true;
-            
-            if (!this.article.classList.contains('reading')) {
-                this.article.classList.add('reading');
+        // CMD+B keyboard shortcut
+        window.addEventListener('keydown', (e) => {
+            // Check for CMD+B (Mac) or Ctrl+B (Windows/Linux)
+            if ((e.metaKey || e.ctrlKey) && e.key === 'b') {
+                e.preventDefault();
+                this.toggleBreathing();
             }
-            
-            clearTimeout(scrollTimer);
-            scrollTimer = setTimeout(() => {
-                if (Date.now() - this.lastScrollTime > 3000) {
-                    this.article.classList.remove('reading');
-                    this.article.classList.add('resting');
-                    
-                    setTimeout(() => {
-                        this.article.classList.remove('resting');
-                    }, 500);
-                }
-            }, 3000);
         });
+    }
+
+    toggleBreathing() {
+        this.expanded = !this.expanded;
+        if (this.expanded) {
+            this.article.classList.add('breathing-expanded');
+        } else {
+            this.article.classList.remove('breathing-expanded');
+        }
     }
 }
 

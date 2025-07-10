@@ -275,14 +275,18 @@ class SiteGenerator {
                     fragments.unshift(document.createTextNode(currentText.slice(spanData.end, lastEnd)));
                 }
                 
-                // Create span
+                // Create span with proper structure
                 const span = document.createElement('span');
                 span.setAttribute('data-metric', spanData.metric);
                 span.setAttribute('data-prefix', spanData.prefix);
                 span.setAttribute('data-suffix', spanData.suffix);
                 span.setAttribute('data-placeholder', spanData.placeholder);
                 span.setAttribute('metric-injected', 'true');
-                span.textContent = spanData.placeholder;
+                
+                // Create inner structure to prevent layout shift
+                const innerHTML = `${spanData.prefix}<span class="metric-number" aria-label="${spanData.metric}">${spanData.placeholder.replace(spanData.prefix, '').replace(spanData.suffix, '')}</span>${spanData.suffix}`;
+                span.innerHTML = innerHTML;
+                
                 fragments.unshift(span);
                 
                 lastEnd = spanData.start;
