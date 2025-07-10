@@ -69,8 +69,7 @@ class CareerTimeline {
         
         let progress = 0;
         const animate = () => {
-            progress += 0.02;
-            if (progress > 1) progress = 1;
+            progress = Math.min(progress + 0.02, 1);
             
             this.ctx.clearRect(0, 0, width, height);
             this.ctx.strokeStyle = '#999';
@@ -79,11 +78,11 @@ class CareerTimeline {
             // Draw subtle value grid lines instead of single baseline
             this.ctx.strokeStyle = '#f0f0f0';
             this.ctx.lineWidth = 0.5;
-            const valueRange = height - 2 * padding - 20;
+            const valueRangeHeight = height - 2 * padding - 20;
             
             // Draw light grid lines for 25%, 50%, 75% value marks
             [25, 50, 75].forEach(value => {
-                const gridY = padding + 10 + (100 - value) * (valueRange / 100);
+                const gridY = padding + 10 + (100 - value) * (valueRangeHeight / 100);
                 const gridProgress = padding + (width - 2 * padding) * progress;
                 this.ctx.beginPath();
                 this.ctx.moveTo(padding, gridY);
@@ -129,8 +128,8 @@ class CareerTimeline {
             normalizedPoints.forEach((point, i) => {
                 const x = padding + ((point.year - startYear) / (endYear - startYear)) * (width - 2 * padding);
                 // Use Y position to represent actual value data (not just decoration)
-                const valueRange = height - 2 * padding - 20; // Leave space for year labels below
-                const y = padding + 10 + (100 - point.normalizedValue) * (valueRange / 100); // Invert: higher values = higher position
+                const valueRangeHeight = height - 2 * padding - 20; // Leave space for year labels below
+                const y = padding + 10 + (100 - point.normalizedValue) * (valueRangeHeight / 100); // Invert: higher values = higher position
                 
                 if (x <= padding + (width - 2 * padding) * progress) {
                     const pointProgress = Math.min(1, Math.max(0, (progress - i * 0.1) * 3));
@@ -351,7 +350,6 @@ class ImpactMetrics {
 
     animateValue(element, start, end, duration, prefix, suffix) {
         const startTime = performance.now();
-        const originalText = element.textContent;
         const targetValue = end.toString();
         
         const animate = (currentTime) => {
@@ -363,11 +361,8 @@ class ImpactMetrics {
             const current = start + (end - start) * easeOutQuart;
             const currentValue = current.toFixed(end % 1 === 0 ? 0 : 2);
             
-            // Replace the numeric part while preserving the rest of the text
-            // Store original placeholder and replace it directly
-            const placeholder = element.getAttribute('data-placeholder') || originalText.match(/\b0+(?:[%$]|\b)/)?.[0] || '0';
-            const newText = originalText.replace(placeholder, prefix + currentValue + suffix);
-            element.textContent = newText;
+            // Directly update text content to avoid flicker
+            element.textContent = prefix + currentValue + suffix;
             
             if (progress < 1) {
                 requestAnimationFrame(animate);
@@ -493,7 +488,8 @@ class NetworkGraph {
                 const distance = Math.sqrt(dx * dx + dy * dy);
                 
                 if (distance > 0) {
-                    const force = 1000 / (distance * distance);
+                    // Prevent force explosion when nodes overlap
+                    const force = 1000 / Math.max(distance * distance, 0.1);
                     const fx = (dx / distance) * force;
                     const fy = (dy / distance) * force;
                     
@@ -646,16 +642,22 @@ class ReadingProgress {
         let lastY = 0;
         let readingTimer;
         
+        // Pre-allocate heatmap array to prevent unbounded growth
+        this.heatmap.length = Math.ceil(document.body.scrollHeight / 10);
+        
         window.addEventListener('scroll', () => {
             const y = window.scrollY;
             const viewportHeight = window.innerHeight;
             
             // Add heat to current viewport area
             for (let i = y; i < y + viewportHeight; i += 10) {
-                if (!this.heatmap[Math.floor(i / 10)]) {
-                    this.heatmap[Math.floor(i / 10)] = 0;
+                const index = Math.floor(i / 10);
+                if (index >= 0 && index < this.heatmap.length) {
+                    if (!this.heatmap[index]) {
+                        this.heatmap[index] = 0;
+                    }
+                    this.heatmap[index] = Math.min(1, this.heatmap[index] + 0.01);
                 }
-                this.heatmap[Math.floor(i / 10)] = Math.min(1, this.heatmap[Math.floor(i / 10)] + 0.01);
             }
             
             // Draw progress line
@@ -689,9 +691,13 @@ class ReadingProgress {
 // Dynamic Line Length
 class DynamicLineLength {
     constructor() {
-        this.paragraphs = document.querySelectorAll('article p');
+        this.recaptureParagraphs();
         this.characterWidth = this.measureCharacterWidth();
         this.init();
+    }
+    
+    recaptureParagraphs() {
+        this.paragraphs = document.querySelectorAll('article p');
     }
 
     measureCharacterWidth() {
@@ -709,6 +715,12 @@ class DynamicLineLength {
             this.adjustLineLength();
         });
         
+        this.adjustLineLength();
+    }
+    
+    refresh() {
+        // Call this method after content is loaded to recapture paragraphs
+        this.recaptureParagraphs();
         this.adjustLineLength();
     }
 

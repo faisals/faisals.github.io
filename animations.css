@@ -29,8 +29,42 @@ section {
 .project:nth-child(3) { animation-delay: 0.3s; }
 .project:nth-child(4) { animation-delay: 0.4s; }
 
+/* Animation delay classes for timeline elements */
+.anim-delay-0 { animation-delay: 0ms; }
+.anim-delay-100 { animation-delay: 100ms; }
+.anim-delay-200 { animation-delay: 200ms; }
+.anim-delay-300 { animation-delay: 300ms; }
+.anim-delay-400 { animation-delay: 400ms; }
+.anim-delay-500 { animation-delay: 500ms; }
+.anim-delay-600 { animation-delay: 600ms; }
+.anim-delay-700 { animation-delay: 700ms; }
+.anim-delay-800 { animation-delay: 800ms; }
+.anim-delay-900 { animation-delay: 900ms; }
+.anim-delay-1000 { animation-delay: 1000ms; }
+
+/* For dynamic delays based on index */
+.anim-delay-dynamic-1 { animation-delay: 100ms; }
+.anim-delay-dynamic-2 { animation-delay: 200ms; }
+.anim-delay-dynamic-3 { animation-delay: 300ms; }
+.anim-delay-dynamic-4 { animation-delay: 400ms; }
+.anim-delay-dynamic-5 { animation-delay: 500ms; }
+.anim-delay-dynamic-6 { animation-delay: 600ms; }
+.anim-delay-dynamic-7 { animation-delay: 700ms; }
+.anim-delay-dynamic-8 { animation-delay: 800ms; }
+.anim-delay-dynamic-9 { animation-delay: 900ms; }
+.anim-delay-dynamic-10 { animation-delay: 1000ms; }
+
 /* Smooth transitions for interactive elements */
-* {
+.interactive,
+.project,
+.skill-tag,
+.toc-item,
+.timeline-btn,
+[data-metric],
+.skill-node,
+.map-marker,
+.annotation,
+a {
     transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
@@ -311,6 +345,7 @@ section {
     cursor: default;
     position: relative;
     display: inline-block;
+    will-change: transform;
 }
 
 [data-metric]::after {
@@ -322,6 +357,7 @@ section {
     height: 2px;
     background: #b20808;
     transition: width 0.3s ease;
+    will-change: width;
 }
 
 [data-metric]:hover {
@@ -602,6 +638,15 @@ article.resting {
     height: 2px;
 }
 
+/* Mobile optimization for skill nodes */
+@media (max-width: 760px) {
+    .skill-node {
+        width: 60px;
+        height: 60px;
+        font-size: 0.75rem;
+    }
+}
+
 /* Career Map - Tufte Style */
 .career-map {
     position: relative;
@@ -858,22 +903,16 @@ article.resting {
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
-    .map-marker-halo {
-        transition: none;
-    }
-    
-    .location-tooltip {
-        transition: none;
-    }
-    
-    .timeline-tooltip {
-        transition: none;
-    }
-    
-    /* Disable all CSS animations */
+    /* Disable all animations and transitions */
     * {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
+        animation: none !important;
+        transition: none !important;
+    }
+    
+    /* Remove any transform animations */
+    *::before,
+    *::after {
+        animation: none !important;
+        transition: none !important;
     }
 }

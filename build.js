@@ -9,6 +9,14 @@ const fs = require('fs');
 const path = require('path');
 // PDF generation removed - no longer needed
 
+// Try to load clean-css, fall back to naive method if not available
+let CleanCSS;
+try {
+    CleanCSS = require('clean-css');
+} catch (e) {
+    console.warn('⚠️  clean-css not found. Run "npm install" for better CSS minification.');
+}
+
 class SiteBuilder {
     constructor() {
         this.errors = [];
@@ -150,19 +158,56 @@ class SiteBuilder {
         console.log('🎨 Processing CSS files...');
         
         try {
-            // Simple CSS minification (remove comments and extra whitespace)
             const files = ['styles.css', 'animations.css'];
             
             files.forEach(file => {
                 const css = fs.readFileSync(file, 'utf8');
-                const minified = css
-                    .replace(/\/\*[\s\S]*?\*\//g, '') // Remove comments
-                    .replace(/\s+/g, ' ') // Collapse whitespace
-                    .replace(/\s*{\s*/g, '{') // Remove space around {
-                    .replace(/\s*}\s*/g, '}') // Remove space around }
-                    .replace(/\s*:\s*/g, ':') // Remove space around :
-                    .replace(/\s*;\s*/g, ';') // Remove space around ;
-                    .trim();
+                let minified;
+                
+                if (CleanCSS) {
+                    // Use clean-css for proper minification
+                    const cleanCSS = new CleanCSS({
+                        level: {
+                            1: {
+                                specialComments: 0 // Remove all comments
+                            },
+                            2: {
+                                mergeAdjacentRules: true,
+                                mergeIntoShorthands: true,
+                                mergeMedia: true,
+                                mergeNonAdjacentRules: true,
+                                mergeSemantically: false,
+                                overrideProperties: true,
+                                removeEmpty: true,
+                                reduceNonAdjacentRules: true,
+                                removeDuplicateFontRules: true,
+                                removeDuplicateMediaBlocks: true,
+                                removeDuplicateRules: true,
+                                removeUnusedAtRules: false
+                            }
+                        }
+                    });
+                    const output = cleanCSS.minify(css);
+                    
+                    if (output.errors.length > 0) {
+                        output.errors.forEach(error => this.warnings.push(`CSS Error in ${file}: ${error}`));
+                    }
+                    if (output.warnings.length > 0) {
+                        output.warnings.forEach(warning => this.warnings.push(`CSS Warning in ${file}: ${warning}`));
+                    }
+                    
+                    minified = output.styles;
+                } else {
+                    // Fallback to naive minification
+                    minified = css
+                        .replace(/\/\*[\s\S]*?\*\//g, '') // Remove comments
+                        .replace(/\s+/g, ' ') // Collapse whitespace
+                        .replace(/\s*{\s*/g, '{') // Remove space around {
+                        .replace(/\s*}\s*/g, '}') // Remove space around }
+                        .replace(/\s*:\s*/g, ':') // Remove space around :
+                        .replace(/\s*;\s*/g, ';') // Remove space around ;
+                        .trim();
+                }
                 
                 // Save minified version
                 fs.writeFileSync(file.replace('.css', '.min.css'), minified);
@@ -244,6 +289,10 @@ class SiteBuilder {
 const builder = new SiteBuilder();
 try {
     builder.build();
+    // Exit with error code if there were errors
+    if (builder.errors.length > 0) {
+        process.exit(1);
+    }
 } catch (error) {
     console.error('Build failed:', error.message);
     process.exit(1);

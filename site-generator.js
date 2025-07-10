@@ -8,7 +8,9 @@ class SiteGenerator {
 
     async init() {
         try {
-            const response = await fetch('resume.json');
+            // Fix for relative paths - works in both local and GitHub Pages deployments
+            const base = document.currentScript ? document.currentScript.src.split('/').slice(0,-1).join('/') : '.';
+            const response = await fetch(base + '/resume.json');
             this.resume = await response.json();
             this.generateSite();
         } catch (error) {
@@ -483,6 +485,11 @@ class SiteGenerator {
         
         if (animations.tufteAnnotations) {
             new TufteAnnotations(this.resume.meta.annotations);
+        }
+        
+        // Initialize dynamic line length for optimal reading
+        if (window.DynamicLineLength) {
+            window.dynamicLineLength = new DynamicLineLength();
         }
     }
 

@@ -1,0 +1,203 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Focus styles for accessibility */
+*:focus-visible {
+  outline: 2px solid rgb(59 130 246);
+  outline-offset: 2px;
+}
+
+/* Ensure proper font rendering */
+body {
+  font-feature-settings: "kern" 1, "liga" 1;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: "Times New Roman", Times, serif;
+}
+
+/* Print styles for Tufte aesthetic */
+@media print {
+  body {
+    font-size: 12pt;
+    line-height: 1.4;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* Custom Tufte-inspired styles */
+.tufte-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: white;
+  font-family: "Times New Roman", Times, serif;
+}
+
+.tufte-header {
+  margin-bottom: 2rem;
+  border-bottom: 1px solid rgb(209 213 219);
+  padding-bottom: 1rem;
+}
+
+.tufte-title {
+  font-size: 1.25rem;
+  font-weight: normal;
+  margin-bottom: 0.25rem;
+  color: rgb(0 0 0);
+}
+
+.tufte-subtitle {
+  font-size: 0.875rem;
+  color: rgb(75 85 99);
+}
+
+.tufte-button {
+  padding: 0.25rem 1rem;
+  font-size: 0.75rem;
+  border: 1px solid rgb(209 213 219);
+  transition: all 0.2s;
+  background: white;
+  color: black;
+}
+
+.tufte-button:hover {
+  background: rgb(243 244 246);
+  border-color: rgb(156 163 175);
+}
+
+.tufte-button.active {
+  background: black;
+  color: white;
+  border-color: black;
+}
+
+.tufte-detail-panel {
+  border-left: 2px solid black;
+  padding-left: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  background: rgb(249 250 251);
+  margin-top: 1rem;
+}
+
+.tufte-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 2rem;
+  font-size: 0.875rem;
+  border-top: 1px solid rgb(209 213 219);
+  padding-top: 1rem;
+  margin-top: 2rem;
+}
+
+.tufte-methodology {
+  margin-top: 2rem;
+  font-size: 0.75rem;
+  color: rgb(107 114 128);
+  border-top: 1px solid rgb(229 231 235);
+  padding-top: 1rem;
+}
+
+.tufte-table {
+  width: 100%;
+}
+
+.tufte-table-header {
+  display: grid;
+  grid-template-columns: 60px 120px 1fr 80px;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 2px solid rgb(17 24 39);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.tufte-table-row {
+  display: grid;
+  grid-template-columns: 60px 120px 1fr 80px;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgb(229 231 235);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tufte-table-row:hover {
+  background: rgb(249 250 251);
+  transform: translateX(4px);
+}
+
+.tufte-table-row.selected {
+  background: rgb(239 246 255);
+  border-color: rgb(191 219 254);
+}
+
+/* Animation classes */
+.fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* SVG interaction styles */
+.milestone-indicator {
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.milestone-indicator:hover {
+  fill: rgb(59 130 246);
+  transform: scaleX(1.5);
+}
+
+.milestone-indicator:focus {
+  fill: rgb(59 130 246);
+  transform: scaleX(1.5);
+  outline: 2px solid rgb(59 130 246);
+  outline-offset: 2px;
+}
+
+.interactive-area {
+  cursor: pointer;
+  fill: transparent;
+}

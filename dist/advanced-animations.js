@@ -34,6 +34,18 @@ class EnhancedTimeline {
             console.warn('No career timeline data found');
             return;
         }
+        
+        // Add global ESC key handler for detail panel
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.selectedMilestone) {
+                this.selectedMilestone = null;
+                this.hideDetail();
+                
+                // Remove selected state from table rows
+                const allRows = document.querySelectorAll('.timeline-table-row');
+                allRows.forEach(row => row.classList.remove('selected'));
+            }
+        })
 
         // Transform data to match our format
         this.data = timelineData.map(item => ({
@@ -185,6 +197,12 @@ class EnhancedTimeline {
     }
 
     renderTimeline() {
+        // Guard for minimum data points
+        if (!this.data || this.data.length < 2) {
+            console.warn('Timeline requires at least 2 data points');
+            return;
+        }
+
         const containerRect = this.container.getBoundingClientRect();
         const width = Math.max(600, containerRect.width || 600);
         const height = 140;
@@ -230,7 +248,7 @@ class EnhancedTimeline {
             tick.setAttribute('stroke', this.config.colors.baseline);
             tick.setAttribute('stroke-width', '0.5');
             tick.classList.add('milestone-tick');
-            tick.style.animationDelay = `${index * 100}ms`;
+            tick.classList.add(`anim-delay-${Math.min(index * 100, 1000)}`);
             milestoneGroup.appendChild(tick);
 
             // Role indicator bar
@@ -243,7 +261,7 @@ class EnhancedTimeline {
             const fillColor = milestone.type === 'founder' ? this.config.colors.hover : this.config.colors.indicator;
             indicator.setAttribute('fill', fillColor);
             indicator.classList.add('milestone-indicator');
-            indicator.style.animationDelay = `${index * 100 + 200}ms`;
+            indicator.classList.add(`anim-delay-${Math.min(index * 100 + 200, 1000)}`);
             indicator.addEventListener('click', () => this.selectMilestone(milestone));
             indicator.addEventListener('mouseenter', () => this.highlightMilestone(indicator));
             indicator.addEventListener('mouseleave', () => this.unhighlightMilestone(indicator, fillColor));
@@ -269,7 +287,7 @@ class EnhancedTimeline {
             yearLabel.setAttribute('font-size', '12px');
             yearLabel.setAttribute('fill', this.config.colors.text);
             yearLabel.classList.add('milestone-year');
-            yearLabel.style.animationDelay = `${index * 100 + 400}ms`;
+            yearLabel.classList.add(`anim-delay-${Math.min(index * 100 + 400, 1000)}`);
             yearLabel.textContent = milestone.year;
             milestoneGroup.appendChild(yearLabel);
 
@@ -282,7 +300,7 @@ class EnhancedTimeline {
             companyLabel.setAttribute('font-size', '10px');
             companyLabel.setAttribute('fill', this.config.colors.textSecondary);
             companyLabel.classList.add('milestone-company');
-            companyLabel.style.animationDelay = `${index * 100 + 500}ms`;
+            companyLabel.classList.add(`anim-delay-${Math.min(index * 100 + 500, 1000)}`);
             companyLabel.textContent = milestone.company;
             milestoneGroup.appendChild(companyLabel);
 
@@ -296,7 +314,7 @@ class EnhancedTimeline {
                 typeLabel.setAttribute('font-size', '9px');
                 typeLabel.setAttribute('fill', this.config.colors.text);
                 typeLabel.classList.add('milestone-type');
-                typeLabel.style.animationDelay = `${index * 100 + 600}ms`;
+                typeLabel.classList.add(`anim-delay-${Math.min(index * 100 + 600, 1000)}`);
                 typeLabel.textContent = milestone.type === 'founder' ? 'Found' : 'Lead';
                 milestoneGroup.appendChild(typeLabel);
             }
@@ -355,7 +373,7 @@ class EnhancedTimeline {
             circle.setAttribute('r', '1.5');
             circle.setAttribute('fill', '#b20808');
             circle.classList.add('sparkline-point');
-            circle.style.animationDelay = `${index * 100 + 500}ms`;
+            circle.classList.add(`anim-delay-${Math.min(index * 100 + 500, 1000)}`);
             svg.appendChild(circle);
         });
 
@@ -404,7 +422,7 @@ class EnhancedTimeline {
             row.className = 'timeline-table-row';
             row.setAttribute('role', 'row');
             row.setAttribute('data-year', milestone.year);
-            row.style.animationDelay = `${index * 50}ms`;
+            row.classList.add(`anim-delay-${Math.min(index * 50, 1000)}`);
             row.innerHTML = `
                 <div style="font-family: monospace">${milestone.year}</div>
                 <div style="color: rgb(75 85 99)">${milestone.company}</div>
@@ -452,7 +470,7 @@ class EnhancedTimeline {
         if (!this.detailPanel) return;
 
         const achievementsHTML = milestone.achievements.map((achievement, i) => 
-            `<div class="achievement-item" style="animation-delay: ${i * 100}ms">• ${achievement}</div>`
+            `<div class="achievement-item anim-delay-${Math.min(i * 100, 1000)}">• ${achievement}</div>`
         ).join('');
 
         this.detailPanel.innerHTML = `
@@ -500,6 +518,9 @@ class ProjectDeepDive {
     }
 
     expandProject(project) {
+        // Guard against multiple modals
+        if (document.querySelector('.project-expanded')) return;
+        
         const title = project.querySelector('h3').textContent;
         const meta = project.querySelector('.project-meta').textContent;
         const description = project.querySelector('p:last-child').textContent;
@@ -826,6 +847,13 @@ class CareerMap {
             this.createMap();
             this.createTooltip();
             this.addToPage();
+            
+            // Add global ESC key handler for tooltip
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && this.tooltip && this.tooltip.classList.contains('visible')) {
+                    this.hideTooltip();
+                }
+            });
         } catch (error) {
             console.error('Career map failed to load:', error);
         }

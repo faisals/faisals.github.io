@@ -23,14 +23,12 @@ html {
 }
 
 body {
-    width: 87.5%;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 12.5%;
+    margin: 0 auto;
+    padding: 0 12.5%;
+    max-width: 1400px;
     font-family: et-book, Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
     background-color: #fffff8;
     color: #111;
-    max-width: 1400px;
     counter-reset: sidenote-counter;
     /* Smooth scrolling */
     scroll-behavior: smooth;
@@ -521,7 +519,7 @@ footer {
     opacity: 1;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1280px) {
     .toc-container {
         display: none;
     }
