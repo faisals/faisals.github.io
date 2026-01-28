@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playground — Faisal Sajjad</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Strikethrough variations */
+        .strike-subtle {
+            text-decoration: line-through;
+            text-decoration-color: #bbb;
+            color: #888;
+        }
+        
+        .strike-faded {
+            text-decoration: line-through;
+            opacity: 0.4;
+        }
+        
+        .strike-color {
+            text-decoration: line-through;
+            text-decoration-color: #fcee67;
+            text-decoration-thickness: 3px;
+        }
+        
+        /* Now section evolution demo */
+        .evolution s {
+            text-decoration: none;
+            opacity: 0.5;
+            font-style: italic;
+        }
+        .evolution s::after {
+            content: " →";
+            opacity: 0.5;
+        }
+        
+        /* Book check-off style */
+        .book-check s {
+            text-decoration: line-through;
+            text-decoration-color: #b9c6b3;
+            color: #999;
+        }
+        
+        /* Tool retirement */
+        .tool-retired s {
+            text-decoration: line-through;
+            opacity: 0.3;
+        }
+        
+        /* Selection color demo */
+        .selection-demo::selection {
+            background: #e8e4df;
+            color: #222;
+        }
+        
+        /* Link animation options */
+        .link-fade {
+            transition: all 0.2s ease;
+            border-bottom: 1px solid transparent;
+        }
+        .link-fade:hover {
+            border-bottom-color: #222;
+        }
+        
+        /* Dark mode preview */
+        .dark-preview {
+            background: #1a1a1a;
+            color: #e4e4e4;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .dark-preview a {
+            background: linear-gradient(to bottom, transparent 60%, #2d5a3d 60%);
+            color: #e4e4e4;
+        }
+        .dark-preview a:hover {
+            background: #2d5a3d;
+        }
+        
+        /* Micro hover on list items */
+        .micro-hover li {
+            transition: transform 0.2s ease;
+        }
+        .micro-hover li:hover {
+            transform: translateX(4px);
+        }
+        
+        /* Test note style */
+        .test-note {
+            font-size: 10px;
+            color: #999;
+            margin-top: 8px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><a href="/" style="text-decoration: none; background: none;">Faisal Sajjad</a></h1>
+        <p><a href="/" style="text-decoration: none; background: none;">← Back</a></p>
+    </header>
+
+    <article>
+        <h2 style="font-size: 14px; font-weight: 600; text-transform: none; letter-spacing: normal; color: #222; border: none; padding: 0; margin-bottom: 8px;">Design Playground</h2>
+        <p style="color: #999; font-size: 11px; margin-bottom: 30px;">Testing styling options. This page will be removed.</p>
+
+        <!-- STRIKETHROUGH SECTION -->
+        <section>
+            <h2>Strikethrough Variations</h2>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Subtle strike (gray, thin)</h3>
+            <p><span class="strike-subtle">San Francisco Bay Area</span> → Oakland</p>
+            <p class="test-note">For: Location changes, status updates</p>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Faded strike (low opacity)</h3>
+            <p><span class="strike-faded">Previous job title</span> → New role</p>
+            <p class="test-note">For: Completed phases, past versions</p>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Yellow strike (highlighter cross-out)</h3>
+            <p><span class="strike-color">Retired tool</span> → Current tool</p>
+            <p class="test-note">For: Rejected ideas, pivots (matches link style)</p>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Evolution style (no strike, just faded)</h3>
+            <p class="evolution"><s>San Francisco</s> Oakland. <s>Building solo</s> Building with team.</p>
+            <p class="test-note">For: "Now" section showing progression</p>
+        </section>
+
+        <!-- BOOK CHECK-OFF -->
+        <section>
+            <h2>Book Completion Styles</h2>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Sage strikethrough (subtle check-off)</h3>
+            <p class="book-check">
+                Currently: <em>The Hard Thing About Hard Things</em><br>
+                Recently: <s><em>Working in Public</em></s>, <s><em>Atomic Habits</em></s>
+            </p>
+            <p class="test-note">Matches site color palette</p>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Tool retirement (very faded)</h3>
+            <p class="tool-retired">
+                Tinkering: Claude, Cursor, <s>v0</s>, <s>Lovable</s>, <s>Replit Agent</s>, Windsurf
+            </p>
+            <p class="test-note">Shows ruthlessness without visual noise</p>
+        </section>
+
+        <!-- LINK ALTERNATIVES -->
+        <section>
+            <h2>Link Style Alternatives</h2>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Current: Yellow highlighter</h3>
+            <p><a href="#">This is the current link style</a> — yellow stroke</p>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Option: Bottom border fade</h3>
+            <p><a href="#" class="link-fade" style="background: none; text-decoration: none; border-bottom: 1px solid #ccc;">Subtle underline that darkens</a></p>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Option: Color only (no marker)</h3>
+            <p><a href="#" style="background: none; color: #2d5a3d;">Forest green link</a> → <a href="#" style="background: none; color: #19E76E;">lime on hover</a></p>
+        </section>
+
+        <!-- DARK MODE PREVIEW -->
+        <section>
+            <h2>Dark Mode Preview</h2>
+            <div class="dark-preview">
+                <p>This is how the site could look in dark mode.</p>
+                <p><a href="#">Links use dark green instead of yellow</a> for better contrast.</p>
+                <p style="font-size: 10px; opacity: 0.6; margin-top: 15px;">Respects system preference: @media (prefers-color-scheme: dark)</p>
+            </div>
+        </section>
+
+        <!-- MICRO INTERACTIONS -->
+        <section>
+            <h2>Micro-Interactions</h2>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">List item slide on hover</h3>
+            <ul class="micro-hover">
+                <li>Hover over this list item</li>
+                <li>It shifts slightly right</li>
+                <li>Subtle, directional</li>
+            </ul>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Selection color</h3>
+            <p class="selection-demo">Select this text. The highlight is warm taupe instead of default blue.</p>
+        </section>
+
+        <!-- RECOMMENDATIONS -->
+        <section>
+            <h2>Recommendations</h2>
+            <p style="color: #666; line-height: 1.8;">
+                <strong>Keep:</strong> Yellow highlighter links + sage background — distinctive, readable<br>
+                <strong>Consider:</strong> Evolution style for "Now" section (shows progression without clutter)<br>
+                <strong>Add:</strong> Selection color (warm taupe) — subtle polish<br>
+                <strong>Skip:</strong> Heavy strikethrough — trends fade, hard to read<br>
+                <strong>Maybe:</strong> Dark mode — modern, but adds maintenance
+            </p>
+        </section>
+    </article>
+
+    <footer>
+        <p class="small-caps">Built while toddler napped</p>
+    </footer>
+</body>
+</html>
