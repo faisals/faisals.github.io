@@ -76,10 +76,14 @@ li {
 
 a {
     color: #222;
+    text-decoration: none;
+    background: linear-gradient(to bottom, transparent 60%, #fcee67 60%);
+    padding: 0 2px;
+    margin: 0 -2px;
 }
 
 a:hover {
-    text-decoration: none;
+    background: #fcee67;
 }
 
 footer {
