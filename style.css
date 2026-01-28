@@ -91,6 +91,8 @@ footer {
 
 footer p {
     margin: 0;
+    font-variant: small-caps;
+    letter-spacing: 0.02em;
 }
 
 @media (max-width: 500px) {
