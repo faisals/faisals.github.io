@@ -456,6 +456,460 @@
             color: #999;
             border-radius: 4px;
         }
+        
+        /* Notifications/Alerts */
+        .alert {
+            padding: 14px 18px;
+            border-radius: 6px;
+            margin: 12px 0;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .alert-success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-left: 3px solid #4caf50;
+        }
+        .alert-error {
+            background: #ffebee;
+            color: #c62828;
+            border-left: 3px solid #ef5350;
+        }
+        .alert-warning {
+            background: #fff8e1;
+            color: #f57c00;
+            border-left: 3px solid #ffc107;
+        }
+        .alert-info {
+            background: #e3f2fd;
+            color: #1565c0;
+            border-left: 3px solid #2196f3;
+        }
+        .alert-subtle {
+            background: #f5f5f5;
+            color: #666;
+            border-left: 3px solid #bbb;
+        }
+        
+        /* Loading states */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #e0e0e0;
+            border-top-color: #b9c6b3;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        .skeleton-line {
+            height: 12px;
+            margin: 8px 0;
+        }
+        .skeleton-title {
+            height: 20px;
+            width: 60%;
+            margin: 8px 0;
+        }
+        
+        /* Progress bar */
+        .progress-container {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: #b9c6b3;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+        .progress-steps {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .progress-step {
+            flex: 1;
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+        }
+        .progress-step.active {
+            background: #b9c6b3;
+        }
+        .progress-step.complete {
+            background: #2d5a3d;
+        }
+        
+        /* Cards */
+        .card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 12px 0;
+        }
+        .card-hover:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+            transition: all 0.2s ease;
+        }
+        .card-elevated {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border: none;
+        }
+        .card-minimal {
+            border: none;
+            background: #fafafa;
+            padding: 16px;
+        }
+        
+        /* Breadcrumbs */
+        .breadcrumbs {
+            font-size: 12px;
+            color: #999;
+        }
+        .breadcrumbs a {
+            color: #666;
+            background: none;
+            text-decoration: none;
+        }
+        .breadcrumbs a:hover {
+            text-decoration: underline;
+        }
+        .breadcrumbs .separator {
+            margin: 0 8px;
+            color: #ccc;
+        }
+        .breadcrumbs .current {
+            color: #222;
+        }
+        
+        /* Pagination */
+        .pagination {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        .pagination a,
+        .pagination span {
+            padding: 8px 12px;
+            font-size: 13px;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+        .pagination a {
+            color: #222;
+            background: none;
+        }
+        .pagination a:hover {
+            background: #f0f0f0;
+        }
+        .pagination .active {
+            background: #1a1a1a;
+            color: white;
+        }
+        .pagination .disabled {
+            color: #ccc;
+            cursor: not-allowed;
+        }
+        
+        /* Tooltips */
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 6px 12px;
+            background: #1a1a1a;
+            color: white;
+            font-size: 11px;
+            border-radius: 4px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s;
+            margin-bottom: 6px;
+        }
+        .tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: #1a1a1a;
+        }
+        .tooltip-container:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Toggle switches */
+        .toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        .toggle input {
+            display: none;
+        }
+        .toggle-slider {
+            width: 40px;
+            height: 22px;
+            background: #ccc;
+            border-radius: 22px;
+            position: relative;
+            transition: background 0.2s;
+        }
+        .toggle-slider::after {
+            content: "";
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.2s;
+        }
+        .toggle input:checked + .toggle-slider {
+            background: #b9c6b3;
+        }
+        .toggle input:checked + .toggle-slider::after {
+            transform: translateX(18px);
+        }
+        
+        /* Accordion */
+        .accordion {
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .accordion-item {
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .accordion-item:last-child {
+            border-bottom: none;
+        }
+        .accordion-header {
+            padding: 14px 18px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fafafa;
+            font-size: 14px;
+        }
+        .accordion-header:hover {
+            background: #f5f5f5;
+        }
+        .accordion-icon {
+            transition: transform 0.2s;
+        }
+        .accordion-item.open .accordion-icon {
+            transform: rotate(180deg);
+        }
+        .accordion-content {
+            padding: 14px 18px;
+            font-size: 13px;
+            color: #666;
+            display: none;
+        }
+        .accordion-item.open .accordion-content {
+            display: block;
+        }
+        
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 24px;
+        }
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 5px;
+            top: 6px;
+            bottom: 6px;
+            width: 2px;
+            background: #e0e0e0;
+        }
+        .timeline-item {
+            position: relative;
+            padding-bottom: 20px;
+        }
+        .timeline-item::before {
+            content: "";
+            position: absolute;
+            left: -21px;
+            top: 4px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #b9c6b3;
+            border: 2px solid white;
+        }
+        .timeline-item.active::before {
+            background: #fcee67;
+        }
+        .timeline-date {
+            font-size: 11px;
+            color: #999;
+            margin-bottom: 4px;
+        }
+        .timeline-title {
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .timeline-desc {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+        
+        /* Comparison table */
+        .comparison-table th:first-child,
+        .comparison-table td:first-child {
+            font-weight: 500;
+        }
+        .comparison-table .check {
+            color: #4caf50;
+        }
+        .comparison-table .cross {
+            color: #ccc;
+        }
+        .comparison-table tr.highlight {
+            background: #f8f9f5;
+        }
+        
+        /* Dropdown */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-btn {
+            padding: 10px 16px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .dropdown-content {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            margin-top: 4px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            min-width: 150px;
+            display: none;
+            z-index: 10;
+        }
+        .dropdown.open .dropdown-content {
+            display: block;
+        }
+        .dropdown-item {
+            padding: 10px 16px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .dropdown-item:hover {
+            background: #f5f5f5;
+        }
+        .dropdown-item:first-child {
+            border-radius: 6px 6px 0 0;
+        }
+        .dropdown-item:last-child {
+            border-radius: 0 0 6px 6px;
+        }
+        
+        /* Modal */
+        .modal-overlay {
+            background: rgba(0,0,0,0.5);
+            padding: 40px;
+            border-radius: 8px;
+        }
+        .modal {
+            background: white;
+            border-radius: 8px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        .modal-header {
+            padding: 20px 20px 0;
+            font-weight: 600;
+        }
+        .modal-body {
+            padding: 16px 20px;
+            font-size: 13px;
+            color: #666;
+        }
+        .modal-footer {
+            padding: 0 20px 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        
+        /* Avatar */
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e8e4df;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 500;
+            color: #666;
+        }
+        .avatar-small {
+            width: 32px;
+            height: 32px;
+            font-size: 12px;
+        }
+        .avatar-large {
+            width: 56px;
+            height: 56px;
+            font-size: 18px;
+        }
+        .avatar-group {
+            display: flex;
+        }
+        .avatar-group .avatar {
+            margin-left: -8px;
+            border: 2px solid white;
+        }
+        .avatar-group .avatar:first-child {
+            margin-left: 0;
+        }
     </style>
 </head>
 <body>
@@ -825,6 +1279,312 @@
             </figure>
         </section>
 
+        <!-- NOTIFICATIONS/ALERTS -->
+        <section>
+            <h2>Notifications & Alerts</h2>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Success</h3>
+            <div class="alert alert-success">
+                <span>✓</span> Your changes have been saved successfully.
+            </div>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Error</h3>
+            <div class="alert alert-error">
+                <span>✕</span> Something went wrong. Please try again.
+            </div>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Warning</h3>
+            <div class="alert alert-warning">
+                <span>!</span> Your subscription expires in 3 days.
+            </div>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Info</h3>
+            <div class="alert alert-info">
+                <span>ℹ</span> New features are now available.
+            </div>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Subtle</h3>
+            <div class="alert alert-subtle">
+                <span>→</span> This page was last updated 2 days ago.
+            </div>
+        </section>
+
+        <!-- LOADING STATES -->
+        <section>
+            <h2>Loading States</h2>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Spinner</h3>
+            <div class="spinner"></div>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Skeleton loading</h3>
+            <div style="max-width: 300px;">
+                <div class="skeleton skeleton-title"></div>
+                <div class="skeleton skeleton-line"></div>
+                <div class="skeleton skeleton-line" style="width: 80%;"></div>
+                <div class="skeleton skeleton-line" style="width: 60%;"></div>
+            </div>
+        </section>
+
+        <!-- PROGRESS BARS -->
+        <section>
+            <h2>Progress Indicators</h2>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Progress bar (70%)</h3>
+            <div class="progress-container">
+                <div class="progress-bar" style="width: 70%;"></div>
+            </div>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Step indicator</h3>
+            <div class="progress-steps">
+                <div class="progress-step complete"></div>
+                <div class="progress-step complete"></div>
+                <div class="progress-step active"></div>
+                <div class="progress-step"></div>
+            </div>
+        </section>
+
+        <!-- CARDS -->
+        <section>
+            <h2>Card Variations</h2>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Standard</h3>
+            <div class="card">
+                <h4 style="margin: 0 0 8px 0; font-size: 14px;">Card Title</h4>
+                <p style="margin: 0; font-size: 13px; color: #666;">A simple card with border for containing related content.</p>
+            </div>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Hover elevation</h3>
+            <div class="card card-hover">
+                <h4 style="margin: 0 0 8px 0; font-size: 14px;">Interactive Card</h4>
+                <p style="margin: 0; font-size: 13px; color: #666;">Hover over this card to see the lift effect.</p>
+            </div>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Elevated (subtle shadow)</h3>
+            <div class="card card-elevated">
+                <h4 style="margin: 0 0 8px 0; font-size: 14px;">Elevated Card</h4>
+                <p style="margin: 0; font-size: 13px; color: #666;">Pre-elevated with soft shadow, no border.</p>
+            </div>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Minimal</h3>
+            <div class="card card-minimal">
+                <h4 style="margin: 0 0 8px 0; font-size: 14px;">Minimal Card</h4>
+                <p style="margin: 0; font-size: 13px; color: #666;">No border, just background tint.</p>
+            </div>
+        </section>
+
+        <!-- BREADCRUMBS -->
+        <section>
+            <h2>Breadcrumbs</h2>
+            
+            <nav class="breadcrumbs">
+                <a href="#">Home</a>
+                <span class="separator">/</span>
+                <a href="#">Writing</a>
+                <span class="separator">/</span>
+                <a href="#">Essays</a>
+                <span class="separator">/</span>
+                <span class="current">Design Systems</span>
+            </nav>
+        </section>
+
+        <!-- PAGINATION -->
+        <section>
+            <h2>Pagination</h2>
+            
+            <nav class="pagination">
+                <a href="#">← Prev</a>
+                <a href="#">1</a>
+                <span class="active">2</span>
+                <a href="#">3</a>
+                <span>...</span>
+                <a href="#">12</a>
+                <a href="#">Next →</a>
+            </nav>
+        </section>
+
+        <!-- TOOLTIPS -->
+        <section>
+            <h2>Tooltips</h2>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Hover for tooltip</h3>
+            <div class="tooltip-container">
+                <span style="border-bottom: 1px dotted #999; cursor: help;">Hover over me</span>
+                <span class="tooltip">This is a helpful tooltip!</span>
+            </div>
+        </section>
+
+        <!-- TOGGLE SWITCHES -->
+        <section>
+            <h2>Toggle Switches</h2>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Standard toggle</h3>
+            <label class="toggle">
+                <input type="checkbox" checked>
+                <span class="toggle-slider"></span>
+                <span style="font-size: 13px;">Notifications</span>
+            </label>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Unchecked</h3>
+            <label class="toggle">
+                <input type="checkbox">
+                <span class="toggle-slider"></span>
+                <span style="font-size: 13px;">Dark mode</span>
+            </label>
+        </section>
+
+        <!-- ACCORDION -->
+        <section>
+            <h2>Accordion</h2>
+            
+            <div class="accordion">
+                <div class="accordion-item open">
+                    <div class="accordion-header">
+                        <span>What is this page?</span>
+                        <span class="accordion-icon">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        A design system playground for testing UI components and styling options.
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <span>How do I use these styles?</span>
+                        <span class="accordion-icon">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        Copy the CSS classes and adapt them to your needs.
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <span>Will this page stay live?</span>
+                        <span class="accordion-icon">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        Probably not — it's a testing ground that may be removed later.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TIMELINE -->
+        <section>
+            <h2>Timeline</h2>
+            
+            <div class="timeline">
+                <div class="timeline-item active">
+                    <div class="timeline-date">Jan 2025</div>
+                    <div class="timeline-title">Current</div>
+                    <div class="timeline-desc">Building design systems</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">2024</div>
+                    <div class="timeline-title">Advisory Role</div>
+                    <div class="timeline-desc">Helping teams ship faster</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">2023</div>
+                    <div class="timeline-title">Previous Chapter</div>
+                    <div class="timeline-desc">Foundation building</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- COMPARISON TABLE -->
+        <section>
+            <h2>Comparison Table</h2>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Basic</th>
+                        <th>Pro</th>
+                        <th>Team</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Projects</td>
+                        <td>3</td>
+                        <td>Unlimited</td>
+                        <td>Unlimited</td>
+                    </tr>
+                    <tr>
+                        <td>Storage</td>
+                        <td>5GB</td>
+                        <td>100GB</td>
+                        <td>1TB</td>
+                    </tr>
+                    <tr>
+                        <td>API Access</td>
+                        <td class="cross">—</td>
+                        <td class="check">✓</td>
+                        <td class="check">✓</td>
+                    </tr>
+                    <tr class="highlight">
+                        <td>Support</td>
+                        <td>Email</td>
+                        <td>Priority</td>
+                        <td>24/7 Dedicated</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- DROPDOWN -->
+        <section>
+            <h2>Dropdown</h2>
+            
+            <div class="dropdown open">
+                <button class="dropdown-btn">
+                    Select option
+                    <span>▼</span>
+                </button>
+                <div class="dropdown-content">
+                    <div class="dropdown-item">Option One</div>
+                    <div class="dropdown-item">Option Two</div>
+                    <div class="dropdown-item">Option Three</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODAL -->
+        <section>
+            <h2>Modal / Dialog</h2>
+            
+            <div class="modal-overlay">
+                <div class="modal">
+                    <div class="modal-header">Confirm Action</div>
+                    <div class="modal-body">
+                        Are you sure you want to proceed? This action cannot be undone.
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-ghost">Cancel</button>
+                        <button class="btn btn-primary">Confirm</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AVATARS -->
+        <section>
+            <h2>Avatars</h2>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Sizes</h3>
+            <span class="avatar avatar-small">FS</span>
+            <span class="avatar">FS</span>
+            <span class="avatar avatar-large">FS</span>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Avatar group</h3>
+            <div class="avatar-group">
+                <span class="avatar avatar-small">AB</span>
+                <span class="avatar avatar-small">CD</span>
+                <span class="avatar avatar-small">EF</span>
+                <span class="avatar avatar-small" style="background: #1a1a1a; color: white;">+3</span>
+            </div>
+        </section>
+
         <!-- RECOMMENDATIONS -->
         <section>
             <h2>Recommendations</h2>
@@ -836,10 +1596,13 @@
                 <strong>Add:</strong> Short sage HR — elegant section divider<br>
                 <strong>Add:</strong> Button secondary (taupe) — softer than primary<br>
                 <strong>Add:</strong> Tags (sage/yellow) — useful for categorization<br>
+                <strong>Add:</strong> Alerts subtle — for non-intrusive notices<br>
+                <strong>Add:</strong> Card hover — nice micro-interaction<br>
                 <strong>Skip:</strong> Heavy strikethrough — trends fade, hard to read<br>
+                <strong>Skip:</strong> Modal/dropdown — not needed for static site<br>
                 <strong>Maybe:</strong> Dark mode — modern, but adds maintenance<br>
-                <strong>Maybe:</strong> Code blocks — only if adding technical content<br>
-                <strong>Maybe:</strong> Form elements — only if adding contact/newsletter
+                <strong>Maybe:</strong> Timeline — good for about/career pages<br>
+                <strong>Maybe:</strong> Comparison table — useful for pricing/features
             </p>
         </section>
     </article>
