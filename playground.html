@@ -94,6 +94,165 @@
             margin-top: 8px;
             font-style: italic;
         }
+        
+        /* Typography scale demo */
+        .type-scale {
+            margin: 0;
+            line-height: 1.4;
+        }
+        .type-scale .scale-1 { font-size: 11px; opacity: 0.6; }
+        .type-scale .scale-2 { font-size: 12px; }
+        .type-scale .scale-3 { font-size: 14px; }
+        .type-scale .scale-4 { font-size: 16px; font-weight: 500; }
+        .type-scale .scale-5 { font-size: 20px; font-weight: 600; }
+        
+        /* Color palette */
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 12px;
+            margin: 15px 0;
+        }
+        .color-swatch {
+            padding: 30px 10px 10px;
+            border-radius: 6px;
+            font-size: 10px;
+            text-align: center;
+        }
+        .color-swatch span {
+            display: block;
+            background: rgba(255,255,255,0.9);
+            padding: 4px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        
+        /* Callout styles */
+        .callout-border {
+            border-left: 3px solid #fcee67;
+            padding-left: 16px;
+            margin: 16px 0;
+            color: #555;
+        }
+        .callout-tint {
+            background: #f8f7f5;
+            padding: 16px;
+            border-radius: 6px;
+            margin: 16px 0;
+        }
+        .callout-minimal {
+            font-style: italic;
+            opacity: 0.8;
+            margin: 16px 0;
+            padding: 0 16px;
+        }
+        
+        /* Code styling */
+        code {
+            font-family: 'SF Mono', Monaco, Consolas, monospace;
+            font-size: 0.9em;
+            background: #f0f0f0;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        pre {
+            background: #1a1a1a;
+            color: #e4e4e4;
+            padding: 16px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+        }
+        
+        /* Horizontal rule variations */
+        hr.subtle {
+            border: none;
+            border-top: 1px solid #ddd;
+            margin: 30px 0;
+        }
+        hr.dotted {
+            border: none;
+            border-top: 1px dotted #bbb;
+            margin: 30px 0;
+        }
+        hr.spacer {
+            border: none;
+            margin: 40px 0;
+        }
+        hr.sage {
+            border: none;
+            border-top: 2px solid #b9c6b3;
+            width: 60px;
+            margin: 30px auto;
+        }
+        
+        /* List variations */
+        ul.custom-bullets {
+            list-style: none;
+            padding-left: 20px;
+        }
+        ul.custom-bullets li::before {
+            content: "•";
+            color: #b9c6b3;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        ul.dashes {
+            list-style: none;
+            padding-left: 20px;
+        }
+        ul.dashes li::before {
+            content: "—";
+            color: #999;
+            margin-right: 8px;
+        }
+        ol.custom {
+            padding-left: 20px;
+        }
+        ol.custom li::marker {
+            color: #b9c6b3;
+            font-weight: 600;
+        }
+        
+        /* Focus states */
+        .focus-demo:focus {
+            outline: 2px solid #fcee67;
+            outline-offset: 2px;
+        }
+        .focus-demo-outline:focus {
+            outline: 2px solid #2d5a3d;
+            outline-offset: 3px;
+        }
+        .focus-demo-underline:focus {
+            outline: none;
+            border-bottom: 2px solid #fcee67;
+        }
+        
+        /* Print preview */
+        .print-preview {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 30px;
+            margin: 20px 0;
+        }
+        .print-preview h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .print-preview nav,
+        .print-preview .no-print {
+            display: none;
+        }
+        .print-preview a {
+            color: #222;
+            background: none;
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -184,6 +343,135 @@
             <p class="selection-demo">Select this text. The highlight is warm taupe instead of default blue.</p>
         </section>
 
+        <!-- TYPOGRAPHY SCALE -->
+        <section>
+            <h2>Typography Scale</h2>
+            <div class="type-scale">
+                <p class="scale-1">11px — Metadata, timestamps, labels</p>
+                <p class="scale-2">12px — Small text, captions</p>
+                <p class="scale-3">14px — Body text default</p>
+                <p class="scale-4">16px — Emphasized body, intro text</p>
+                <p class="scale-5">20px — Section headings</p>
+            </div>
+        </section>
+
+        <!-- COLOR PALETTE -->
+        <section>
+            <h2>Color Palette</h2>
+            <div class="color-grid">
+                <div class="color-swatch" style="background: #fcee67;"><span>#fcee67</span>Highlighter</div>
+                <div class="color-swatch" style="background: #b9c6b3;"><span>#b9c6b3</span>Sage</div>
+                <div class="color-swatch" style="background: #2d5a3d; color: white;"><span>#2d5a3d</span>Forest</div>
+                <div class="color-swatch" style="background: #e8e4df;"><span>#e8e4df</span>Warm Taupe</div>
+                <div class="color-swatch" style="background: #f8f7f5; border: 1px solid #ddd;"><span>#f8f7f5</span>Off-White</div>
+                <div class="color-swatch" style="background: #1a1a1a; color: white;"><span>#1a1a1a</span>Near Black</div>
+            </div>
+        </section>
+
+        <!-- CALLOUT STYLES -->
+        <section>
+            <h2>Callout Styles</h2>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Left border accent</h3>
+            <p class="callout-border">
+                This is a note with emphasis. Good for pull quotes or important asides that need to stand out without being too loud.
+            </p>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Background tint</h3>
+            <p class="callout-tint">
+                A softer approach. Use for longer notes that need visual separation from the main flow.
+            </p>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Minimal (italic only)</h3>
+            <p class="callout-minimal">
+                Just an italic treatment with slight indentation. Most subtle option.
+            </p>
+        </section>
+
+        <!-- CODE STYLING -->
+        <section>
+            <h2>Code Styling</h2>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Inline code</h3>
+            <p>Use <code>git commit</code> to save your changes. The <code>max-width</code> property controls layout.</p>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Code block</h3>
+            <pre><code>function hello() {
+    console.log("Clean, readable code blocks");
+    return true;
+}</code></pre>
+        </section>
+
+        <!-- HORIZONTAL RULES -->
+        <section>
+            <h2>Horizontal Rule Variations</h2>
+            
+            <p style="font-size: 11px; color: #666;">Subtle line (1px solid)</p>
+            <hr class="subtle">
+            
+            <p style="font-size: 11px; color: #666;">Dotted line</p>
+            <hr class="dotted">
+            
+            <p style="font-size: 11px; color: #666;">Spacer only (invisible)</p>
+            <hr class="spacer">
+            
+            <p style="font-size: 11px; color: #666;">Short sage accent</p>
+            <hr class="sage">
+        </section>
+
+        <!-- LIST STYLES -->
+        <section>
+            <h2>List Style Options</h2>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Custom bullets (sage)</h3>
+            <ul class="custom-bullets">
+                <li>First item</li>
+                <li>Second item</li>
+                <li>Third item</li>
+            </ul>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Dash prefix</h3>
+            <ul class="dashes">
+                <li>Minimal aesthetic</li>
+                <li>Common in plain text</li>
+                <li>Clean and simple</li>
+            </ul>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Colored numbers</h3>
+            <ol class="custom">
+                <li>Step one</li>
+                <li>Step two</li>
+                <li>Step three</li>
+            </ol>
+        </section>
+
+        <!-- FOCUS STATES -->
+        <section>
+            <h2>Focus States</h2>
+            <p class="test-note" style="margin-bottom: 15px;">Keyboard navigation styling — press Tab to see in action</p>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Yellow outline (matches links)</h3>
+            <p><a href="#" class="focus-demo">Tab to this link</a></p>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Forest outline (subtle)</h3>
+            <p><a href="#" class="focus-demo-outline">Tab to this link</a></p>
+            
+            <h3 style="font-size: 11px; font-weight: 600; margin: 20px 0 10px 0; color: #666;">Underline only</h3>
+            <p><a href="#" class="focus-demo-underline">Tab to this link</a></p>
+        </section>
+
+        <!-- PRINT STYLES -->
+        <section>
+            <h2>Print Styles Preview</h2>
+            <p class="test-note" style="margin-bottom: 15px;">Simulated print view — hides nav, adjusts colors for grayscale</p>
+            
+            <div class="print-preview">
+                <h3>Article Title</h3>
+                <p>This is how content would appear when printed. Navigation elements are hidden, links show their URLs or use standard underlines instead of highlighter effects.</p>
+                <p>Background colors are removed to save ink, and text is optimized for black & white output.</p>
+            </div>
+        </section>
+
         <!-- RECOMMENDATIONS -->
         <section>
             <h2>Recommendations</h2>
@@ -191,8 +479,11 @@
                 <strong>Keep:</strong> Yellow highlighter links + sage background — distinctive, readable<br>
                 <strong>Consider:</strong> Evolution style for "Now" section (shows progression without clutter)<br>
                 <strong>Add:</strong> Selection color (warm taupe) — subtle polish<br>
+                <strong>Add:</strong> Focus states — accessibility essential<br>
+                <strong>Add:</strong> Short sage HR — elegant section divider<br>
                 <strong>Skip:</strong> Heavy strikethrough — trends fade, hard to read<br>
-                <strong>Maybe:</strong> Dark mode — modern, but adds maintenance
+                <strong>Maybe:</strong> Dark mode — modern, but adds maintenance<br>
+                <strong>Maybe:</strong> Code blocks — only if adding technical content
             </p>
         </section>
     </article>
