@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adam's Meme Match</title>
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Patrick Hand', cursive;
+  min-height: 100vh;
+  background-color: #fffef5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  overflow: hidden;
+  position: relative;
+}
+
+.bg-memes {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.bg-meme {
+  position: absolute;
+  font-family: 'Patrick Hand', cursive;
+  color: rgba(0, 0, 0, 0.15);
+  font-size: 1.6rem;
+  white-space: nowrap;
+  user-select: none;
+}
+
+h1, .grid, .overlay {
+  position: relative;
+  z-index: 1;
+}
+
+h1 {
+  font-size: 2.5rem;
+  color: #2c3e50;
+  margin-bottom: 24px;
+  text-align: center;
+  transform: rotate(-1deg);
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: #e74c3c;
+  text-underline-offset: 6px;
+}
+
+.grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.row {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+}
+
+.card {
+  width: 120px;
+  height: 140px;
+  perspective: 600px;
+  cursor: pointer;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s;
+  transform-style: preserve-3d;
+}
+
+.card.flipped .card-inner,
+.card.matched .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border: 3px solid #2c3e50;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 8px;
+}
+
+.card-back {
+  background: #ffeaa7;
+  border-style: dashed;
+  font-size: 1.4rem;
+  color: #636e72;
+  line-height: 1.3;
+  transform: rotate(-0.5deg);
+  box-shadow: 3px 3px 0px #b2bec3;
+}
+
+.card-front {
+  background: #fff;
+  transform: rotateY(180deg) rotate(0.5deg);
+  font-size: 1.3rem;
+  color: #2d3436;
+  box-shadow: 3px 3px 0px #b2bec3;
+  font-family: 'Patrick Hand', cursive;
+}
+
+.card.matched .card-face.card-front {
+  background: #dfe6e9;
+  border-color: #00b894;
+  border-width: 3px;
+  color: #00b894;
+}
+
+.card:nth-child(odd) .card-back { transform: rotate(1deg); }
+.card:nth-child(even) .card-back { transform: rotate(-1.5deg); }
+.card:nth-child(odd) .card-front { transform: rotateY(180deg) rotate(-1deg); }
+.card:nth-child(even) .card-front { transform: rotateY(180deg) rotate(1deg); }
+
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.85);
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.overlay.show {
+  display: flex;
+}
+
+.win-msg {
+  text-align: center;
+  transform: rotate(-2deg);
+}
+
+.win-msg h2 {
+  font-size: 3.5rem;
+  color: #e17055;
+  margin-bottom: 12px;
+}
+
+.win-msg p {
+  font-size: 1.8rem;
+  color: #2d3436;
+  margin-bottom: 20px;
+}
+
+.win-msg button {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.4rem;
+  padding: 10px 28px;
+  border: 3px dashed #2c3e50;
+  border-radius: 8px;
+  background: #ffeaa7;
+  cursor: pointer;
+  transform: rotate(1deg);
+  box-shadow: 3px 3px 0px #b2bec3;
+}
+
+.win-msg button:hover {
+  background: #fdcb6e;
+}
+
+@media (max-width: 500px) {
+  .card {
+    width: 90px;
+    height: 110px;
+  }
+  .card-front { font-size: 1rem; }
+  .card-back { font-size: 1.1rem; }
+  h1 { font-size: 1.8rem; }
+  .row { gap: 10px; }
+  .grid { gap: 10px; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-memes" id="bgMemes"></div>
+<h1>Adam's Meme Match</h1>
+<div class="grid" id="grid"></div>
+
+<div class="overlay" id="overlay">
+  <div class="win-msg">
+    <h2>You Win! 🎉</h2>
+    <p>Great job matching all the memes!</p>
+    <button onclick="startGame()">Play Again</button>
+  </div>
+</div>
+
+<script>
+const MEMES = ['67', '999', '61', "What's funnier than 24? 25", '89'];
+const ROW_LAYOUT = [3, 3, 2, 2];
+const DOODLES = ['✏️ ? ★', '~ ★ ? ~', '★ ? ✏️', '? ~ ★ ?', '✏️ ~ ? ★', '~ ✏️ ★', '★ ~ ?', '? ★ ✏️ ~', '~ ? ★', '✏️ ★ ~ ?'];
+
+let cards, flipped, matched, locked;
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function startGame() {
+  flipped = [];
+  matched = 0;
+  locked = false;
+  document.getElementById('overlay').classList.remove('show');
+
+  cards = shuffle([...MEMES, ...MEMES]);
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+
+  let idx = 0;
+  for (const count of ROW_LAYOUT) {
+    const row = document.createElement('div');
+    row.className = 'row';
+    for (let i = 0; i < count; i++) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.dataset.idx = idx;
+      card.innerHTML = `
+        <div class="card-inner">
+          <div class="card-face card-back">${DOODLES[idx % DOODLES.length]}</div>
+          <div class="card-face card-front">${cards[idx]}</div>
+        </div>`;
+      card.addEventListener('click', onCardClick);
+      row.appendChild(card);
+      idx++;
+    }
+    grid.appendChild(row);
+  }
+}
+
+function onCardClick(e) {
+  const card = e.currentTarget;
+  if (locked || card.classList.contains('flipped') || card.classList.contains('matched')) return;
+
+  card.classList.add('flipped');
+  flipped.push(card);
+
+  if (flipped.length === 2) {
+    locked = true;
+    const [a, b] = flipped;
+    if (cards[a.dataset.idx] === cards[b.dataset.idx]) {
+      a.classList.add('matched');
+      b.classList.add('matched');
+      matched++;
+      flipped = [];
+      locked = false;
+      if (matched === MEMES.length) {
+        setTimeout(() => document.getElementById('overlay').classList.add('show'), 500);
+      }
+    } else {
+      setTimeout(() => {
+        a.classList.remove('flipped');
+        b.classList.remove('flipped');
+        flipped = [];
+        locked = false;
+      }, 1000);
+    }
+  }
+}
+
+function generateBackground() {
+  const bg = document.getElementById('bgMemes');
+  bg.innerHTML = '';
+  const count = 40;
+  for (let i = 0; i < count; i++) {
+    const el = document.createElement('div');
+    el.className = 'bg-meme';
+    el.textContent = MEMES[i % MEMES.length];
+    el.style.left = (Math.random() * 100) + '%';
+    el.style.top = (Math.random() * 100) + '%';
+    el.style.transform = 'rotate(' + (Math.random() * 60 - 30) + 'deg)';
+    el.style.fontSize = (1.2 + Math.random() * 1.4) + 'rem';
+    bg.appendChild(el);
+  }
+}
+
+generateBackground();
+startGame();
+</script>
+</body>
+</html>
