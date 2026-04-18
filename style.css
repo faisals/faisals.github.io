@@ -5,20 +5,20 @@
 
 body {
     font-family: system-ui, -apple-system, sans-serif;
-    font-size: 12px;
-    line-height: 1.5;
+    font-size: 16px;
+    line-height: 1.55;
     color: #222;
     background: #F5F8F4;
     padding: 40px 20px;
-    max-width: 520px;
+    max-width: 640px;
 }
 
 header {
-    margin-bottom: 24px;
+    margin-bottom: 28px;
 }
 
 h1 {
-    font-size: 14px;
+    font-size: 20px;
     font-weight: 600;
     margin-bottom: 2px;
 }
@@ -28,16 +28,16 @@ header p {
 }
 
 section {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 }
 
 h2 {
-    font-size: 10px;
+    font-size: 13px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: #999;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     padding-bottom: 4px;
     border-bottom: 1px solid #eee;
 }
@@ -57,7 +57,7 @@ p {
 
 .job-meta {
     color: #999;
-    font-size: 11px;
+    font-size: 14px;
     margin-bottom: 3px;
 }
 
@@ -99,25 +99,36 @@ footer p {
     letter-spacing: 0.02em;
 }
 
-@media (max-width: 500px) {
+@media (max-width: 768px) {
     body {
-        padding: 30px 18px;
-        font-size: 15px;
+        padding: 28px 18px;
+        font-size: 17px;
     }
-    
+
     h1 {
-        font-size: 18px;
+        font-size: 22px;
     }
-    
+
     h2 {
-        font-size: 12px;
-    }
-    
-    .job-meta {
         font-size: 13px;
     }
-    
+
+    .job-meta {
+        font-size: 15px;
+    }
+
     .tinkering {
         margin-top: 12px;
+    }
+
+    li {
+        margin-bottom: 10px;
+    }
+
+    li a,
+    .elsewhere a {
+        display: inline-block;
+        padding: 6px 4px;
+        margin: 0 -4px;
     }
 }
