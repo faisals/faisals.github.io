@@ -23,13 +23,13 @@ header {
 }
 
 h1 {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 600;
     margin-bottom: 2px;
 }
 
 header p {
-    color: #666;
+    color: #4f5a4c;
 }
 
 section {
@@ -41,10 +41,10 @@ h2 {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: #999;
+    color: #6f766d;
     margin-bottom: 12px;
     padding-bottom: 4px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #dfe6db;
 }
 
 p {
@@ -91,11 +91,16 @@ a:hover {
     background: #fcee67;
 }
 
+a:focus-visible {
+    outline: 2px solid #6f766d;
+    outline-offset: 3px;
+}
+
 footer {
     margin-top: 40px;
     padding-top: 10px;
-    border-top: 1px solid #eee;
-    color: #999;
+    border-top: 1px solid #dfe6db;
+    color: #6f766d;
 }
 
 footer p {
@@ -116,7 +121,7 @@ footer p {
     }
 
     h1 {
-        font-size: 22px;
+        font-size: 25px;
     }
 
     h2 {
