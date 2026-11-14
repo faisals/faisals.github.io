@@ -134,6 +134,12 @@ article h3 {
     margin: 28px 0 10px;
 }
 
+.book-year {
+    color: #5c6359;
+    font-size: 14px;
+    margin-left: 4px;
+}
+
 .post-byline {
     margin-top: 32px;
     padding-top: 12px;
