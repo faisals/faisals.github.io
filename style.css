@@ -67,9 +67,10 @@ p {
     margin-bottom: 3px;
 }
 
-.tinkering {
+.thesis {
     margin-top: 14px;
-    color: #666;
+    padding-left: 14px;
+    border-left: 3px solid #fcee67;
 }
 
 ul {
@@ -134,7 +135,7 @@ footer p {
         font-size: 15px;
     }
 
-    .tinkering {
+    .thesis {
         margin-top: 12px;
     }
 
