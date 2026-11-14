@@ -134,6 +134,16 @@ article h3 {
     margin: 28px 0 10px;
 }
 
+.site-nav {
+    margin-top: 8px;
+    color: #5c6359;
+}
+
+.site-nav a[aria-current] {
+    background: none;
+    color: #5c6359;
+}
+
 .book-year {
     color: #5c6359;
     font-size: 14px;
@@ -191,9 +201,10 @@ article h3 {
     }
 
     li a,
-    .elsewhere a {
+    .site-nav a {
         display: inline-block;
         padding: 6px 4px;
         margin: 0 -4px;
+        background-clip: content-box;
     }
 }
