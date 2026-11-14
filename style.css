@@ -57,12 +57,12 @@ p {
 }
 
 .job-title {
-    font-weight: 500;
+    font-weight: 600;
     margin-bottom: 1px;
 }
 
 .job-meta {
-    color: #999;
+    color: #6f766d;
     font-size: 14px;
     margin-bottom: 3px;
 }
